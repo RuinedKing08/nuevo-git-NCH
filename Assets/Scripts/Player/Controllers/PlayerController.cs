@@ -1,0 +1,136 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Playables;
+
+public class PlayerController : MonoBehaviour
+{
+    #region References
+    [SerializeField] private PlayerCamera playerCamera;
+    [SerializeField] private PlayerCharacter playerCharacter;
+    [SerializeField] private PlayerAnimations playerAnimations;
+    [SerializeField] private PlayerActionController playerActionsC;
+    [SerializeField] private InputControllerSettings inputSettings;
+    #endregion
+
+    #region Runtime
+    [SerializeField] private PlayerState _playerState;
+    private SystemInputActions actions;
+    private SystemInputActions.PlayerActions input;
+
+
+    #endregion
+
+    public void Awake()
+    {
+        actions = new SystemInputActions();
+        input = actions.Player;
+
+    }
+
+    private void OnEnable()
+    {
+        input.Enable();
+    }
+
+    private void OnDisable()
+    {
+        input.Disable();
+    }
+    public void Start()
+    {
+        _playerState.generalInput = new GeneralInput
+        {
+            movementInputPressed = false,
+            movementInputHeld = false,
+            movementInputTapped = false,
+            ChangueFromToMenu = false,
+            movementInputDuration = 0f,
+            inputDirection = Vector2.zero,
+
+
+        };
+
+        playerCamera.Initialize();
+        playerCharacter.Initialize();
+        playerAnimations.Initialize();
+        playerActionsC.Initialize(playerCharacter.WeaponPos);
+
+    }
+
+    public void Update()
+    {
+        ProcessInput();
+        playerAnimations.UpdateProperties(_playerState);
+        playerAnimations.UpdateAnimator();
+    }
+
+    public void FixedUpdate()
+    {
+        _playerState.characterState = playerCharacter._characterState;
+
+    }
+
+    public void LateUpdate()
+    {
+
+    }
+
+    public void ProcessInput()
+    {
+        var cameraInput = new CameraInput
+        {
+            Rotation = input.Look.ReadValue<Vector2>(),
+            
+        };
+
+        playerCamera.ProcessInput(cameraInput);
+
+        var characterInput = new characterMotorInput
+        {
+            Move = input.Move.ReadValue<Vector2>(),
+            Crouch = input.Crouch.WasPressedThisFrame()
+
+        };
+        playerCharacter.ProcessInput(characterInput);
+
+
+
+        if (characterInput.Move.magnitude > 0.1f)
+        {
+            if (_playerState.generalInput.movementInputDuration == 0)
+            {
+                _playerState.generalInput.movementInputTapped = true;
+            }
+            else if (_playerState.generalInput.movementInputDuration > 0 && _playerState.generalInput.movementInputDuration < inputSettings.buttonHoldTreshhold)
+
+            {
+                _playerState.generalInput.movementInputTapped = false;
+                _playerState.generalInput.movementInputHeld = false;
+                _playerState.generalInput.movementInputPressed = true;
+
+            }
+            else
+            {
+                _playerState.generalInput.movementInputTapped = false;
+                _playerState.generalInput.movementInputHeld = true;
+                _playerState.generalInput.movementInputPressed = false;
+            }
+            _playerState.generalInput.movementInputDuration += Time.deltaTime;
+            _playerState.generalInput.inputDirection = characterInput.Move;
+
+
+        }
+        else
+        {
+            _playerState.generalInput.movementInputDuration = 0f;
+            _playerState.generalInput.movementInputTapped = false;
+            _playerState.generalInput.movementInputHeld = false;
+            _playerState.generalInput.movementInputPressed = false;
+
+        }
+
+
+    }
+
+
+}
