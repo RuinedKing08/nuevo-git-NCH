@@ -88,7 +88,7 @@ public struct PlayerActionState
 {
     public ActionState actionState;
     public WeaponState weaponState;
-    
+    public Holding HoldingState;
 }
 
 [Serializable]
@@ -105,6 +105,13 @@ public enum WeaponState
 {
     AIMING,
     DEFAULT,
+}
+
+public enum Holding
+{
+    None,
+    FireArm,
+    MeleeItem
 }
 
 [Serializable]

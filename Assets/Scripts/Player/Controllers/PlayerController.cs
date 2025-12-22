@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
         playerCamera.Initialize();
         playerCharacter.Initialize();
         playerAnimations.Initialize();
-        playerActionsC.Initialize(playerCharacter.WeaponPos);
+        playerActionsC.Initialize();
 
     }
 
