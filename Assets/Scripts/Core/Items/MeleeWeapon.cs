@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class MeleeWeapon : EquipableItemBase
 {
-
+    
 
     public override bool IsBusy()
     {
