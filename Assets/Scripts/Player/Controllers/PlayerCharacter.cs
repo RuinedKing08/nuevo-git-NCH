@@ -10,6 +10,7 @@ public class PlayerCharacter : MonoBehaviour,ICharacterController
     [SerializeField] private KinematicCharacterMotor motor;
     [SerializeField] private Transform camTargetInCharacter;
     [SerializeField] private Transform weaponPos;
+    public Transform CamPos => camTargetInCharacter;
     public Transform WeaponPos => weaponPos;
 
     [Header("Settings")]

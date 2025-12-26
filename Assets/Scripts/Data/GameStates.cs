@@ -28,7 +28,7 @@ public struct characterMotorInput
 
 public struct CameraInput
 {
-    public Vector2 Rotation;
+    public Vector2 Look;
 
 }
 
@@ -38,6 +38,8 @@ public struct ActionInput
     public bool Attack;
     public bool Aim;
     public bool Recharge;
+    public bool Throw;
+    public bool Fire;
 }
 
 public struct GeneralInput
@@ -125,6 +127,12 @@ public enum Stance
 {
     Stand,
     Crouch
+}
+
+public enum FireMode
+{
+    Semi,
+    Auto
 }
 
 

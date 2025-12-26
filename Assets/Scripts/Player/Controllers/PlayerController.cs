@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
 
         };
 
-        playerCamera.Initialize();
+        playerCamera.Initialize(playerCharacter.CamPos);
         playerCharacter.Initialize();
         playerAnimations.Initialize();
         playerActionsC.Initialize();
@@ -67,19 +67,20 @@ public class PlayerController : MonoBehaviour
     public void FixedUpdate()
     {
         _playerState.characterState = playerCharacter._characterState;
+        playerActionsC.Detect(playerCamera._camera.transform);
 
     }
 
     public void LateUpdate()
     {
-
+        playerCamera.UpdatePosition(playerCharacter.CamPos);
     }
 
     public void ProcessInput()
     {
         var cameraInput = new CameraInput
         {
-            Rotation = input.Look.ReadValue<Vector2>(),
+            Look = input.Look.ReadValue<Vector2>(),
             
         };
 
@@ -88,12 +89,17 @@ public class PlayerController : MonoBehaviour
         var characterInput = new characterMotorInput
         {
             Move = input.Move.ReadValue<Vector2>(),
-            Crouch = input.Crouch.WasPressedThisFrame()
-
+            Crouch = input.Crouch.WasPressedThisFrame(),
+            Rotation = playerCamera.transform.rotation
         };
         playerCharacter.ProcessInput(characterInput);
 
+        var ActionControllerInput = new ActionInput
+        {
+            Interact = input.Interact.WasPressedThisFrame()
+        };
 
+        playerActionsC.ProcessInput(ActionControllerInput);
 
         if (characterInput.Move.magnitude > 0.1f)
         {

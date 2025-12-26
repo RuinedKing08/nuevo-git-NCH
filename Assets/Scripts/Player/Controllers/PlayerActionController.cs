@@ -4,7 +4,7 @@ public class PlayerActionController : MonoBehaviour
 {
     #region References
 
-    private Transform weaponBone;
+    public Transform weaponBone;
     private PlayerState _tempState;
     #endregion
     IEquipable equippedItem;
@@ -12,7 +12,7 @@ public class PlayerActionController : MonoBehaviour
     private PlayerActionState actionStateInternal;
     public PlayerActionState actionState => actionStateInternal;
 
-    InteractSettings _InteractSettings;
+    public InteractSettings _InteractSettings;
 
 
     public IInteractable currentInteractable;
@@ -70,11 +70,7 @@ public class PlayerActionController : MonoBehaviour
 
     public void OnEquipItem(ItemBase item)
     {
-        if (equippedItem != null)
-        {
-            equippedItem.OnUnequip();
-            
-        }
+        UnEquip();
 
         var equipable = item as IEquipable;
         if (equipable == null) return;
@@ -83,7 +79,7 @@ public class PlayerActionController : MonoBehaviour
 
         item.transform.SetParent(weaponBone);
         item.transform.localPosition = Vector3.zero;
-        item.transform.localRotation = Quaternion.identity;
+        item.transform.localRotation = weaponBone.rotation;
 
         equippedItem = equipable;
         equippedItem.OnEquip(this);
@@ -93,13 +89,21 @@ public class PlayerActionController : MonoBehaviour
                                            item is MeleeWeapon ? Holding.MeleeItem :
                                            Holding.None;
 
-
-
     }
+    public void UnEquip()
+    {
+        if (equippedItem != null)
+        {
+            equippedItem.OnUnequip();
 
+        }
+    }
+    public void ThrowWeapon()
+    {
+        UnEquip();
+    }
     public void ProcessInput(ActionInput input)
     {
-
 
         equippedItem?.ProcessInput(input);
 
@@ -133,11 +137,6 @@ public class PlayerActionController : MonoBehaviour
     {
         actionStateInternal.actionState = newState;
     }
-
-
-
-
-
 
 
 }
