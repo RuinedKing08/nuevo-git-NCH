@@ -46,8 +46,6 @@ public class PlayerController : MonoBehaviour
             ChangueFromToMenu = false,
             movementInputDuration = 0f,
             inputDirection = Vector2.zero,
-
-
         };
 
         playerCamera.Initialize(playerCharacter.CamPos);
@@ -96,10 +94,13 @@ public class PlayerController : MonoBehaviour
 
         var ActionControllerInput = new ActionInput
         {
-            Interact = input.Interact.WasPressedThisFrame()
+            Interact = input.Interact.WasPressedThisFrame(),
+            Attack = input.Fire.WasPerformedThisFrame(), // See this after if can be pressed continue
+            Fire = input.Fire.IsPressed(),
+            Throw = input.Throw.WasPressedThisFrame()
         };
-
         playerActionsC.ProcessInput(ActionControllerInput);
+
 
         if (characterInput.Move.magnitude > 0.1f)
         {

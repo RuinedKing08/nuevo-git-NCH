@@ -37,7 +37,7 @@ public struct ActionInput
     public bool Interact;
     public bool Attack;
     public bool Aim;
-    public bool Recharge;
+
     public bool Throw;
     public bool Fire;
 }

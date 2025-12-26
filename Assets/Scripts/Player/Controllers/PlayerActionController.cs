@@ -22,6 +22,8 @@ public class PlayerActionController : MonoBehaviour
 
         Ray ray = new Ray(camPos.position, camPos.forward);
 
+        equippedItem?.receiveRay(ray);
+
         RaycastHit[] hits = Physics.SphereCastAll(
             ray,
             _InteractSettings.sphereRadius,
@@ -92,11 +94,13 @@ public class PlayerActionController : MonoBehaviour
     }
     public void UnEquip()
     {
+        actionStateInternal.HoldingState = Holding.None;
         if (equippedItem != null)
         {
             equippedItem.OnUnequip();
 
         }
+        equippedItem = null;
     }
     public void ThrowWeapon()
     {

@@ -6,11 +6,19 @@ public class MeleeWeapon : EquipableItemBase
 
     public override bool IsBusy()
     {
-        throw new System.NotImplementedException();
+        return true;
     }
 
     public override void ProcessInput(ActionInput input)
     {
-        throw new System.NotImplementedException();
+        _requestedAttack = input.Attack;
+       
+        _requestedThrow = input.Throw;
+        
+
+        if (_requestedThrow)
+        {
+            Throw();
+        }
     }
 }
