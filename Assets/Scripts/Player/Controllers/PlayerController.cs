@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,13 +10,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerCharacter playerCharacter;
     [SerializeField] private PlayerAnimations playerAnimations;
     [SerializeField] private PlayerActionController playerActionsC;
-    [SerializeField] private InputControllerSettings inputSettings;
+
     #endregion
 
     #region Runtime
     [SerializeField] private PlayerState _playerState;
     private SystemInputActions actions;
     private SystemInputActions.PlayerActions input;
+
+   
 
 
     #endregion
@@ -58,19 +61,23 @@ public class PlayerController : MonoBehaviour
     public void Update()
     {
         ProcessInput();
+       
         playerAnimations.UpdateProperties(_playerState);
         playerAnimations.UpdateAnimator();
+        playerCamera.BeforeCameraUpdate();
     }
 
     public void FixedUpdate()
     {
         _playerState.characterState = playerCharacter._characterState;
-        playerActionsC.Detect(playerCamera._camera.transform);
+        playerActionsC.Detect(playerCamera._CMcamera.transform);
+
 
     }
 
     public void LateUpdate()
     {
+        playerCamera.CameraUpdate();
         playerCamera.UpdatePosition(playerCharacter.CamPos);
     }
 
@@ -79,7 +86,7 @@ public class PlayerController : MonoBehaviour
         var cameraInput = new CameraInput
         {
             Look = input.Look.ReadValue<Vector2>(),
-            
+            LockOn = GameSettings.Instance.lockOnSettings == InputSettings.Toggle ?  input.LockOn.WasPressedThisFrame() : input.LockOn.IsPressed(),
         };
 
         playerCamera.ProcessInput(cameraInput);
@@ -108,7 +115,7 @@ public class PlayerController : MonoBehaviour
             {
                 _playerState.generalInput.movementInputTapped = true;
             }
-            else if (_playerState.generalInput.movementInputDuration > 0 && _playerState.generalInput.movementInputDuration < inputSettings.buttonHoldTreshhold)
+            else if (_playerState.generalInput.movementInputDuration > 0 && _playerState.generalInput.movementInputDuration < GameSettings.Instance.buttonHoldTreshhold)
 
             {
                 _playerState.generalInput.movementInputTapped = false;

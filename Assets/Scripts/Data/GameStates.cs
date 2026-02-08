@@ -29,7 +29,7 @@ public struct characterMotorInput
 public struct CameraInput
 {
     public Vector2 Look;
-
+    public bool LockOn;
 }
 
 public struct ActionInput
@@ -59,7 +59,7 @@ public struct PlayerState
 {
     public CharacterState characterState;
     public PlayerActionState actionState;
-    public CameraState cameraState;
+    public CameraBehaviourState cameraState;
     public GeneralInput generalInput;
 }
 
@@ -117,9 +117,11 @@ public enum Holding
 }
 
 [Serializable]
-public enum CameraState
+public enum CameraBehaviourState
 {
-    FIRST,
+    Default,
+    Locked,
+
 
 }
 
@@ -135,4 +137,9 @@ public enum FireMode
     Auto
 }
 
+public enum InputSettings
+{
+    Toggle,
+    Hold
+}
 
