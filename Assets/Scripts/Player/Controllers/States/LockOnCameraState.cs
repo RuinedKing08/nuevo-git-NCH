@@ -60,7 +60,7 @@ public class LockOnCameraState : CameraBehaviourBase
         Vector3 euler = targetRotation.eulerAngles;
 
         playerCamera._eulerAngles = euler;
-        playerCamera.transform.eulerAngles = playerCamera._eulerAngles;
+        playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation,targetRotation, playerCamera.rotationSpeed * Time.deltaTime);
     }
 
 

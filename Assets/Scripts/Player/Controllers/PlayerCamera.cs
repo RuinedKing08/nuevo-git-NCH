@@ -12,6 +12,7 @@ public class PlayerCamera : MonoBehaviour
     [NonSerialized]public float _sensibility = 1f;
     [NonSerialized]public Vector3 _eulerAngles;
 
+    public float rotationSpeed;
     public float maxLockOnDistance;
     public LayerMask lockOnLayer;
 
