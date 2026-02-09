@@ -10,7 +10,8 @@ public class DefaultCameraState : CameraBehaviourBase
     }
     public override void Enter()
     {
-        playerCamera._eulerAngles = playerCamera.transform.eulerAngles;
+        
+      
     }
     public override void ProcessInput(CameraInput input)
     {

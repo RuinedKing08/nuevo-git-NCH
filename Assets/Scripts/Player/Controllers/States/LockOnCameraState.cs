@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class LockOnCameraState : CameraBehaviourBase
@@ -17,7 +18,7 @@ public class LockOnCameraState : CameraBehaviourBase
             return;
         }
 
-        playerCamera._eulerAngles = playerCamera.transform.eulerAngles;
+       
     }
 
     public override void ProcessInput(CameraInput input)
@@ -37,7 +38,13 @@ public class LockOnCameraState : CameraBehaviourBase
 
     public override void Exit() 
     {
-        
+        Vector3 euler = playerCamera.transform.rotation.eulerAngles;
+
+        // Convert Unity 0..360 into -180..180
+        if (euler.x > 180f) euler.x -= 360f;
+        if (euler.y > 180f) euler.y -= 360f;
+
+        playerCamera._eulerAngles = euler;
     }
     public override void BeforeCameraUpdate()
     {
@@ -54,12 +61,12 @@ public class LockOnCameraState : CameraBehaviourBase
         Vector3 direction = target.position - playerCamera.transform.position;
 
        
+       
 
         Quaternion targetRotation = Quaternion.LookRotation(direction.normalized);
 
-        Vector3 euler = targetRotation.eulerAngles;
 
-        playerCamera._eulerAngles = euler;
+        
         playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation,targetRotation, playerCamera.rotationSpeed * Time.deltaTime);
     }
 
