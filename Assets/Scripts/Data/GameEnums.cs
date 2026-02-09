@@ -143,3 +143,31 @@ public enum InputSettings
     Hold
 }
 
+public enum BoneID
+{
+    Hips,
+    Spine,
+    Chest,
+    UpperChest,
+    Neck,
+    Head,
+
+    Shoulder_L,
+    UpperArm_L,
+    LowerArm_L,
+    Hand_L,
+
+    Shoulder_R,
+    UpperArm_R,
+    LowerArm_R,
+    Hand_R,
+
+    UpperLeg_L,
+    LowerLeg_L,
+    Foot_L,
+
+    UpperLeg_R,
+    LowerLeg_R,
+    Foot_R,
+}
+
