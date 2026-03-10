@@ -2,12 +2,8 @@ using UnityEngine;
 
 public class MeleeWeapon : EquipableItemBase
 {
-    
 
-    public override bool IsBusy()
-    {
-        return true;
-    }
+    protected bool busy;
 
     public override void ProcessInput(ActionInput input)
     {
@@ -16,9 +12,25 @@ public class MeleeWeapon : EquipableItemBase
         _requestedThrow = input.Throw;
         
 
-        if (_requestedThrow)
+        if (_requestedThrow && !IsBusy())
         {
             Throw();
         }
+        if(_requestedAttack && !IsBusy())
+        {
+            Attack();  
+        }
+
+
+    }
+
+    public virtual void Attack()
+    {
+
+    }
+
+    public override bool IsBusy()
+    {
+        return busy;
     }
 }

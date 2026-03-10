@@ -79,6 +79,7 @@ public class PlayerController : MonoBehaviour
     {
         playerCamera.CameraUpdate();
         playerCamera.UpdatePosition(playerCharacter.CamPos);
+        playerAnimations.UpdateIks();
     }
 
     public void ProcessInput()
