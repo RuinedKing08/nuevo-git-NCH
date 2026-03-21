@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 952049ff71163724fa0c635c355dc9b3, type: 3}
+  m_Name: BareHand_LowHit
+  m_EditorClassIdentifier: Assembly-CSharp::AttackMove
+  animationClip: {fileID: 0}
+  damageMod: 0
+  hitboxSize: {x: 0, y: 0, z: 0}
+  allowMovement: 0
+  movementMultiplayer: 0
+  InputWindow: 0
+  movements: []
+  references:
+    version: 2
+    RefIds: []
