@@ -13,12 +13,20 @@ MonoBehaviour:
   m_Name: BareHand_LeftHit
   m_EditorClassIdentifier: Assembly-CSharp::AttackMove
   animationClip: {fileID: 0}
+  audioClip: {fileID: 0}
+  hitClip: {fileID: 0}
   damageMod: 0
   hitboxSize: {x: 0, y: 0, z: 0}
   allowMovement: 0
   movementMultiplayer: 0
   InputWindow: 0
-  movements: []
+  movements:
+  - rid: 9026258668353224796
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 9026258668353224796
+      type: {class: AttackBranch, ns: , asm: Assembly-CSharp}
+      data:
+        MaxTimeSinceLastAttack: 0.5
+        nextMove: {fileID: 11400000, guid: 6ea38cf0142810a45815266c68a72ecb, type: 2}

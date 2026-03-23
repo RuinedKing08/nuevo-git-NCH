@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 850569396ff4b1f4188d5acff5fbe605, type: 3}
+  m_Name: BareHands_Settings
+  m_EditorClassIdentifier: Assembly-CSharp::MeleeWeaponSettings
+  Damague: 0
+  maxDistance: 5
+  aimMask:
+    serializedVersion: 2
+    m_Bits: 128
+  ThrowForce: 0
+  baseDamage: 20
+  entryMove: {fileID: 11400000, guid: dbf36613871651a449255b9078f1fc19, type: 2}

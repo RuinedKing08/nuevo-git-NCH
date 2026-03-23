@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: BareHand_LowHit
   m_EditorClassIdentifier: Assembly-CSharp::AttackMove
   animationClip: {fileID: 0}
+  audioClip: {fileID: 0}
+  hitClip: {fileID: 0}
   damageMod: 0
   hitboxSize: {x: 0, y: 0, z: 0}
   allowMovement: 0

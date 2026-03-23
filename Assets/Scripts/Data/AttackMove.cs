@@ -14,6 +14,7 @@ public class AttackMove : ScriptableObject
     public float damageMod; // + or -
 
     [Header("HitBox")]
+    
     public Vector3 hitboxSize;
     
 
