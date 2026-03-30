@@ -17,7 +17,7 @@ public class DefaultCharacterState : CharacterMovementStateBase
         _requestedMovement = new Vector3(input.Move.x, 0f, input.Move.y);
         _requestedMovement = Vector3.ClampMagnitude(_requestedMovement, 1f);
         _rawInput = _requestedMovement;
-
+        _moveInput = input.Move;
         _requestedMovement = input.Rotation * _requestedMovement;
 
         var wasResquestedJump = _requestedJump;
@@ -39,12 +39,42 @@ public class DefaultCharacterState : CharacterMovementStateBase
     public override void UpdateRotation(ref Quaternion currentRotation, float deltaTime)
     {
 
-        var forward = Vector3.ProjectOnPlane(
+        /*var forward = Vector3.ProjectOnPlane(
         _requestedRotation * Vector3.forward,
          character.Motor.CharacterUp
-        );
+        );*/
 
-        currentRotation = Quaternion.LookRotation(forward, character.Motor.CharacterUp);
+        if (_moveInput.sqrMagnitude > 0.0001f && (character.controller._playerState.actionState.actionState != ActionState.ATTACK && character.controller._playerState.actionState.actionState != ActionState.INTERACTING))
+        {
+            var forward = Vector3.ProjectOnPlane(
+                    _requestedRotation * Vector3.forward,
+                     character.Motor.CharacterUp
+                    ).normalized;
+           
+
+            var right = Vector3.ProjectOnPlane(
+                    _requestedRotation * Vector3.right,
+                     character. Motor.CharacterUp
+                    ).normalized;
+            
+
+            var moveDir = forward * _moveInput.y + right * _moveInput.x;
+            Debug.Log(_moveInput + " RawInput");
+
+            moveDir = Vector3.ClampMagnitude(moveDir,1f);
+            Quaternion targetRot = Quaternion.LookRotation(moveDir, character.Motor.CharacterUp);
+            currentRotation = Quaternion.Lerp
+            (
+                 a: currentRotation,
+                 b: targetRot,
+                 t: 1f - Mathf.Exp(-character.StandSettings.LerpRotationSpeed* deltaTime)
+            );
+            Debug.Log(targetRot + " TRot");
+
+           // currentRotation = Quaternion.LookRotation(targetRot, character.Motor.CharacterUp);
+            Debug.Log("Should Rotate"); 
+        }
+
     }
 
     public override void UpdateVelocity(ref Vector3 currentVelocity, float deltaTime)

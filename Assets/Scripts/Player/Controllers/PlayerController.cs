@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Runtime
-    [SerializeField] private PlayerState _playerState;
+    [SerializeField] public PlayerState _playerState;
     private SystemInputActions actions;
     private SystemInputActions.PlayerActions input;
 
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         };
 
         playerCamera.Initialize(playerCharacter.CamPos);
-        playerCharacter.Initialize();
+        playerCharacter.Initialize(this);
         playerAnimations.Initialize();
         playerActionsC.Initialize();
 
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
         {
             Move = input.Move.ReadValue<Vector2>(),
             Crouch = input.Crouch.WasPressedThisFrame(),
-            Rotation = playerCamera.transform.rotation
+            Rotation = playerCamera._CMcamera.transform.rotation
         };
         playerCharacter.ProcessInput(characterInput);
 

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3c66319df09d47458f8dbf553c1c01d, type: 3}
   m_Name: DefaultStandSettings
   m_EditorClassIdentifier: Assembly-CSharp::MovementSettings
-  speed: 5
+  speed: 10
   response: 30
   SprintSpeed: 7
+  LerpRotationSpeed: 30

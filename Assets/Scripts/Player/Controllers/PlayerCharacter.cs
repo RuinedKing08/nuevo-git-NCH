@@ -22,7 +22,7 @@ public class PlayerCharacter : MonoBehaviour,ICharacterController
 
 
     #region Runtime
-
+    [NonSerialized] public PlayerController controller;
     [NonSerialized] public CharacterState _characterState;
 
     [NonSerialized] public CharacterState _lastState;
@@ -52,8 +52,9 @@ public class PlayerCharacter : MonoBehaviour,ICharacterController
 
 
 
-    public void Initialize()
+    public void Initialize(PlayerController controller)
     {
+        this.controller = controller;
         _characterState.Stance = Stance.Stand;
         _lastState = _characterState;
         motor.CharacterController = this;

@@ -29,6 +29,6 @@ public class DefaultCameraState : CameraBehaviourBase
         
         playerCamera._eulerAngles += new Vector3(-input.Look.y * playerCamera._gain[0], input.Look.x * playerCamera._gain[1]) * playerCamera._sensibility;
         playerCamera._eulerAngles.x = Mathf.Clamp(playerCamera._eulerAngles.x, -50f, 50f);
-        playerCamera.transform.eulerAngles = playerCamera._eulerAngles;
+        playerCamera.transform.eulerAngles = playerCamera._eulerAngles; 
     }
 }

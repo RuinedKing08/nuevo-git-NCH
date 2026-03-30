@@ -11,6 +11,7 @@ public abstract class CharacterMovementStateBase : ICharacterMovementState
     protected Quaternion _requestedRotation;
     protected bool _requestedJump;
     protected Vector3 _rawInput;
+    protected Vector3 _moveInput;
     
  
     protected CharacterMovementStateBase(PlayerCharacter character)

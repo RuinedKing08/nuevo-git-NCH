@@ -7,4 +7,6 @@ public class MovementSettings : ScriptableObject
     public float speed;
     public float response;
     public float SprintSpeed;
+
+    public float LerpRotationSpeed;
 }
