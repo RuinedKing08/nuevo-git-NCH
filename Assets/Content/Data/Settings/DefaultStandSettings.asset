@@ -16,4 +16,4 @@ MonoBehaviour:
   response: 30
   SprintSpeed: 7
   LerpRotationSpeed: 30
-  lockOnSpeedMultiplier: 0.9
+  lockOnSpeedMultiplier: 0.3
