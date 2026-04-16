@@ -95,6 +95,12 @@ public class DefaultCharacterState : CharacterMovementStateBase
 
 
             float speed = character._characterState.Stance is Stance.Stand ? character.StandSettings.speed : character.CrouchSettings.speed;
+           
+            if (character.controller != null && character.controller.LockOn)
+            {
+                float multiplier = character._characterState.Stance is Stance.Stand ? character.StandSettings.lockOnSpeedMultiplier : character.CrouchSettings.lockOnSpeedMultiplier;
+                speed *= multiplier;
+            }
 
             float response = character._characterState.Stance is Stance.Stand ? character.StandSettings.response : character.CrouchSettings.response;
 

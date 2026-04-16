@@ -38,6 +38,9 @@ public class LockOnCameraState : CameraBehaviourBase
 
     public override void Exit() 
     {
+        
+        playerCamera.lockOnTarget = null;
+
         Vector3 euler = playerCamera.transform.rotation.eulerAngles;
 
         // Convert Unity 0..360 into -180..180

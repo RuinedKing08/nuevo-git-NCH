@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     #region Runtime
     [SerializeField] public PlayerState _playerState;
+    public bool LockOn;
     private SystemInputActions actions;
     private SystemInputActions.PlayerActions input;
 
@@ -91,6 +92,9 @@ public class PlayerController : MonoBehaviour
         };
 
         playerCamera.ProcessInput(cameraInput);
+
+        
+        LockOn = playerCamera.lockOnTarget != null;
 
         var characterInput = new characterMotorInput
         {
