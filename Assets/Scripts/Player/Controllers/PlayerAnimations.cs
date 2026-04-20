@@ -1,5 +1,5 @@
-using System.Net.NetworkInformation;
-using UnityEditor.Purchasing;
+//using System.Net.NetworkInformation;
+//using UnityEditor.Purchasing;
 using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
