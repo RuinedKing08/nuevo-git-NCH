@@ -1,12 +1,10 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BareHands : MeleeWeapon
 {
-    
-    
-    public override void Throw(){ }
+    // BareHands no puede lanzar armas, así que no sobrescribimos Throw()
+    // Heredamos el comportamiento de EquipableItemBase
 
     public override void Attack()
     {
@@ -27,6 +25,8 @@ public class BareHands : MeleeWeapon
 
         controller.SetActionState(ActionState.NONE);
     }
-
-
+    
 }
+
+
+
