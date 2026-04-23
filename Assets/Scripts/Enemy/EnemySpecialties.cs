@@ -30,7 +30,7 @@ public static class SpecialtyFactory
     public static IEnemySpecialty Resolve(EnemyController e)
     {
         var detection = e.Detection;
-
+        
         // Prioridad: Juego Sucio > Arma Blanca > Puño Limpio
         if (detection.HasThrowableObjectInDangerArea(out var throwable) &&
             detection.IsCloserThanPlayer(throwable.transform.position))
@@ -41,11 +41,10 @@ public static class SpecialtyFactory
             return new MeleeWeaponSpecialty(weapon);
 
         return new BareKnuckleSpecialty();
-    }
+   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  ESPECIALIDAD: PUÑO LIMPIO
+ 
 // ═══════════════════════════════════════════════════════════════════════════
 public class BareKnuckleSpecialty : IEnemySpecialty
 {
@@ -100,9 +99,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 
     public void OnDefeated(EnemyController e)
     {
-        // Curar 5% de vida máxima al jugador si fue derrotado por "conexión total"
-        if (e.Stats.WasKilledByFinisher)
-            SimplePlayerHealth.Instance?.Heal(SimplePlayerHealth.Instance.MaxHealth * 0.05f);
+        
     }
 
     void TryPickupWeapon(EnemyController e)
@@ -195,9 +192,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void OnDefeated(EnemyController e)
     {
-        e.Stats.DropWeapon();
-        if (e.Stats.WasKilledByFinisher)
-            SimplePlayerHealth.Instance?.Heal(SimplePlayerHealth.Instance.MaxHealth * 0.10f);
+        
     }
 }
 
@@ -279,3 +274,4 @@ public class DirtyPlaySpecialty : IEnemySpecialty
         e.Stats.DropThrowable();   // el jugador puede recogerlo
     }
 }
+

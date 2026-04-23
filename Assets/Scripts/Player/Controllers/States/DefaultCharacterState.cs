@@ -59,7 +59,7 @@ public class DefaultCharacterState : CharacterMovementStateBase
             
 
             var moveDir = forward * _moveInput.y + right * _moveInput.x;
-            Debug.Log(_moveInput + " RawInput");
+            //Debug.Log(_moveInput + " RawInput");
 
             moveDir = Vector3.ClampMagnitude(moveDir,1f);
             Quaternion targetRot = Quaternion.LookRotation(moveDir, character.Motor.CharacterUp);
@@ -69,10 +69,10 @@ public class DefaultCharacterState : CharacterMovementStateBase
                  b: targetRot,
                  t: 1f - Mathf.Exp(-character.StandSettings.LerpRotationSpeed* deltaTime)
             );
-            Debug.Log(targetRot + " TRot");
+            //Debug.Log(targetRot + " TRot");
 
            // currentRotation = Quaternion.LookRotation(targetRot, character.Motor.CharacterUp);
-            Debug.Log("Should Rotate"); 
+            //Debug.Log("Should Rotate"); 
         }
 
     }
@@ -123,7 +123,7 @@ public class DefaultCharacterState : CharacterMovementStateBase
           
 
         }
-        else // in the air
+        else 
         {
             character._characterState.isGrounded = false;
             character._timeSinceUngrounded += deltaTime;

@@ -34,7 +34,7 @@ public class CombatState : IEnemyState
     {
         _e.Animator.SetBool(EnemyController.Hash_InCombat, true);
 
-        // Si no tiene especialidad → elegirla primero (máxima prioridad)
+        //Si no tiene especialidad → elegirla primero (máxima prioridad)
         if (_e.Stats.Specialty == null)
             _subSM.Initialize(ChooseSpecialtySubState);
         else
@@ -92,11 +92,17 @@ public class ChooseSpecialtySubState : IEnemyState
 
     public void EnterState()
     {
-        
-        var specialty = SpecialtyFactory.Resolve(_e);
-        _e.Stats.SetSpecialty(specialty);
 
-        
+        var specialty = SpecialtyFactory.Resolve(_e);
+        if (specialty != null)
+        {
+            _e.Stats.SetSpecialty(specialty);
+        }
+        else
+        {
+            Debug.LogWarning($"{_e.name}: SpecialtyF actory devolvió null, usando comportamiento por defecto.");
+        }
+
         _subSM.ChangeState(_combat.IdleSubState);
     }
 
@@ -108,20 +114,32 @@ public class ChooseSpecialtySubState : IEnemyState
 
 public class CombatIdleSubState : IEnemyState
 {
+    
     readonly EnemyController   _e;
     readonly EnemyStateMachine _subSM;
     readonly CombatState       _combat;
+    
+    
 
     public CombatIdleSubState(EnemyController e, EnemyStateMachine subSM, CombatState combat)
     { _e = e; _subSM = subSM; _combat = combat; }
 
-    public void EnterState()   { }
+    public void EnterState()   { Debug.Log("IdleSubstate"); _e.CombatGroup?.NotifyExchangeReady(_e); }
 
     public void UpdateState()
     {
-        
-        
-        _e.Stats.Specialty?.UpdatePassiveBehavior(_e); 
+        if (_e.Stats.Specialty != null)
+        {
+            _e.Stats.Specialty.UpdatePassiveBehavior(_e);
+        }
+        else
+        {
+            // Fallback sencillo: ir hacia la última posición conocida del jugador.
+            if (_e.Stats.NavAgent != null && _e.Stats.NavAgent.isOnNavMesh)
+            {
+                _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
+            }
+        }
     }
 
     public void FixedUpdateState() { }
@@ -147,8 +165,11 @@ public class AttackSubState : IEnemyState
 
     public void EnterState()
     {
+        Debug.Log("attackSubstate");
         _attackWindowTimer = 0f;
         
+
+
         _e.Stats.Specialty?.BeginAttackPhase(_e);
     }
 
@@ -187,6 +208,7 @@ public class DefendSubState : IEnemyState
 
     public void EnterState()
     {
+        Debug.Log("defenceSubstate");
         _willBlock = _e.Stats.Specialty?.PrefersBlock(_e) ?? (Random.value > 0.5f);
         _e.Animator.SetBool(EnemyController.Hash_IsDefending, true);
         _e.Stats.IsBlocking = _willBlock;
@@ -240,7 +262,7 @@ public class ExchangeSubState : IEnemyState
     {
         _timer += Time.deltaTime;
         if (_timer >= _duration)
-            _subSM.ChangeState(_combat.IdleSubState);  // el grupo reasignará el rol
+            _subSM.ChangeState(_combat.IdleSubState);  
     }
 
     public void FixedUpdateState() { }

@@ -8,8 +8,8 @@ using System.Collections.Generic;
 public class EnemyDetectionArea : MonoBehaviour
 {
     [Header("Radios")]
-    public float InterestAreaRadius = 8f;
-    public float DangerAreaRadius   = 3f;
+    public float InterestAreaRadius ;
+    public float DangerAreaRadius   ;
 
     // ── Estado detectado ──────────────────────────────────────────────────
     public bool    PlayerInInterestArea { get; private set; }
@@ -27,7 +27,7 @@ public class EnemyDetectionArea : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Player encontrado: " + (_player != null));
+        //Debug.Log("Player encontrado: " + (_player != null));
         if (_player == null) return;
 
         float dist = Vector3.Distance(transform.position, _player.position);
@@ -64,7 +64,7 @@ public class EnemyDetectionArea : MonoBehaviour
         }
         return false;
     }
-
+    
     public bool IsCloserThanPlayer(Vector3 objectPos)
     {
         float distToObj    = Vector3.Distance(transform.position, objectPos);
@@ -114,7 +114,7 @@ public class EnemyDetectionArea : MonoBehaviour
         }
     }
 
-    // ── Gizmos para debug ─────────────────────────────────────────────────
+    
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

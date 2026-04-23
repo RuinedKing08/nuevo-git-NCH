@@ -1,12 +1,11 @@
-
 using UnityEngine;
+using UnityEngine.Serialization;
 
-
+[CreateAssetMenu(menuName = "Game/WeaponSettings")]
 public class WeaponSettings : ScriptableObject
 {
-    public float Damague;
-
-    
+    [FormerlySerializedAs("Damague")]
+    public float Damage;
 
     [Header("Throw")]
     public float maxDistance;

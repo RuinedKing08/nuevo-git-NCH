@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+
 public class EnemyCombatGroup : MonoBehaviour
 {
-    List<EnemyController> _members       = new();
-    List<EnemyController> _currentAttackers = new();
+    [SerializeField]List<EnemyController> _members       = new();
+    [SerializeField]List<EnemyController> _currentAttackers = new();
 
     const int MaxAttackers = 3;
 
@@ -25,11 +26,14 @@ public class EnemyCombatGroup : MonoBehaviour
     public void NotifyExchangeReady(EnemyController e)
     {
         if (_currentAttackers.Count == 0)
-            StartCoroutine(BeginAttackRound());
+            StartCoroutine(BeginAttackRound()); 
     }
 
     IEnumerator BeginAttackRound()
     {
+        bool anyPlayerNearby = _members.Any(m => m.Detection != null && (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea));
+        if (!anyPlayerNearby)
+            yield break;
         var idleMembers = _members
             .Where(m => m.CombatState != null &&
                         m.StateMachine.CurrentState == m.CombatState)
@@ -56,6 +60,8 @@ public class EnemyCombatGroup : MonoBehaviour
 
         foreach (var d in defenders)
             d.CombatState.DefendSubState.ForceToExchange();
+
+        _currentAttackers.Clear();
     }
 }
 //═════════════════════════════════════════════════════════════════════════
@@ -144,45 +150,3 @@ public class EnemyThrowableObject : MonoBehaviour
 
 
 
-public class SimplePlayerHealth : MonoBehaviour
-{
-    public static SimplePlayerHealth Instance { get; private set; }
-    
-    [SerializeField] private float maxHealth = 100f;
-    private float _currentHealth;
-    
-    public float MaxHealth => maxHealth;
-    public float CurrentHealth => _currentHealth;
-    public bool IsDead => _currentHealth <= 0;
-
-    void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        
-        Instance = this;
-        _currentHealth = maxHealth;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    public void TakeDamage(float amount)
-    {
-        _currentHealth = Mathf.Max(0, _currentHealth - amount);
-        if (IsDead)
-            OnDeath();
-    }
-
-    public void Heal(float amount)
-    {
-        _currentHealth = Mathf.Min(maxHealth, _currentHealth + amount);
-    }
-
-    private void OnDeath()
-    {
-        // Implementar lógica de muerte del jugador
-        Debug.Log("Player died!");
-    }
-}

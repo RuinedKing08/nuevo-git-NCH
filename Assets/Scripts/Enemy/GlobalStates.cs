@@ -24,14 +24,15 @@ public class PatrolState : IEnemyState
 
     public void UpdateState()
     {
-        // ── Transición a Alerta ──────────────────────────────────────────
+        
         if (_e.Detection.PlayerInInterestArea)
         {
             _sm.ChangeState(_e.AlertState);
+            Debug.Log("Creo que vi algo");
             return;
         }
 
-        // ── Lógica de intercambio con enemigo descansando ────────────────
+        
         EnemyController nearbyResting = _e.Detection.GetNearbyRestingEnemy();
         if (nearbyResting != null)
         {
@@ -47,8 +48,9 @@ public class PatrolState : IEnemyState
             _loopsNearRestingEnemy = 0;
         }
 
-        // ── Movimiento de patrulla (delegado al NavMesh/waypoints) ────────
+        
         _e.Stats.PatrolPath.Tick(_e);
+        Debug.Log("Patrullando");
 
         float speed = _e.Stats.PatrolPath.CurrentSpeed;
         _e.Animator.SetFloat(EnemyController.Hash_Speed, speed, 0.1f, Time.deltaTime);
@@ -185,6 +187,7 @@ public class AlertState : IEnemyState
         // Propagar cambio de prioridad a todos los enemigos en el área de detección
         _e.Detection.PropagateEnterCombat();
         _sm.ChangeState(_e.CombatState);
+        Debug.Log("Esta ahi");
     }
 
     void MoveTowards(Vector3 target)

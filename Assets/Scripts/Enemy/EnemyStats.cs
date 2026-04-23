@@ -17,7 +17,7 @@ public class EnemyStats : MonoBehaviour
     public EnemyPatrolPath PatrolPath;
 
     [Header("Optional")]
-    public IEnemySpecialty Specialty { get; private set; } // por tu línea Stats.Specialty?.OnDefeated(this);
+    public IEnemySpecialty Specialty { get; private set; } 
 
     public bool IsDead => CurrentHealth <= 0;
 
@@ -90,7 +90,7 @@ public class EnemyStats : MonoBehaviour
         _equippedThrowable?.Throw(target);
         _equippedThrowable = null;
     }
-
+    
     public void ReloadThrowable()
     {
         // lógica opcional (puedes dejar vacío por ahora)
