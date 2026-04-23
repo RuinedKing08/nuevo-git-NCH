@@ -27,6 +27,7 @@ public class EnemyDetectionArea : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("Player encontrado: " + (_player != null));
         if (_player == null) return;
 
         float dist = Vector3.Distance(transform.position, _player.position);
@@ -85,15 +86,22 @@ public class EnemyDetectionArea : MonoBehaviour
     }
 
     public void AlertNearbyEnemies()
+{
+    var cols = Physics.OverlapSphere(transform.position, InterestAreaRadius);
+
+    foreach (var c in cols)
     {
-        var cols = Physics.OverlapSphere(transform.position, InterestAreaRadius);
-        foreach (var c in cols)
-        {
-            var e = c.GetComponent<EnemyController>();
-            if (e != null && e.StateMachine.CurrentState != e.CombatState)
-                e.StateMachine.ChangeState(e.AlertState);
-        }
+        var e = c.GetComponent<EnemyController>();
+
+        if (e == null) continue;
+        if (e == GetComponent<EnemyController>()) continue;
+        
+        if (e.StateMachine.CurrentState == e.AlertState) continue;
+        if (e.StateMachine.CurrentState == e.CombatState) continue;
+
+        e.StateMachine.ChangeState(e.AlertState);
     }
+}
 
     public void PropagateEnterCombat()
     {

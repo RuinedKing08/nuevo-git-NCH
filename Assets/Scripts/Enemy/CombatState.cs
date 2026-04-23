@@ -45,7 +45,7 @@ public class CombatState : IEnemyState
     {
         _subSM.CurrentState.UpdateState();
 
-        // Blend 2D de movimiento en combate (permite moverse mientras actúa)
+        
         UpdateLocomotionBlend();
     }
 
@@ -60,19 +60,12 @@ public class CombatState : IEnemyState
 
     public void OnHitInterrupt()
     {
-        // Si estaba atacando, se interrumpe y vuelve a idle de combate
+        
         if (_subSM.CurrentState == AttackSubState)
             _subSM.ChangeState(IdleSubState);
     }
 
-    /// <summary>
-    /// Actualiza los parámetros del Blend Tree 2D que permite
-    /// que el enemigo se mueva suavemente mientras está en combate.
-    /// El Animator tiene un BlendTree 2D (MoveX, MoveY) con:
-    ///   - Idle center
-    ///   - Walk forward/back/left/right
-    ///   - Strafe layers para rodear al jugador
-    /// </summary>
+    
     void UpdateLocomotionBlend()
     {
         Vector3 localVelocity = _e.transform.InverseTransformDirection(_e.Stats.NavAgent.velocity);
@@ -87,9 +80,7 @@ public class CombatState : IEnemyState
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  SUB-ESTADO: ChooseSpecialty  (se ejecuta una sola vez al entrar en combate)
-// ═══════════════════════════════════════════════════════════════════════════
+
 public class ChooseSpecialtySubState : IEnemyState
 {
     readonly EnemyController  _e;
@@ -101,11 +92,11 @@ public class ChooseSpecialtySubState : IEnemyState
 
     public void EnterState()
     {
-        // Determinar especialidad según lo que haya en el área de peligro
+        
         var specialty = SpecialtyFactory.Resolve(_e);
         _e.Stats.SetSpecialty(specialty);
 
-        // Inmediatamente pasar a idle de combate
+        
         _subSM.ChangeState(_combat.IdleSubState);
     }
 
@@ -114,9 +105,7 @@ public class ChooseSpecialtySubState : IEnemyState
     public void ExitState()        { }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  SUB-ESTADO: CombatIdle  –  espera instrucciones del grupo
-// ═══════════════════════════════════════════════════════════════════════════
+
 public class CombatIdleSubState : IEnemyState
 {
     readonly EnemyController   _e;
@@ -130,22 +119,20 @@ public class CombatIdleSubState : IEnemyState
 
     public void UpdateState()
     {
-        // El EnemyCombatGroup asignará el sub-estado correcto
-        // a través de AssignRole()
-        _e.Stats.Specialty?.UpdatePassiveBehavior(_e);   // ej: rodear, mantener distancia
+        
+        
+        _e.Stats.Specialty?.UpdatePassiveBehavior(_e); 
     }
 
     public void FixedUpdateState() { }
     public void ExitState()        { }
 
-    // Llamado por EnemyCombatGroup
+   
     public void AssignAttack()  => _subSM.ChangeState(_combat.AttackSubState);
     public void AssignDefend()  => _subSM.ChangeState(_combat.DefendSubState);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  SUB-ESTADO: Attack  (Prioridad 7)
-// ═══════════════════════════════════════════════════════════════════════════
+
 public class AttackSubState : IEnemyState
 {
     readonly EnemyController   _e;
@@ -161,7 +148,7 @@ public class AttackSubState : IEnemyState
     public void EnterState()
     {
         _attackWindowTimer = 0f;
-        // La especialidad decide cuándo y qué ataque ejecutar
+        
         _e.Stats.Specialty?.BeginAttackPhase(_e);
     }
 
@@ -169,7 +156,7 @@ public class AttackSubState : IEnemyState
     {
         _attackWindowTimer += Time.deltaTime;
 
-        // Ejecutar ataque en el momento que la especialidad decida (dentro de la ventana)
+        
         _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
 
         if (_attackWindowTimer >= AttackWindowDuration)
@@ -185,16 +172,14 @@ public class AttackSubState : IEnemyState
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  SUB-ESTADO: Defend  (Prioridad 6)
-// ═══════════════════════════════════════════════════════════════════════════
+
 public class DefendSubState : IEnemyState
 {
     readonly EnemyController   _e;
     readonly EnemyStateMachine _subSM;
     readonly CombatState       _combat;
 
-    // Decisión aleatoria: bloquear o retroceder
+    
     bool _willBlock;
 
     public DefendSubState(EnemyController e, EnemyStateMachine subSM, CombatState combat)
@@ -230,9 +215,7 @@ public class DefendSubState : IEnemyState
     public void ForceToExchange() => _subSM.ChangeState(_combat.ExchangeSubState);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  SUB-ESTADO: Exchange  –  transición entre atacar/defender (1-2 seg)
-// ═══════════════════════════════════════════════════════════════════════════
+
 public class ExchangeSubState : IEnemyState
 {
     readonly EnemyController   _e;
