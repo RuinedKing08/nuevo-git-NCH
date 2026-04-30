@@ -48,62 +48,81 @@ public static class SpecialtyFactory
 // ═══════════════════════════════════════════════════════════════════════════
 public class BareKnuckleSpecialty : IEnemySpecialty
 {
-    // Ataques disponibles (índices para el Animator)
     const int Atk_Consecutive = 0;   // Golpes consecutivos (x3)
     const int Atk_Heavy       = 1;   // Golpe fuerte
     const int Atk_Quick       = 2;   // Golpe rápido
 
-    float _scheduledAttackTime;
+    float _attackTimer;
     int   _chosenAttack;
     bool  _attackFired;
+    float _prepDuration;
 
     public void OnAssigned(EnemyController e)
     {
         e.Stats.MaxHealth = 100;
-        e.Stats.Damage    = 10;
-        // Prioridad 10: atacar a matar (no busca objetos)
+        e.Stats.CurrentHealth = 100;
+        e.Stats.Damage = 10;
     }
 
     public void UpdatePassiveBehavior(EnemyController e)
     {
         e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);
-    }
 
-    public void BeginAttackPhase(EnemyController e)
-    {
-        _chosenAttack        = Random.Range(0, 3);
-        _scheduledAttackTime = Random.Range(0.2f, 4.5f);  // dentro de la ventana de 5s
-        _attackFired         = false;
-    }
-
-    public void TickAttack(EnemyController e, float elapsed)
-    {
-        if (elapsed >= _scheduledAttackTime && !_attackFired)
+         if (e.CombatState.GetSubStateName() != "AttackSubState")
         {
-            _attackFired = true;
-            e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
-            e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
-
-            // Intentar equiparse si ve un arma cerca y no está atacando
             TryPickupWeapon(e);
         }
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void BeginAttackPhase(EnemyController e)
+    {
+         _chosenAttack = Random.Range(0, 3);
+        _attackFired = false;
+        _attackTimer = 0;
+
+        Debug.Log($"Elegí ataque {_chosenAttack} para {e.name}");
+        
+        _prepDuration = _chosenAttack switch
+        {
+            Atk_Heavy => 1.0f,
+            Atk_Quick => 0.5f,
+            _ => 0.2f 
+        };
+    }
+
+    public void TickAttack(EnemyController e, float elapsed)
+    {
+        if (elapsed >= _prepDuration && !_attackFired)
+        {
+            _attackFired = true;            
+            
+            if (_chosenAttack == Atk_Heavy) e.Stats.Damage = 20;
+            else e.Stats.Damage = 10;
+
+            e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
+            e.Animator.SetTrigger(EnemyController.Hash_Attack);
+        }
+    }
+
+    public void EndAttackPhase(EnemyController e)
+    {
+        e.Stats.Damage = 10;
+        _attackFired = false;
+    }
 
     public bool PrefersBlock(EnemyController e) => Random.value > 0.5f;
 
     public void OnDefeated(EnemyController e)
     {
-        
+         // Falta agregar: logica de curacion al jugador
     }
 
     void TryPickupWeapon(EnemyController e)
     {
         if (e.Detection.HasMeleeWeaponInDangerArea(out var weapon))
+        {
             e.Stats.SetSpecialty(new MeleeWeaponSpecialty(weapon));
-        else if (e.Detection.HasThrowableObjectInDangerArea(out var throwable))
-            e.Stats.SetSpecialty(new DirtyPlaySpecialty(throwable));
+        }
     }
 }
 
