@@ -123,11 +123,13 @@ public class EnemyDetectionArea : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, InterestAreaRadius);
+        
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, DangerAreaRadius);
         
         Gizmos.color = Color.green;
-        Gizmos.DrawLogarithmicallyVisibleLine(transform.position, LastKnownPlayerPosition); 
-        Gizmos.DrawSolidSphere(LastKnownPlayerPosition, 0.3f);
+        Gizmos.DrawLine(transform.position, LastKnownPlayerPosition);
+        
+        Gizmos.DrawSphere(LastKnownPlayerPosition, 0.3f); 
     }
 }
