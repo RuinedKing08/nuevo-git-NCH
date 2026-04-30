@@ -23,7 +23,8 @@ public class EnemiesLife : HealthController
         health -= damage;
         if(health <= 0)
         {
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
+            Destroy(gameObject, 2f);
         }
     }
     bool damageEnter;

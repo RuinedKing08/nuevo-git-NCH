@@ -29,9 +29,8 @@ public static class SpecialtyFactory
 {
     public static IEnemySpecialty Resolve(EnemyController e)
     {
-        var detection = e.Detection;
+        var detection = e.Detection;        
         
-        // Prioridad: Juego Sucio > Arma Blanca > Puño Limpio
         if (detection.HasThrowableObjectInDangerArea(out var throwable) &&
             detection.IsCloserThanPlayer(throwable.transform.position))
             return new DirtyPlaySpecialty(throwable);
@@ -48,9 +47,9 @@ public static class SpecialtyFactory
 // ═══════════════════════════════════════════════════════════════════════════
 public class BareKnuckleSpecialty : IEnemySpecialty
 {
-    const int Atk_Consecutive = 0;   // Golpes consecutivos (x3)
-    const int Atk_Heavy       = 1;   // Golpe fuerte
-    const int Atk_Quick       = 2;   // Golpe rápido
+    const int Atk_Consecutive = 0;   
+    const int Atk_Heavy       = 1;   
+    const int Atk_Quick       = 2;   
 
     float _attackTimer;
     int   _chosenAttack;
@@ -69,9 +68,9 @@ public class BareKnuckleSpecialty : IEnemySpecialty
         e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);
 
          if (e.CombatState.GetSubStateName() != "AttackSubState")
-        {
-            TryPickupWeapon(e);
-        }
+         {
+              TryPickupWeapon(e);
+         }
     }
 
     public void BeginAttackPhase(EnemyController e)
@@ -100,7 +99,11 @@ public class BareKnuckleSpecialty : IEnemySpecialty
             else e.Stats.Damage = 10;
 
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
-            e.Animator.SetTrigger(EnemyController.Hash_Attack);
+            e.Animator.SetTrigger(EnemyController.Hash_Attack);          
+            Vector3 center = e.transform.position + e.transform.forward * 1.25f + Vector3.up * 0.9f;
+            float radius = 1.0f;
+            float duration = 0.25f;
+            EnemyHitbox.Create(e, center, radius, Mathf.Max(1, e.Stats.Damage), duration);
         }
     }
 
@@ -245,6 +248,85 @@ public class DirtyPlaySpecialty : IEnemySpecialty
     public void OnDefeated(EnemyController e)
     {
         e.Stats.DropThrowable();   // el jugador puede recogerlo
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Helper: Hitbox temporal y visible para depuración / impacto
+// ═══════════════════════════════════════════════════════════════════════════
+public class EnemyHitbox : MonoBehaviour
+{
+    EnemyController _owner;
+    int _damage;
+    float _expiryTime;
+    Material _mat;
+
+    public static void Create(EnemyController owner, Vector3 center, float radius, int damage, float duration)
+    {
+        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        go.name = owner.name + "_Hitbox";
+        go.transform.position = center;
+        go.transform.localScale = Vector3.one * radius * 2f;
+        var col = go.GetComponent<SphereCollider>();
+        col.isTrigger = true;
+        go.layer = LayerMask.NameToLayer("Ignore Raycast");
+        var hb = go.AddComponent<EnemyHitbox>();
+        hb._owner = owner;
+        hb._damage = damage;
+        hb._expiryTime = Time.time + duration;
+        var rend = go.GetComponent<MeshRenderer>();
+        if (rend != null)
+        {
+            hb._mat = new Material(Shader.Find("Standard"));
+            hb._mat.color = new Color(1f, 0f, 0f, 0.35f);
+            hb._mat.SetFloat("_Mode", 3);
+            hb._mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            hb._mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            hb._mat.SetInt("_ZWrite", 0);
+            hb._mat.DisableKeyword("_ALPHATEST_ON");
+            hb._mat.EnableKeyword("_ALPHABLEND_ON");
+            hb._mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            hb._mat.renderQueue = 3000;
+            rend.material = hb._mat;
+        }
+        var rb = go.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+    }
+
+    void Update()
+    {
+        if (Time.time >= _expiryTime)
+        {
+            if (_mat != null)
+                Destroy(_mat);
+            Destroy(gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
+            other.SendMessage("OnHit", _owner.transform.position, SendMessageOptions.DontRequireReceiver);
+            if (_mat != null) Destroy(_mat);
+            Destroy(gameObject);
+            return;
+        }
+        var pc = other.GetComponentInParent<PlayerController>();
+        if (pc != null)
+        {
+            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
+            if (_mat != null) Destroy(_mat);
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (_mat != null)
+            Destroy(_mat);
     }
 }
 

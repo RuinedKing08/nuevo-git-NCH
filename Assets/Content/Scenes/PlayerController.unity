@@ -683,6 +683,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionArea
   InterestAreaRadius: 15
   DangerAreaRadius: 8
+  _playerInInterestArea: 0
+  _playerInDangerArea: 0
 --- !u!95 &390796419
 Animator:
   serializedVersion: 7
@@ -1245,6 +1247,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionArea
   InterestAreaRadius: 15
   DangerAreaRadius: 8
+  _playerInInterestArea: 0
+  _playerInDangerArea: 0
 --- !u!95 &553756731
 Animator:
   serializedVersion: 7
@@ -1630,6 +1634,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionArea
   InterestAreaRadius: 15
   DangerAreaRadius: 8
+  _playerInInterestArea: 0
+  _playerInDangerArea: 0
 --- !u!95 &614904470
 Animator:
   serializedVersion: 7
@@ -9603,6 +9609,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionArea
   InterestAreaRadius: 15
   DangerAreaRadius: 8
+  _playerInInterestArea: 0
+  _playerInDangerArea: 0
 --- !u!95 &1935146408
 Animator:
   serializedVersion: 7
