@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 // ═══════════════════════════════════════════════════════════════════════════
 //  ENEMY DETECTION AREA
-//  Gestiona las dos zonas: "Área de Interés" y "Área de Peligro"
 // ═══════════════════════════════════════════════════════════════════════════
 public class EnemyDetectionArea : MonoBehaviour
 {
@@ -15,31 +14,98 @@ public class EnemyDetectionArea : MonoBehaviour
     public bool    PlayerInInterestArea { get; private set; }
     public bool    PlayerInDangerArea   { get; private set; }
     public Vector3 LastKnownPlayerPosition { get; private set; }
-
+    private SphereCollider _interestTrigger;
+    private SphereCollider _dangerTrigger;
+    private float _interestRadiusSqr;
+    private float _dangerRadiusSqr;
     Transform _player;
 
     void Awake()
-    {
-        // Busca al jugador por tag; ajusta según tu proyecto
+    {        
         var p = GameObject.FindGameObjectWithTag("Player");
         if (p) _player = p.transform;
+      
+        _interestRadiusSqr = InterestAreaRadius * InterestAreaRadius;
+        _dangerRadiusSqr   = DangerAreaRadius * DangerAreaRadius;
+
+        SetupTriggers();
+    }
+
+    void SetupTriggers()
+    {       
+        _interestTrigger = GetComponent<SphereCollider>();
+        if (_interestTrigger == null)
+        {
+            _interestTrigger = gameObject.AddComponent<SphereCollider>();
+            _interestTrigger.isTrigger = true;
+        }
+        else
+        {
+            _interestTrigger.isTrigger = true;
+        }
+        _interestTrigger.radius = InterestAreaRadius;
+        
+        Transform dangerTransform = transform.Find("DangerTrigger");
+        GameObject dangerObj;
+        if (dangerTransform == null)
+        {
+            dangerObj = new GameObject("DangerTrigger");
+            dangerObj.transform.SetParent(transform);
+            dangerObj.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            dangerObj = dangerTransform.gameObject;
+        }
+        _dangerTrigger = dangerObj.GetComponent<SphereCollider>();
+        if (_dangerTrigger == null)
+        {
+            _dangerTrigger = dangerObj.AddComponent<SphereCollider>();
+            _dangerTrigger.isTrigger = true;
+        }
+        else
+        {
+            _dangerTrigger.isTrigger = true;
+        }
+        _dangerTrigger.radius = DangerAreaRadius;
     }
 
     void Update()
     {
-        //Debug.Log("Player encontrado: " + (_player != null));
         if (_player == null) return;
 
-        float dist = Vector3.Distance(transform.position, _player.position);
-
-        PlayerInInterestArea = dist <= InterestAreaRadius;
-        PlayerInDangerArea   = dist <= DangerAreaRadius;
-
+        
         if (PlayerInInterestArea)
             LastKnownPlayerPosition = _player.position;
     }
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (other.gameObject == _player?.gameObject)
+                PlayerInDangerArea = true;
+            
+            float sqrDist = (transform.position - other.transform.position).sqrMagnitude;
+            if (sqrDist <= _interestRadiusSqr)
+                PlayerInInterestArea = true;
+        }
+    }
 
-    // ── Helpers de detección de objetos ──────────────────────────────────
+    void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            if (other.gameObject == _player?.gameObject)
+                PlayerInDangerArea = false;
+
+            
+            float sqrDist = (transform.position - other.transform.position).sqrMagnitude;
+            if (sqrDist > _interestRadiusSqr)
+                PlayerInInterestArea = false;
+        }
+    }
+
+    
 
     public bool HasMeleeWeaponInDangerArea(out EnemyMeleeWeapon weapon)
     {
@@ -67,9 +133,10 @@ public class EnemyDetectionArea : MonoBehaviour
     
     public bool IsCloserThanPlayer(Vector3 objectPos)
     {
-        float distToObj    = Vector3.Distance(transform.position, objectPos);
-        float distToPlayer = Vector3.Distance(transform.position, LastKnownPlayerPosition);
-        return distToObj < distToPlayer;
+        
+        float sqrDistToObj    = (transform.position - objectPos).sqrMagnitude;
+        float sqrDistToPlayer = (transform.position - LastKnownPlayerPosition).sqrMagnitude;
+        return sqrDistToObj < sqrDistToPlayer;
     }
 
     public EnemyController GetNearbyRestingEnemy()
@@ -86,22 +153,22 @@ public class EnemyDetectionArea : MonoBehaviour
     }
 
     public void AlertNearbyEnemies()
-{
-    var cols = Physics.OverlapSphere(transform.position, InterestAreaRadius);
-
-    foreach (var c in cols)
     {
-        var e = c.GetComponent<EnemyController>();
+        var cols = Physics.OverlapSphere(transform.position, InterestAreaRadius);
 
-        if (e == null) continue;
-        if (e == GetComponent<EnemyController>()) continue;
-        
-        if (e.StateMachine.CurrentState == e.AlertState) continue;
-        if (e.StateMachine.CurrentState == e.CombatState) continue;
+        foreach (var c in cols)
+        {
+            var e = c.GetComponent<EnemyController>();
 
-        e.StateMachine.ChangeState(e.AlertState);
+            if (e == null) continue;
+            if (e == GetComponent<EnemyController>()) continue;
+            
+            if (e.StateMachine.CurrentState == e.AlertState) continue;
+            if (e.StateMachine.CurrentState == e.CombatState) continue;
+
+            e.StateMachine.ChangeState(e.AlertState);
+        }
     }
-}
 
     public void PropagateEnterCombat()
     {

@@ -12,6 +12,8 @@ public class EnemyStats : MonoBehaviour
 
     [Header("Navigation")]
     public NavMeshAgent NavAgent;
+    public float FollowStopDistance = 1.5f;
+    public Vector3 InitialPosition;
 
     [Header("Patrol")]
     public EnemyPatrolPath PatrolPath;
@@ -28,9 +30,26 @@ public class EnemyStats : MonoBehaviour
     void Awake()
     {
         CurrentHealth = MaxHealth;
+        InitialPosition = transform.position;
 
         if (!NavAgent)
             NavAgent = GetComponent<NavMeshAgent>();
+
+        if (NavAgent != null)
+        {
+            NavAgent.autoBraking = true;
+            NavAgent.stoppingDistance = FollowStopDistance;
+        }
+    }
+
+    public Vector3 GetSafeDestination(Vector3 target)
+    {
+        Vector3 direction = target - transform.position;
+        float distance = direction.magnitude;
+        if (distance <= FollowStopDistance || distance <= 0.001f)
+            return transform.position;
+
+        return target - direction.normalized * FollowStopDistance;
     }
 
     public void TakeDamage(int amount)

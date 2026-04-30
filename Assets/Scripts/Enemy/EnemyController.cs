@@ -6,6 +6,10 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyDetectionArea))]
 public class EnemyController : MonoBehaviour
 {
+    [Header("Debug Info")]
+    [SerializeField] private string _currentStateName; 
+    [SerializeField] private string _currentSubStateName;
+    
     [HideInInspector] public Animator Animator;
     [HideInInspector] public EnemyStats Stats;
     [HideInInspector] public EnemyDetectionArea Detection;
@@ -45,16 +49,54 @@ public class EnemyController : MonoBehaviour
         AlertState  = new AlertState(this, StateMachine);
         CombatState = new CombatState(this, StateMachine);
 
-        TryRegisterToNearestCombatGroup();
+        TryFindMyGroup();
+       
     }
     void Start()
     {
-        var initialState = Stats.StartsResting ? (IEnemyState)RestState : PatrolState;
+        IEnemyState initialState;
+        
+        if (Stats.StartsResting)
+        {
+            initialState = RestState;
+        }
+        else
+        {            
+            int random = Random.Range(0, 3);
+            initialState = random switch
+            {
+                0 => PatrolState,
+                1 => RestState,
+                _ => AlertState
+            };
+        }
+        
         StateMachine.Initialize(initialState);
+        Stats.NavAgent.avoidancePriority = Random.Range(0, 100);
+        Debug.Log("Estado inicial: " + initialState.GetType().Name);
     }
 
 
-    void Update()   => StateMachine.CurrentState.UpdateState();
+    void Update()   
+    {
+        if (StateMachine.CurrentState == null) return;
+
+        
+        _currentStateName = StateMachine.CurrentState.GetType().Name;
+
+       
+        if (StateMachine.CurrentState is CombatState combat)
+        {
+            _currentSubStateName = combat.GetSubStateName();
+        }
+        else
+        {
+            _currentSubStateName = "-"; 
+        }
+
+        StateMachine.CurrentState.UpdateState();
+    }
+    
     void FixedUpdate() => StateMachine.CurrentState.FixedUpdateState();
 
     public void TakeDamage(int amount, Vector3 hitDirection)
@@ -95,5 +137,20 @@ public class EnemyController : MonoBehaviour
 
         if (nearest != null)
             nearest.AddEnemy(this);
+    }
+    void TryFindMyGroup()
+    {   
+        var groups = FindObjectsOfType<EnemyCombatGroup>();
+        EnemyCombatGroup nearest = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var g in groups)
+        {
+            float d = Vector3.Distance(transform.position, g.transform.position);
+            if (d < bestDist) { bestDist = d; nearest = g; }
+        }
+        
+        if (nearest != null)
+            this.CombatGroup = nearest;
     }
 }

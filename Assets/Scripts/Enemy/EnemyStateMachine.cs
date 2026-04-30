@@ -13,8 +13,7 @@ public class EnemyStateMachine
     public void Initialize(IEnemyState startingState)
     {
         if (startingState == null)
-        {
-            UnityEngine.Debug.LogWarning("EnemyStateMachine.Initialize: startingState es null. Inicialización ignorada.");
+        {           
             return;
         }
 
@@ -23,8 +22,7 @@ public class EnemyStateMachine
     }
 
     public void ChangeState(IEnemyState newState)
-    {
-        // Protección contra CurrentState nulo (evita NullReferenceException)
+    {        
         if (CurrentState != null)
             CurrentState.ExitState();
 

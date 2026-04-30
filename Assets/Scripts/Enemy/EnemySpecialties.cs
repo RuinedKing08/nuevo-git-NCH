@@ -66,11 +66,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 
     public void UpdatePassiveBehavior(EnemyController e)
     {
-        // Rodear al jugador cuando no está atacando
-        Vector3 playerPos  = e.Detection.LastKnownPlayerPosition;
-        Vector3 orbitPoint = playerPos + Quaternion.Euler(0, Time.time * 60f, 0) * Vector3.forward * 2f;
-        if (e.Stats.NavAgent && e.Stats.NavAgent.isOnNavMesh)
-            e.Stats.NavAgent.SetDestination(orbitPoint);
+        e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);
     }
 
     public void BeginAttackPhase(EnemyController e)
@@ -134,26 +130,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void UpdatePassiveBehavior(EnemyController e)
     {
-        // Mantener distancia media (no rodea como puño limpio)
-        Vector3 playerPos = e.Detection.LastKnownPlayerPosition;
-        Vector3 dir       = (e.transform.position - playerPos).normalized;
-        
-        if (e.Stats.NavAgent && e.Stats.NavAgent.isOnNavMesh)
-            e.Stats.NavAgent.SetDestination(playerPos + dir * 1.5f);
-
-        // Sin arma → buscarla o defender
-        if (!e.Stats.HasWeapon)
-        {
-            if (e.Detection.HasMeleeWeaponInDangerArea(out var newWeapon))
-            {
-                if (e.Stats.NavAgent && e.Stats.NavAgent.isOnNavMesh)
-                    e.Stats.NavAgent.SetDestination(newWeapon.transform.position);
-                    
-                if (Vector3.Distance(e.transform.position, newWeapon.transform.position) < 0.5f)
-                    e.Stats.EquipWeapon(newWeapon);
-            }
-            // Si no encuentra, simplemente defiende (manejado por el grupo)
-        }
+        e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);        
     }
 
     public void BeginAttackPhase(EnemyController e)
@@ -216,26 +193,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
 
     public void UpdatePassiveBehavior(EnemyController e)
     {
-        // Mantener distancia máxima del área de detección
-        Vector3 playerPos   = e.Detection.LastKnownPlayerPosition;
-        float   maxDistance = e.Detection.InterestAreaRadius * 0.9f;
-        Vector3 idealPos    = playerPos + (e.transform.position - playerPos).normalized * maxDistance;
-        
-        if (e.Stats.NavAgent && e.Stats.NavAgent.isOnNavMesh)
-            e.Stats.NavAgent.SetDestination(idealPos);
-
-        // Sin objeto → buscar uno
-        if (!e.Stats.HasThrowable)
-        {
-            if (e.Detection.HasThrowableObjectInDangerArea(out var newObj))
-            {
-                if (e.Stats.NavAgent && e.Stats.NavAgent.isOnNavMesh)
-                    e.Stats.NavAgent.SetDestination(newObj.transform.position);
-                    
-                if (Vector3.Distance(e.transform.position, newObj.transform.position) < 0.5f)
-                    e.Stats.EquipThrowable(newObj);
-            }
-        }
+        e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);
     }
 
     public void BeginAttackPhase(EnemyController e)
@@ -251,17 +209,13 @@ public class DirtyPlaySpecialty : IEnemySpecialty
             _attackFired = true;
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, 0);  // Lanzar objeto
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
-
-            // Lanzar → 2 segundos de recuperación (retención de objeto): sacar otro igual
-            e.Stats.ThrowObject(e.Detection.LastKnownPlayerPosition);
-            e.StartCoroutine(RetentionCooldown(e));
+            
         }
     }
 
     System.Collections.IEnumerator RetentionCooldown(EnemyController e)
     {
         yield return new WaitForSeconds(2f);
-        // Sacar objeto equivalente (game logic del inventario)
         e.Stats.ReloadThrowable();
     }
 

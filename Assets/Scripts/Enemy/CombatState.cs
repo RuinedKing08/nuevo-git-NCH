@@ -5,6 +5,10 @@ public class CombatState : IEnemyState
 {
     readonly EnemyController   _e;
     readonly EnemyStateMachine _sm;
+    float _exitCombatTimer = 0f;
+    const float TimeToExitCombat = 3f;
+    private float _orbitAngle;
+    private float _currentOrbitAngle;
 
     EnemyStateMachine _subSM;
 
@@ -33,13 +37,59 @@ public class CombatState : IEnemyState
     public void EnterState()
     {
         _e.Animator.SetBool(EnemyController.Hash_InCombat, true);
-
-        //Si no tiene especialidad → elegirla primero (máxima prioridad)
+        
+        if (_e.CombatGroup != null)   
+        {
+            _e.CombatGroup.AddEnemy(_e);
+        }
+        
         if (_e.Stats.Specialty == null)
             _subSM.Initialize(ChooseSpecialtySubState);
         else
             _subSM.Initialize(IdleSubState);
     }
+    public string GetSubStateName()
+    {
+        if (_subSM != null && _subSM.CurrentState != null)
+        {
+            return _subSM.CurrentState.GetType().Name;
+        }
+        return "None";
+    }
+    public void DoOrbit(float radius, float speedMultiplier = 1f)
+    {
+       
+        if (_e.CombatGroup == null) return;
+
+        
+        float baseAngle = _e.CombatGroup.GetTargetAngleForMember(_e);
+        
+        
+        float globalOffset = Time.time * 20f * speedMultiplier; 
+        float targetAngle = (baseAngle + globalOffset) % 360f;
+
+        
+        _currentOrbitAngle = Mathf.LerpAngle(_currentOrbitAngle, targetAngle, Time.deltaTime * 2f);
+
+        
+        float radians = _currentOrbitAngle * Mathf.Deg2Rad;
+        Vector3 offset = new Vector3(Mathf.Cos(radians), 0, Mathf.Sin(radians)) * radius;
+        Vector3 targetPos = _e.Detection.LastKnownPlayerPosition + offset;
+
+        
+        if (_e.Stats.NavAgent.isOnNavMesh)
+        {
+            _e.Stats.NavAgent.SetDestination(targetPos);
+        }
+        
+        Vector3 dirToPlayer = (_e.Detection.LastKnownPlayerPosition - _e.transform.position).normalized;
+        dirToPlayer.y = 0;
+        if (dirToPlayer != Vector3.zero)
+        {
+            _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, Quaternion.LookRotation(dirToPlayer), Time.deltaTime * 8f);
+        }
+    }
+        
 
     public void UpdateState()
     {
@@ -47,6 +97,19 @@ public class CombatState : IEnemyState
 
         
         UpdateLocomotionBlend();
+
+        if (!_e.Detection.PlayerInInterestArea)
+        {
+            _exitCombatTimer += Time.deltaTime;
+            if (_exitCombatTimer >= TimeToExitCombat)
+            {
+                _sm.ChangeState(_e.AlertState); 
+            }
+        }
+        else
+        {
+            _exitCombatTimer = 0f; 
+        }
     }
 
     public void FixedUpdateState() => _subSM.CurrentState.FixedUpdateState();
@@ -54,6 +117,11 @@ public class CombatState : IEnemyState
     public void ExitState()
     {
         _e.Animator.SetBool(EnemyController.Hash_InCombat, false);
+        
+        if (_e.CombatGroup != null)
+        {
+            _e.CombatGroup.RemoveEnemy(_e);
+        }
     }
 
     // ── API interna ───────────────────────────────────────────────────────
@@ -68,15 +136,19 @@ public class CombatState : IEnemyState
     
     void UpdateLocomotionBlend()
     {
+        
         Vector3 localVelocity = _e.transform.InverseTransformDirection(_e.Stats.NavAgent.velocity);
-        float   speed         = _e.Stats.NavAgent.velocity.magnitude;
+        float maxSpeed = _e.Stats.NavAgent.speed;
 
-        float targetX = speed > 0.1f ? localVelocity.x / _e.Stats.NavAgent.speed : 0f;
-        float targetY = speed > 0.1f ? localVelocity.z / _e.Stats.NavAgent.speed : 0f;
+        
+        float targetX = localVelocity.x / maxSpeed;
+        float targetY = localVelocity.z / maxSpeed;
 
+        
         _e.Animator.SetFloat(EnemyController.Hash_MoveX, targetX, 0.1f, Time.deltaTime);
         _e.Animator.SetFloat(EnemyController.Hash_MoveY, targetY, 0.1f, Time.deltaTime);
-        _e.Animator.SetFloat(EnemyController.Hash_Speed,  speed,  0.1f, Time.deltaTime);
+        
+        _e.Animator.SetFloat(EnemyController.Hash_Speed, _e.Stats.NavAgent.velocity.magnitude, 0.1f, Time.deltaTime);
     }
 }
 
@@ -134,11 +206,7 @@ public class CombatIdleSubState : IEnemyState
         }
         else
         {
-            // Fallback sencillo: ir hacia la última posición conocida del jugador.
-            if (_e.Stats.NavAgent != null && _e.Stats.NavAgent.isOnNavMesh)
-            {
-                _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
-            }
+            _combat.DoOrbit(radius: 5.5f, speedMultiplier: 1f);
         }
     }
 
@@ -176,18 +244,59 @@ public class AttackSubState : IEnemyState
     public void UpdateState()
     {
         _attackWindowTimer += Time.deltaTime;
+        
+        float distanceToPlayer = Vector3.Distance(_e.transform.position, _e.Detection.LastKnownPlayerPosition);
+        float attackRange = 1.8f; 
 
         
-        _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
+        if (_attackWindowTimer < 1.5f) 
+        {            
+            _combat.DoOrbit(radius: 5.5f, speedMultiplier: 1.2f);
+        }
+        
+        else 
+        {
+            if (distanceToPlayer > attackRange)
+            {                
+                _e.Stats.NavAgent.isStopped = false;
+                _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
+                
+                
+                _e.Stats.NavAgent.speed = 5.5f; 
 
-        if (_attackWindowTimer >= AttackWindowDuration)
+                
+                Vector3 dir = (_e.Detection.LastKnownPlayerPosition - _e.transform.position).normalized;
+                dir.y = 0;
+                if (dir != Vector3.zero)
+                {
+                    _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 15f);
+                }
+            }
+            else
+            {         
+                _e.Stats.NavAgent.isStopped = true;            
+                
+                
+                _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
+                
+                
+                _e.transform.LookAt(new Vector3(_e.Detection.LastKnownPlayerPosition.x, _e.transform.position.y, _e.Detection.LastKnownPlayerPosition.z));
+            }
+        }
+
+       
+        if (_attackWindowTimer >= 5.0f) 
+        {
+            _e.CombatGroup?.ReportAttackFinished(_e);
             _subSM.ChangeState(_combat.ExchangeSubState);
+        }
     }
 
     public void FixedUpdateState() { }
 
     public void ExitState()
     {
+        _e.Stats.NavAgent.speed = 3.5f;
         _e.Animator.ResetTrigger(EnemyController.Hash_AttackIndex);
         _e.Stats.Specialty?.EndAttackPhase(_e);
     }
@@ -216,13 +325,26 @@ public class DefendSubState : IEnemyState
 
     public void UpdateState()
     {
-        if (!_willBlock)
-        {
-            // Alejarse del jugador
+        float distanceToPlayer = Vector3.Distance(_e.transform.position, _e.Detection.LastKnownPlayerPosition);
+        float currentOrbitSpeed = _willBlock ? 0.4f : 0.8f;
+        float targetRadius = 7.0f;
+
+        if (distanceToPlayer < 3.5f)
+        {    
             Vector3 awayDir = (_e.transform.position - _e.Detection.LastKnownPlayerPosition).normalized;
-            _e.Stats.NavAgent.SetDestination(_e.transform.position + awayDir * 2f);
+            _e.Stats.NavAgent.isStopped = false;
+            _e.Stats.NavAgent.SetDestination(_e.transform.position + awayDir * 3f);
         }
-        // Si está bloqueando → el sistema de daño en EnemyController maneja la reducción
+        else if (distanceToPlayer > 8f)
+        {        
+            _e.Stats.NavAgent.isStopped = false;
+            _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
+        }
+        else
+        {           
+            _combat.DoOrbit(radius: targetRadius, speedMultiplier: currentOrbitSpeed);
+        }
+        
     }
 
     public void FixedUpdateState() { }
@@ -232,8 +354,7 @@ public class DefendSubState : IEnemyState
         _e.Animator.SetBool(EnemyController.Hash_IsDefending, false);
         _e.Stats.IsBlocking = false;
     }
-
-    // Llamado por EnemyCombatGroup cuando el turno de ataque termina
+    
     public void ForceToExchange() => _subSM.ChangeState(_combat.ExchangeSubState);
 }
 
@@ -253,8 +374,7 @@ public class ExchangeSubState : IEnemyState
     public void EnterState()
     {
         _timer    = 0f;
-        _duration = Random.Range(1f, 2f);
-        // Notificar al grupo que este enemigo está disponible
+        _duration = Random.Range(1f, 2f);       
         _e.CombatGroup?.NotifyExchangeReady(_e);
     }
 
@@ -262,7 +382,9 @@ public class ExchangeSubState : IEnemyState
     {
         _timer += Time.deltaTime;
         if (_timer >= _duration)
+        {           
             _subSM.ChangeState(_combat.IdleSubState);  
+        }
     }
 
     public void FixedUpdateState() { }

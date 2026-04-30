@@ -19,7 +19,7 @@ public class PatrolState : IEnemyState
         _loopsNearRestingEnemy = 0;
         _e.Animator.SetBool(EnemyController.Hash_InCombat, false);
         _e.Animator.SetBool(EnemyController.Hash_IsAlert,  false);
-        // Animator: blend tree de caminar activo
+        
     }
 
     public void UpdateState()
@@ -114,18 +114,16 @@ public class AlertState : IEnemyState
     {
         _returningToOrigin  = false;
         _timePlayerVisible  = 0f;
-        _originPosition     = _e.transform.position;
+        _originPosition     = _e.Stats.InitialPosition;
         _lastKnownPlayerPos = _e.Detection.LastKnownPlayerPosition;
 
         _e.Animator.SetBool(EnemyController.Hash_IsAlert, true);
-
-        // Avisar a enemigos cercanos
+        
         _e.Detection.AlertNearbyEnemies();
     }
 
     public void UpdateState()
-    {
-        // ── Si el jugador entra en área de PELIGRO → combate inmediato ───
+    {      
         if (_e.Detection.PlayerInDangerArea)
         {
             EnterCombat();
@@ -134,7 +132,7 @@ public class AlertState : IEnemyState
 
         if (!_returningToOrigin)
         {
-            // ── El jugador sigue visible en área de interés ──────────────
+            
             if (_e.Detection.PlayerInInterestArea)
             {
                 _timePlayerVisible += Time.deltaTime;
@@ -148,7 +146,7 @@ public class AlertState : IEnemyState
             }
             else
             {
-                // ── Ir a la última posición conocida ─────────────────────
+                
                 MoveTowards(_lastKnownPlayerPos);
 
                 if (ReachedDestination(_lastKnownPlayerPos))
@@ -157,7 +155,7 @@ public class AlertState : IEnemyState
         }
         else
         {
-            // ── Volviendo al origen ──────────────────────────────────────
+            
             if (_e.Detection.PlayerInInterestArea)
             {
                 _returningToOrigin = false;
@@ -168,7 +166,7 @@ public class AlertState : IEnemyState
             MoveTowards(_originPosition);
 
             if (ReachedDestination(_originPosition))
-                _sm.ChangeState(_e.PatrolState);   // o RestState según la prioridad original
+                _sm.ChangeState(_e.PatrolState);   
         }
 
         float speed = (_returningToOrigin || !_e.Detection.PlayerInInterestArea) ? 1f : 1.5f;
@@ -184,7 +182,6 @@ public class AlertState : IEnemyState
 
     void EnterCombat()
     {
-        // Propagar cambio de prioridad a todos los enemigos en el área de detección
         _e.Detection.PropagateEnterCombat();
         _sm.ChangeState(_e.CombatState);
         Debug.Log("Esta ahi");
@@ -192,12 +189,26 @@ public class AlertState : IEnemyState
 
     void MoveTowards(Vector3 target)
     {
-        // Conectar aquí con NavMeshAgent o CharacterController
+        if (_e.Stats.NavAgent == null || !_e.Stats.NavAgent.isOnNavMesh)
+            return;
+
+        float distanceToTarget = Vector3.Distance(_e.transform.position, target);
+        if (distanceToTarget <= _e.Stats.NavAgent.stoppingDistance + 0.1f) 
+        {
+            _e.Stats.NavAgent.isStopped = true;
+            return;
+        }
+
+        _e.Stats.NavAgent.isStopped = false;
         _e.Stats.NavAgent.SetDestination(target);
     }
 
-    bool ReachedDestination(Vector3 target) =>
-        Vector3.Distance(_e.transform.position, target) < 0.5f;
+    bool ReachedDestination(Vector3 target)
+    {
+        float dist = Vector3.Distance(_e.transform.position, target);
+        return dist <= _e.Stats.NavAgent.stoppingDistance + 0.5f;
+    }
+    
 
     void StartReturnToOrigin() => _returningToOrigin = true;
 }
