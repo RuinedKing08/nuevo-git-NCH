@@ -50,8 +50,8 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        // Do not override inspector values for MaxHealth/CurrentHealth.
-        // Preserve designer-set health and only adjust specialty-specific stats.
+        e.Stats.MaxHealth = 100;
+        e.Stats.CurrentHealth = 100;
         e.Stats.Damage = 10;
     }
 
@@ -136,7 +136,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        // Preserve existing MaxHealth set in inspector; only change damage and equip weapon.
+        e.Stats.MaxHealth = 150;
         e.Stats.Damage    = 20;
         e.Stats.EquipWeapon(_weapon);
         _hasUsedAnAttack = false;
@@ -205,7 +205,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        // Preserve existing MaxHealth set in inspector; only change damage and equip throwable.
+        e.Stats.MaxHealth = 50;
         e.Stats.Damage    = 25;
         e.Stats.EquipThrowable(_heldObject);
     }
