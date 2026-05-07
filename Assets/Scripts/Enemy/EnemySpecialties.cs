@@ -315,6 +315,16 @@ public class EnemyHitbox : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        var healthController = other.GetComponentInParent<HealthController>();
+        if (healthController != null)
+        {
+            healthController.ApplyDamage(_damage);
+            other.SendMessage("OnHit", _owner.transform.position, SendMessageOptions.DontRequireReceiver);
+            if (_mat != null) Destroy(_mat);
+            Destroy(gameObject);
+            return;
+        }
+
         if (other.CompareTag("Player"))
         {
             other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
