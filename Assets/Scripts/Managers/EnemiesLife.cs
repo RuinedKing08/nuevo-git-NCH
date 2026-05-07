@@ -1,49 +1,36 @@
 using UnityEngine;
 
-public class EnemiesLife : HealthController
+public class EnemiesLife : MonoBehaviour
 {
-    protected override void Start()
+    EnemyController _enemyController;
+    bool _damageEnter;
+
+    void Awake()
     {
-        base.Start();
+        _enemyController = GetComponent<EnemyController>();
     }
-    protected override void SetLife()
-    {
-        health = maxHealth;
-    }
-    protected override void GetMaxLife(int extraHealth)
-    {
-        maxHealth += extraHealth;
-    }
-    protected override void GetLife(int heal)
-    {
-        health += heal;
-    }
-    protected override void GetDamage(int damage)
-    {
-        health -= damage;
-        if(health <= 0)
-        {
-            //gameObject.SetActive(false);
-            Destroy(gameObject, 2f);
-        }
-    }
-    bool damageEnter;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("DamageToEnemies"))
         {
-            if (!damageEnter)
+            if (!_damageEnter)
             {
-                GetDamage(2);
-                damageEnter = true;
+                if (_enemyController != null)
+                {
+                    Vector3 hitDir = (_enemyController.transform.position - other.transform.position).normalized;
+                    _enemyController.TakeDamage(2, hitDir);
+                }
+                _damageEnter = true;
             }
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("DamageToEnemies"))
         {
-            damageEnter = false;
+            _damageEnter = false;
         }
     }
 }

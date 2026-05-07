@@ -15,7 +15,6 @@ public class CombatState : IEnemyState
     public CombatIdleSubState    IdleSubState;
     public AttackSubState        AttackSubState;
     public DefendSubState        DefendSubState;
-    public ExchangeSubState      ExchangeSubState;
     public ChooseSpecialtySubState ChooseSpecialtySubState;
 
     public CombatState(EnemyController e, EnemyStateMachine sm)
@@ -28,7 +27,6 @@ public class CombatState : IEnemyState
         IdleSubState          = new CombatIdleSubState(e, _subSM, this);
         AttackSubState        = new AttackSubState(e, _subSM, this);
         DefendSubState        = new DefendSubState(e, _subSM, this);
-        ExchangeSubState      = new ExchangeSubState(e, _subSM, this);
         ChooseSpecialtySubState = new ChooseSpecialtySubState(e, _subSM, this);
     }
 
@@ -191,22 +189,44 @@ public class CombatIdleSubState : IEnemyState
     readonly EnemyStateMachine _subSM;
     readonly CombatState       _combat;
     
-    
+    private float _postAttackSpeedMultiplier = 1f;
+    private float _postAttackTimer = 0f;
+    private const float PostAttackSpeedDuration = 2f;
+    private const float PostAttackSpeedBoost = 1.5f;
 
     public CombatIdleSubState(EnemyController e, EnemyStateMachine subSM, CombatState combat)
     { _e = e; _subSM = subSM; _combat = combat; }
 
-    public void EnterState()   { Debug.Log("IdleSubstate"); _e.CombatGroup?.NotifyExchangeReady(_e); }
+    public void EnterState()   
+    { 
+        Debug.Log("IdleSubstate"); 
+        _e.CombatGroup?.NotifyExchangeReady(_e);
+        
+        
+        _postAttackSpeedMultiplier = PostAttackSpeedBoost;
+        _postAttackTimer = PostAttackSpeedDuration;
+    }
 
     public void UpdateState()
     {
+        
+        if (_postAttackTimer > 0f)
+        {
+            _postAttackTimer -= Time.deltaTime;
+            _postAttackSpeedMultiplier = Mathf.Lerp(PostAttackSpeedBoost, 1f, 1f - (_postAttackTimer / PostAttackSpeedDuration));
+        }
+        else
+        {
+            _postAttackSpeedMultiplier = 1f;
+        }
+
         if (_e.Stats.Specialty != null)
         {
             _e.Stats.Specialty.UpdatePassiveBehavior(_e);
         }
         else
         {
-            _combat.DoOrbit(radius: 5.5f, speedMultiplier: 1f);
+            _combat.DoOrbit(radius: 5.5f, speedMultiplier: 1f * _postAttackSpeedMultiplier);
         }
     }
 
@@ -288,7 +308,7 @@ public class AttackSubState : IEnemyState
         if (_attackWindowTimer >= 5.0f) 
         {
             _e.CombatGroup?.ReportAttackFinished(_e);
-            _subSM.ChangeState(_combat.ExchangeSubState);
+            _subSM.ChangeState(_combat.IdleSubState); // Ir directamente a idle con movimiento rápido
         }
     }
 
@@ -355,38 +375,5 @@ public class DefendSubState : IEnemyState
         _e.Stats.IsBlocking = false;
     }
     
-    public void ForceToExchange() => _subSM.ChangeState(_combat.ExchangeSubState);
-}
-
-
-public class ExchangeSubState : IEnemyState
-{
-    readonly EnemyController   _e;
-    readonly EnemyStateMachine _subSM;
-    readonly CombatState       _combat;
-
-    float _timer;
-    float _duration;
-
-    public ExchangeSubState(EnemyController e, EnemyStateMachine subSM, CombatState combat)
-    { _e = e; _subSM = subSM; _combat = combat; }
-
-    public void EnterState()
-    {
-        _timer    = 0f;
-        _duration = Random.Range(1f, 2f);       
-        _e.CombatGroup?.NotifyExchangeReady(_e);
-    }
-
-    public void UpdateState()
-    {
-        _timer += Time.deltaTime;
-        if (_timer >= _duration)
-        {           
-            _subSM.ChangeState(_combat.IdleSubState);  
-        }
-    }
-
-    public void FixedUpdateState() { }
-    public void ExitState()        { }
+    public void ForceToExchange() => _subSM.ChangeState(_combat.IdleSubState);
 }

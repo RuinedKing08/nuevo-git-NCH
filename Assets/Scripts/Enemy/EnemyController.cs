@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 
 [RequireComponent(typeof(Animator))]
@@ -14,6 +15,20 @@ public class EnemyController : MonoBehaviour
     [HideInInspector] public EnemyStats Stats;
     [HideInInspector] public EnemyDetectionArea Detection;
     [HideInInspector] public EnemyCombatGroup CombatGroup;
+
+    [Header("Hit Interrupt")]
+    [SerializeField] private float interruptDuration = 0.75f;
+    [SerializeField] private Color interruptColor = Color.yellow;
+
+    [Header("Attack Feedback")]
+    [SerializeField] private Color attackColor = Color.red;
+
+    private float _interruptTimer;
+    private bool _isInterrupted;
+    private bool _isAttackColorActive;
+    private Material[] _interruptMaterials;
+    private int[] _interruptMaterialPropertyIds;
+    private Color[] _interruptOriginalColors;
 
     public EnemyStateMachine StateMachine { get; private set; }
 
@@ -50,6 +65,7 @@ public class EnemyController : MonoBehaviour
         CombatState = new CombatState(this, StateMachine);
 
         TryFindMyGroup();
+        InitializeInterruptMaterials();
        
     }
     void Start()
@@ -94,6 +110,14 @@ public class EnemyController : MonoBehaviour
             _currentSubStateName = "-"; 
         }
 
+        if (_interruptTimer > 0f)
+        {
+            _interruptTimer -= Time.deltaTime;
+            if (_interruptTimer <= 0f)
+                EndInterrupt();
+            return;
+        }
+
         StateMachine.CurrentState.UpdateState();
     }
     
@@ -102,6 +126,8 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int amount, Vector3 hitDirection)
     {
         Stats.TakeDamage(amount);
+        Interrupt();
+
         if (StateMachine.CurrentState == CombatState)
             CombatState.OnHitInterrupt();
 
@@ -111,12 +137,103 @@ public class EnemyController : MonoBehaviour
             Die();
     }
 
+    public bool IsInterrupted => _isInterrupted;
+
+    public void ApplyAttackColor()
+    {
+        if (_isInterrupted) return;
+        _isAttackColorActive = true;
+        SetMaterialColor(attackColor);
+    }
+
+    public void EndAttackColor()
+    {
+        _isAttackColorActive = false;
+        if (!_isInterrupted)
+            RestoreOriginalColor();
+    }
+
+    private void Interrupt()
+    {
+        _isInterrupted = true;
+        _interruptTimer = interruptDuration;
+        if (Stats.NavAgent != null && Stats.NavAgent.isOnNavMesh)
+            Stats.NavAgent.isStopped = true;
+
+        SetMaterialColor(interruptColor);
+    }
+
+    private void EndInterrupt()
+    {
+        _isInterrupted = false;
+        _interruptTimer = 0f;
+        if (Stats.NavAgent != null && Stats.NavAgent.isOnNavMesh)
+            Stats.NavAgent.isStopped = false;
+
+        if (!_isAttackColorActive)
+            RestoreOriginalColor();
+    }
+
+    private void InitializeInterruptMaterials()
+    {
+        var renderers = GetComponentsInChildren<Renderer>(includeInactive: true);
+        var materials = new List<Material>();
+        var propertyIds = new List<int>();
+        var originalColors = new List<Color>();
+
+        foreach (var renderer in renderers)
+        {
+            var mats = renderer.materials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                var mat = mats[i];
+                if (mat.HasProperty(Shader.PropertyToID("_Color")))
+                {
+                    materials.Add(mat);
+                    propertyIds.Add(Shader.PropertyToID("_Color"));
+                    originalColors.Add(mat.GetColor("_Color"));
+                }
+                else if (mat.HasProperty(Shader.PropertyToID("_BaseColor")))
+                {
+                    materials.Add(mat);
+                    propertyIds.Add(Shader.PropertyToID("_BaseColor"));
+                    originalColors.Add(mat.GetColor("_BaseColor"));
+                }
+            }
+        }
+
+        _interruptMaterials = materials.ToArray();
+        _interruptMaterialPropertyIds = propertyIds.ToArray();
+        _interruptOriginalColors = originalColors.ToArray();
+    }
+
+    private void SetMaterialColor(Color color)
+    {
+        if (_interruptMaterials == null) return;
+
+        for (int i = 0; i < _interruptMaterials.Length; i++)
+        {
+            _interruptMaterials[i].SetColor(_interruptMaterialPropertyIds[i], color);
+        }
+    }
+
+    private void RestoreOriginalColor()
+    {
+        if (_interruptMaterials == null) return;
+
+        for (int i = 0; i < _interruptMaterials.Length; i++)
+        {
+            _interruptMaterials[i].SetColor(_interruptMaterialPropertyIds[i], _interruptOriginalColors[i]);
+        }
+    }
+
     void Die()
     {
         Animator.SetTrigger(Hash_IsDead);
         Stats.Specialty?.OnDefeated(this);
         CombatGroup?.RemoveEnemy(this);
         enabled = false;
+        Destroy(gameObject, 2f);
     }
     void TryRegisterToNearestCombatGroup()
     {
