@@ -12,7 +12,7 @@ public class TransparencyWithCamera : MonoBehaviour
     [SerializeField] float initialDistance;
     void Start()
     {
-        baseColor = player.GetComponent<SkinnedMeshRenderer>().material;
+        baseColor = player.GetComponent<MeshRenderer>().material;
         baseColor.color = myColor;
         
     }
@@ -22,7 +22,7 @@ public class TransparencyWithCamera : MonoBehaviour
         ChangeBaseColor();
     }
 
-    //[SerializeField] float dis;
+    [SerializeField] float dis;
     [SerializeField] float distanceToGoZero, distanceToStartTransparency;
     void ChangeBaseColor()
     {
@@ -31,7 +31,7 @@ public class TransparencyWithCamera : MonoBehaviour
             initialDistance = Vector3.Distance(gameObject.transform.position, player.transform.position);
             start = true;
         }
-        //dis = Vector3.Distance(gameObject.transform.position, player.transform.position);
+        dis = Vector3.Distance(gameObject.transform.position, player.transform.position);
         if(Vector3.Distance(gameObject.transform.position, player.transform.position) < initialDistance / distanceToGoZero)
         {
             myColor.a = 0;
