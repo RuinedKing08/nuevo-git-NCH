@@ -40,11 +40,14 @@ public class CombatState : IEnemyState
         {
             _e.CombatGroup.AddEnemy(_e);
         }
-        
-        if (_e.Stats.Specialty == null)
-            _subSM.Initialize(ChooseSpecialtySubState);
-        else
-            _subSM.Initialize(IdleSubState);
+        // Force BareKnuckle specialty for now (debugging)
+        if (!(_e.Stats.Specialty is BareKnuckleSpecialty))
+        {
+            Debug.Log($"CombatState.EnterState: assigning BareKnuckleSpecialty to {_e.name}");
+            _e.Stats.SetSpecialty(new BareKnuckleSpecialty());
+        }
+
+        _subSM.Initialize(IdleSubState);
     }
     public string GetSubStateName()
     {
@@ -53,6 +56,11 @@ public class CombatState : IEnemyState
             return _subSM.CurrentState.GetType().Name;
         }
         return "None";
+    }
+    // Exponer si el subestado actual es Idle para consultas externas
+    public bool IsInIdleSubState()
+    {
+        return _subSM != null && _subSM.CurrentState == IdleSubState;
     }
     public void DoOrbit(float radius, float speedMultiplier = 1f)
     {
@@ -167,6 +175,7 @@ public class ChooseSpecialtySubState : IEnemyState
         if (specialty != null)
         {
             _e.Stats.SetSpecialty(specialty);
+            //Debug.Log($"ChooseSpecialtySubState: Assigned specialty {specialty.GetType().Name} to {_e.name}");
         }
         else
         {
@@ -193,13 +202,15 @@ public class CombatIdleSubState : IEnemyState
     private float _postAttackTimer = 0f;
     private const float PostAttackSpeedDuration = 2f;
     private const float PostAttackSpeedBoost = 1.5f;
+    private float _notifyTimer = 0f;
+    private const float NotifyInterval = 1.5f;
 
     public CombatIdleSubState(EnemyController e, EnemyStateMachine subSM, CombatState combat)
     { _e = e; _subSM = subSM; _combat = combat; }
 
     public void EnterState()   
     { 
-        Debug.Log("IdleSubstate"); 
+        //Debug.Log("IdleSubstate"); 
         _e.CombatGroup?.NotifyExchangeReady(_e);
         
         
@@ -228,6 +239,17 @@ public class CombatIdleSubState : IEnemyState
         {
             _combat.DoOrbit(radius: 5.5f, speedMultiplier: 1f * _postAttackSpeedMultiplier);
         }
+
+        
+        if (_e.CombatGroup != null)
+        {
+            _notifyTimer += Time.deltaTime;
+            if (_notifyTimer >= NotifyInterval)
+            {
+                _notifyTimer = 0f;
+                _e.CombatGroup.NotifyExchangeReady(_e);
+            }
+        }
     }
 
     public void FixedUpdateState() { }
@@ -253,12 +275,12 @@ public class AttackSubState : IEnemyState
 
     public void EnterState()
     {
-        Debug.Log("attackSubstate");
-        _attackWindowTimer = 0f;
         
+        _attackWindowTimer = 0f;        
 
 
         _e.Stats.Specialty?.BeginAttackPhase(_e);
+        Debug.Log("attackSubstate");
     }
 
     public void UpdateState()
@@ -276,15 +298,16 @@ public class AttackSubState : IEnemyState
         
         else 
         {
+            
+            Debug.Log($"AttackSubState: attempting TickAttack for {_e.name} (timer={_attackWindowTimer:F2}) distance={distanceToPlayer:F2}");
+            _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
+
             if (distanceToPlayer > attackRange)
             {                
                 _e.Stats.NavAgent.isStopped = false;
                 _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
-                
-                
                 _e.Stats.NavAgent.speed = 5.5f; 
 
-                
                 Vector3 dir = (_e.Detection.LastKnownPlayerPosition - _e.transform.position).normalized;
                 dir.y = 0;
                 if (dir != Vector3.zero)
@@ -295,11 +318,6 @@ public class AttackSubState : IEnemyState
             else
             {         
                 _e.Stats.NavAgent.isStopped = true;            
-                
-                
-                _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
-                
-                
                 _e.transform.LookAt(new Vector3(_e.Detection.LastKnownPlayerPosition.x, _e.transform.position.y, _e.Detection.LastKnownPlayerPosition.z));
             }
         }

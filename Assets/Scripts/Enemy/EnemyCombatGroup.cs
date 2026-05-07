@@ -54,6 +54,7 @@ public class EnemyCombatGroup : MonoBehaviour
         
        
         bool anyPlayerNearby = _members.Any(m => m.Detection != null && (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea));
+        Debug.Log($"BeginAttackRound: members={_members.Count}, anyPlayerNearby={anyPlayerNearby}");
         if (!anyPlayerNearby || _members.Count == 0)
         {
             _roundInProgress = false;
@@ -64,13 +65,19 @@ public class EnemyCombatGroup : MonoBehaviour
         float maxAttackDistance = 10f; 
         var candidates = _members
             .Where(m => m.StateMachine.CurrentState == m.CombatState &&
-                        m.CombatState.GetSubStateName() == "CombatIdleSubState" && 
-                        Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition) <= maxAttackDistance)
+                        m.CombatState.IsInIdleSubState() &&
+                        (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea || Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition) <= maxAttackDistance))
             .ToList();
 
         
         if (candidates.Count == 0)
         {
+            Debug.Log("BeginAttackRound: no candidates found (none in idle or in range). Members:");
+            foreach (var m in _members)
+            {
+                var dist = Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition);
+                Debug.Log($" - {m.name}: state={m.StateMachine.CurrentState?.GetType().Name}, sub={m.CombatState.GetSubStateName()}, distToPlayer={dist}, inInterest={m.Detection.PlayerInInterestArea}, inDanger={m.Detection.PlayerInDangerArea}");
+            }
             _roundInProgress = false;
             yield break; 
         }
@@ -85,11 +92,23 @@ public class EnemyCombatGroup : MonoBehaviour
             _currentAttackers.Add(candidates[idx]);
             candidates.RemoveAt(idx);
         }
+        //Debug.Log($"BeginAttackRound: selected attackers: {string.Join(", ", _currentAttackers.Select(a=>a.name))}");
 
         
-        var defenders = _members.Except(_currentAttackers).ToList();
-        foreach (var d in defenders) d.CombatState.IdleSubState.AssignDefend();
-        foreach (var a in _currentAttackers) a.CombatState.IdleSubState.AssignAttack();
+        var defenders = _members
+            .Where(m => m.StateMachine.CurrentState == m.CombatState && !_currentAttackers.Contains(m))
+            .ToList();
+        //Debug.Log($"EnemyCombatGroup: assigning { _currentAttackers.Count } attackers and { defenders.Count } defenders");
+        foreach (var d in defenders)
+        {
+            //Debug.Log($"EnemyCombatGroup: AssignDefend -> {d.name}");
+            d.CombatState.IdleSubState.AssignDefend();
+        }
+        foreach (var a in _currentAttackers)
+        {
+            //Debug.Log($"EnemyCombatGroup: AssignAttack -> {a.name}");
+            a.CombatState.IdleSubState.AssignAttack();
+        }
 
         
         int targetFinishes = Mathf.Clamp(attackerCount - 1, 1, 2); 

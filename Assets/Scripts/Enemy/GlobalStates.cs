@@ -184,7 +184,7 @@ public class AlertState : IEnemyState
     {
         _e.Detection.PropagateEnterCombat();
         _sm.ChangeState(_e.CombatState);
-        Debug.Log("Esta ahi");
+        //Debug.Log("Esta ahi");
     }
 
     void MoveTowards(Vector3 target)

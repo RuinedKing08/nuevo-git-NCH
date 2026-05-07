@@ -19,11 +19,11 @@ public class EnemiesLife : MonoBehaviour
                 if (_enemyController != null)
                 {
                     Vector3 hitDir = (_enemyController.transform.position - other.transform.position).normalized;
-                    _enemyController.TakeDamage(2, hitDir);
+                    _enemyController.TakeDamage(30, hitDir);
                 }
                 _damageEnter = true;
             }
-        }
+        }   
     }
 
     private void OnTriggerExit(Collider other)

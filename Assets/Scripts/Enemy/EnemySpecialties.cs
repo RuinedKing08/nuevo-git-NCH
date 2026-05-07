@@ -29,16 +29,8 @@ public static class SpecialtyFactory
 {
     public static IEnemySpecialty Resolve(EnemyController e)
     {
-        var detection = e.Detection;        
-        
-        if (detection.HasThrowableObjectInDangerArea(out var throwable) &&
-            detection.IsCloserThanPlayer(throwable.transform.position))
-            return new DirtyPlaySpecialty(throwable);
-
-        if (detection.HasMeleeWeaponInDangerArea(out var weapon) &&
-            detection.IsCloserThanPlayer(weapon.transform.position))
-            return new MeleeWeaponSpecialty(weapon);
-
+        // Force BareKnuckle specialty for now (disable other specialties during debugging)
+        Debug.Log($"SpecialtyFactory.Resolve: forcing BareKnuckleSpecialty for {e.name}");
         return new BareKnuckleSpecialty();
    }
 }
@@ -58,8 +50,8 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        e.Stats.MaxHealth = 100;
-        e.Stats.CurrentHealth = 100;
+        // Do not override inspector values for MaxHealth/CurrentHealth.
+        // Preserve designer-set health and only adjust specialty-specific stats.
         e.Stats.Damage = 10;
     }
 
@@ -78,19 +70,16 @@ public class BareKnuckleSpecialty : IEnemySpecialty
          _chosenAttack = Atk_Consecutive; // Temporalmente desactivado combo - solo ataque básico
         _attackFired = false;
         _attackTimer = 0;
+        
+        // DEBUG: forzar impacto inmediato para verificar OverlapSphere
+        _prepDuration = 0f;
 
-        Debug.Log($"Elegí ataque {_chosenAttack} para {e.name}");
-
-        _prepDuration = _chosenAttack switch
-        {
-            Atk_Heavy => 1.0f,
-            Atk_Quick => 0.5f,
-            _ => 0.2f
-        };
+        Debug.Log($"BareKnuckleSpecialty.BeginAttackPhase: enemy={e.name} chosen={_chosenAttack} prepDuration={_prepDuration}");
     }
 
     public void TickAttack(EnemyController e, float elapsed)
     {
+        Debug.Log($"BareKnuckleSpecialty.TickAttack: enemy={e.name} elapsed={elapsed} prep={_prepDuration} attackFired={_attackFired}");
         if (elapsed >= _prepDuration && !_attackFired)
         {
             _attackFired = true;            
@@ -104,7 +93,8 @@ public class BareKnuckleSpecialty : IEnemySpecialty
             Vector3 center = e.transform.position + e.transform.forward * 1.25f + Vector3.up * 0.9f;
             float radius = 1.0f;
             float duration = 0.25f;
-            EnemyHitbox.Create(e, center, radius, Mathf.Max(1, e.Stats.Damage), duration);
+            
+            e.ApplyMeleeDamage(center, radius, Mathf.Max(1, e.Stats.Damage));
         }
     }
 
@@ -146,7 +136,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        e.Stats.MaxHealth = 150;
+        // Preserve existing MaxHealth set in inspector; only change damage and equip weapon.
         e.Stats.Damage    = 20;
         e.Stats.EquipWeapon(_weapon);
         _hasUsedAnAttack = false;
@@ -215,7 +205,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        e.Stats.MaxHealth = 50;
+        // Preserve existing MaxHealth set in inspector; only change damage and equip throwable.
         e.Stats.Damage    = 25;
         e.Stats.EquipThrowable(_heldObject);
     }
@@ -261,92 +251,5 @@ public class DirtyPlaySpecialty : IEnemySpecialty
     }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  Helper: Hitbox temporal y visible para depuración / impacto
-// ═══════════════════════════════════════════════════════════════════════════
-public class EnemyHitbox : MonoBehaviour
-{
-    EnemyController _owner;
-    int _damage;
-    float _expiryTime;
-    Material _mat;
-
-    public static void Create(EnemyController owner, Vector3 center, float radius, int damage, float duration)
-    {
-        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        go.name = owner.name + "_Hitbox";
-        go.transform.position = center;
-        go.transform.localScale = Vector3.one * radius * 2f;
-        var col = go.GetComponent<SphereCollider>();
-        col.isTrigger = true;
-        go.layer = LayerMask.NameToLayer("Ignore Raycast");
-        var hb = go.AddComponent<EnemyHitbox>();
-        hb._owner = owner;
-        hb._damage = damage;
-        hb._expiryTime = Time.time + duration;
-        var rend = go.GetComponent<MeshRenderer>();
-        if (rend != null)
-        {
-            hb._mat = new Material(Shader.Find("Standard"));
-            hb._mat.color = new Color(1f, 0f, 0f, 0.35f);
-            hb._mat.SetFloat("_Mode", 3);
-            hb._mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            hb._mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            hb._mat.SetInt("_ZWrite", 0);
-            hb._mat.DisableKeyword("_ALPHATEST_ON");
-            hb._mat.EnableKeyword("_ALPHABLEND_ON");
-            hb._mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            hb._mat.renderQueue = 3000;
-            rend.material = hb._mat;
-        }
-        var rb = go.AddComponent<Rigidbody>();
-        rb.isKinematic = true;
-    }
-
-    void Update()
-    {
-        if (Time.time >= _expiryTime)
-        {
-            if (_mat != null)
-                Destroy(_mat);
-            Destroy(gameObject);
-        }
-    }
-
-    void OnTriggerEnter(Collider other)
-    {
-        var healthController = other.GetComponentInParent<HealthController>();
-        if (healthController != null)
-        {
-            healthController.ApplyDamage(_damage);
-            other.SendMessage("OnHit", _owner.transform.position, SendMessageOptions.DontRequireReceiver);
-            if (_mat != null) Destroy(_mat);
-            Destroy(gameObject);
-            return;
-        }
-
-        if (other.CompareTag("Player"))
-        {
-            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
-            other.SendMessage("OnHit", _owner.transform.position, SendMessageOptions.DontRequireReceiver);
-            if (_mat != null) Destroy(_mat);
-            Destroy(gameObject);
-            return;
-        }
-        var pc = other.GetComponentInParent<PlayerController>();
-        if (pc != null)
-        {
-            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
-            if (_mat != null) Destroy(_mat);
-            Destroy(gameObject);
-            return;
-        }
-    }
-
-    void OnDestroy()
-    {
-        if (_mat != null)
-            Destroy(_mat);
-    }
-}
+    
 
