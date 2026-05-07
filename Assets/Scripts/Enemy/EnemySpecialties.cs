@@ -7,18 +7,18 @@ public interface IEnemySpecialty
 {
     void OnAssigned(EnemyController e);
 
-    // Comportamiento pasivo en combate (rodear, mantener distancia, etc.)
+    
     void UpdatePassiveBehavior(EnemyController e);
 
-    // Fases de ataque
+    
     void BeginAttackPhase(EnemyController e);
     void TickAttack(EnemyController e, float elapsed);
     void EndAttackPhase(EnemyController e);
 
-    // Defensa
+    
     bool PrefersBlock(EnemyController e);
 
-    // Al ser derrotado
+    
     void OnDefeated(EnemyController e);
 }
 
@@ -99,7 +99,8 @@ public class BareKnuckleSpecialty : IEnemySpecialty
             else e.Stats.Damage = 10;
 
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
-            e.Animator.SetTrigger(EnemyController.Hash_Attack);          
+            e.Animator.SetTrigger(EnemyController.Hash_Attack);
+            e.ApplyAttackColor();
             Vector3 center = e.transform.position + e.transform.forward * 1.25f + Vector3.up * 0.9f;
             float radius = 1.0f;
             float duration = 0.25f;
@@ -111,13 +112,14 @@ public class BareKnuckleSpecialty : IEnemySpecialty
     {
         e.Stats.Damage = 10;
         _attackFired = false;
+        e.EndAttackColor();
     }
 
     public bool PrefersBlock(EnemyController e) => Random.value > 0.5f;
 
     public void OnDefeated(EnemyController e)
     {
-         // Falta agregar: logica de curacion al jugador
+        
     }
 
     void TryPickupWeapon(EnemyController e)
@@ -135,7 +137,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 public class MeleeWeaponSpecialty : IEnemySpecialty
 {
     EnemyMeleeWeapon _weapon;
-    bool        _hasUsedAnAttack;   // condición para poder lanzar el arma
+    bool        _hasUsedAnAttack;   
     float       _scheduledAttackTime;
     bool        _attackFired;
     int         _pendingAttack;
@@ -157,12 +159,12 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void BeginAttackPhase(EnemyController e)
     {
-        // Elegir ataque: cargado, débil, o lanzar (si ya atacó antes)
+        
         int max = _hasUsedAnAttack ? 3 : 2;
         int choice = Random.Range(0, max);
         _scheduledAttackTime = Random.Range(0.2f, 4.5f);
 
-        // Guardar elección para TickAttack
+        
         _pendingAttack = choice;
         _attackFired   = false;
     }
@@ -175,6 +177,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
             _hasUsedAnAttack = true;
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _pendingAttack);
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
+            e.ApplyAttackColor();
 
             if (_pendingAttack == 2)  // Lanzar arma
             {
@@ -185,7 +188,11 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
         }
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void EndAttackPhase(EnemyController e)
+    {
+        _attackFired = false;
+        e.EndAttackColor();
+    }
 
     public bool PrefersBlock(EnemyController e) => true;  // siempre bloquea (reduce daño a 0)
 
@@ -231,7 +238,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
             _attackFired = true;
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, 0);  // Lanzar objeto
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
-            
+            e.ApplyAttackColor();
         }
     }
 
@@ -241,13 +248,16 @@ public class DirtyPlaySpecialty : IEnemySpecialty
         e.Stats.ReloadThrowable();
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void EndAttackPhase(EnemyController e)
+    {
+        _attackFired = false;
+        e.EndAttackColor();
+    }
 
-    public bool PrefersBlock(EnemyController e) => false;  // siempre prefiere alejarse
-
+    public bool PrefersBlock(EnemyController e) => false; 
     public void OnDefeated(EnemyController e)
     {
-        e.Stats.DropThrowable();   // el jugador puede recogerlo
+        e.Stats.DropThrowable();   
     }
 }
 
