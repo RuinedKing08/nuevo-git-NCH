@@ -12,20 +12,20 @@ public class ArrowController : MonoBehaviour
         }
         else
         {
-           /* if (Input.GetKeyUp(KeyCode.LeftAlt))
+            if (Input.GetKeyUp(KeyCode.LeftAlt))
             {
                 unlock = false;
                 WantTolockArrow();
-            }*/
+            }
             if (Time.timeScale == 1 && !unlock)
             {
                 WantTolockArrow();
             }
-            /*if (Input.GetKeyDown(KeyCode.LeftAlt))
+            if (Input.GetKeyDown(KeyCode.LeftAlt))
             {
                 unlock = true;
                 WantToUnlockArrow();
-            }*/
+            }
             if (Time.timeScale == 0)
             {
                 WantToUnlockArrow();
