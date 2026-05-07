@@ -75,17 +75,17 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 
     public void BeginAttackPhase(EnemyController e)
     {
-         _chosenAttack = Random.Range(0, 3);
+         _chosenAttack = Atk_Consecutive; // Temporalmente desactivado combo - solo ataque básico
         _attackFired = false;
         _attackTimer = 0;
 
         Debug.Log($"Elegí ataque {_chosenAttack} para {e.name}");
-        
+
         _prepDuration = _chosenAttack switch
         {
             Atk_Heavy => 1.0f,
             Atk_Quick => 0.5f,
-            _ => 0.2f 
+            _ => 0.2f
         };
     }
 
