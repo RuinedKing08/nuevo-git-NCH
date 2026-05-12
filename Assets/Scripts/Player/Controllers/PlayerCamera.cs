@@ -127,4 +127,19 @@ public class PlayerCamera : MonoBehaviour
         return lockOnTarget != null;
        
     } 
+
+    public void UpdateLockOnTarget(PlayerController playerController = null)
+    {        
+        if (lockOnTarget == null || Vector3.Distance(transform.position, lockOnTarget.position) > maxLockOnDistance)
+        {
+            if (!TrylockOnTarget())
+            {                
+                lockOnTarget = null;
+                if (playerController != null)
+                {
+                    playerController.LockOn = false;
+                }
+            }
+        }
+    }
 }

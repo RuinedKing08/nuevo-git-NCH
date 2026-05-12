@@ -66,6 +66,11 @@ public class PlayerController : MonoBehaviour
         playerAnimations.UpdateProperties(_playerState);
         playerAnimations.UpdateAnimator();
         playerCamera.BeforeCameraUpdate();
+        
+        if (LockOn)
+        {
+            playerCamera.UpdateLockOnTarget(this);
+        }
     }
 
     public void FixedUpdate()

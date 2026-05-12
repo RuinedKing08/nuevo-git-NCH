@@ -7,18 +7,18 @@ public interface IEnemySpecialty
 {
     void OnAssigned(EnemyController e);
 
-    // Comportamiento pasivo en combate (rodear, mantener distancia, etc.)
+    
     void UpdatePassiveBehavior(EnemyController e);
 
-    // Fases de ataque
+    
     void BeginAttackPhase(EnemyController e);
     void TickAttack(EnemyController e, float elapsed);
     void EndAttackPhase(EnemyController e);
 
-    // Defensa
+    
     bool PrefersBlock(EnemyController e);
 
-    // Al ser derrotado
+    
     void OnDefeated(EnemyController e);
 }
 
@@ -29,9 +29,8 @@ public static class SpecialtyFactory
 {
     public static IEnemySpecialty Resolve(EnemyController e)
     {
-        var detection = e.Detection;
+        var detection = e.Detection;        
         
-        // Prioridad: Juego Sucio > Arma Blanca > Puño Limpio
         if (detection.HasThrowableObjectInDangerArea(out var throwable) &&
             detection.IsCloserThanPlayer(throwable.transform.position))
             return new DirtyPlaySpecialty(throwable);
@@ -48,48 +47,73 @@ public static class SpecialtyFactory
 // ═══════════════════════════════════════════════════════════════════════════
 public class BareKnuckleSpecialty : IEnemySpecialty
 {
-    // Ataques disponibles (índices para el Animator)
-    const int Atk_Consecutive = 0;   // Golpes consecutivos (x3)
-    const int Atk_Heavy       = 1;   // Golpe fuerte
-    const int Atk_Quick       = 2;   // Golpe rápido
+    const int Atk_Consecutive = 0;   
+    const int Atk_Heavy       = 1;   
+    const int Atk_Quick       = 2;   
 
-    float _scheduledAttackTime;
+    float _attackTimer;
     int   _chosenAttack;
     bool  _attackFired;
+    float _prepDuration;
 
     public void OnAssigned(EnemyController e)
     {
         e.Stats.MaxHealth = 100;
-        e.Stats.Damage    = 10;
-        // Prioridad 10: atacar a matar (no busca objetos)
+        e.Stats.CurrentHealth = 100;
+        e.Stats.Damage = 10;
     }
 
     public void UpdatePassiveBehavior(EnemyController e)
     {
         e.CombatState.DoOrbit(radius: 3.5f, speedMultiplier: 1.2f);
+
+         if (e.CombatState.GetSubStateName() != "AttackSubState")
+         {
+              TryPickupWeapon(e);
+         }
     }
 
     public void BeginAttackPhase(EnemyController e)
     {
-        _chosenAttack        = Random.Range(0, 3);
-        _scheduledAttackTime = Random.Range(0.2f, 4.5f);  // dentro de la ventana de 5s
-        _attackFired         = false;
+         _chosenAttack = Random.Range(0, 3);
+        _attackFired = false;
+        _attackTimer = 0;
+
+        Debug.Log($"Elegí ataque {_chosenAttack} para {e.name}");
+        
+        _prepDuration = _chosenAttack switch
+        {
+            Atk_Heavy => 1.0f,
+            Atk_Quick => 0.5f,
+            _ => 0.2f 
+        };
     }
 
     public void TickAttack(EnemyController e, float elapsed)
     {
-        if (elapsed >= _scheduledAttackTime && !_attackFired)
+        if (elapsed >= _prepDuration && !_attackFired)
         {
-            _attackFired = true;
-            e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
-            e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
+            _attackFired = true;            
+            
+            if (_chosenAttack == Atk_Heavy) e.Stats.Damage = 20;
+            else e.Stats.Damage = 10;
 
-            // Intentar equiparse si ve un arma cerca y no está atacando
-            TryPickupWeapon(e);
+            e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
+            e.Animator.SetTrigger(EnemyController.Hash_Attack);
+            e.ApplyAttackColor();
+            Vector3 center = e.transform.position + e.transform.forward * 1.25f + Vector3.up * 0.9f;
+            float radius = 1.0f;
+            float duration = 0.25f;
+            EnemyHitbox.Create(e, center, radius, Mathf.Max(1, e.Stats.Damage), duration);
         }
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void EndAttackPhase(EnemyController e)
+    {
+        e.Stats.Damage = 10;
+        _attackFired = false;
+        e.EndAttackColor();
+    }
 
     public bool PrefersBlock(EnemyController e) => Random.value > 0.5f;
 
@@ -101,9 +125,9 @@ public class BareKnuckleSpecialty : IEnemySpecialty
     void TryPickupWeapon(EnemyController e)
     {
         if (e.Detection.HasMeleeWeaponInDangerArea(out var weapon))
+        {
             e.Stats.SetSpecialty(new MeleeWeaponSpecialty(weapon));
-        else if (e.Detection.HasThrowableObjectInDangerArea(out var throwable))
-            e.Stats.SetSpecialty(new DirtyPlaySpecialty(throwable));
+        }
     }
 }
 
@@ -113,7 +137,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
 public class MeleeWeaponSpecialty : IEnemySpecialty
 {
     EnemyMeleeWeapon _weapon;
-    bool        _hasUsedAnAttack;   // condición para poder lanzar el arma
+    bool        _hasUsedAnAttack;   
     float       _scheduledAttackTime;
     bool        _attackFired;
     int         _pendingAttack;
@@ -135,12 +159,12 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
     public void BeginAttackPhase(EnemyController e)
     {
-        // Elegir ataque: cargado, débil, o lanzar (si ya atacó antes)
+        
         int max = _hasUsedAnAttack ? 3 : 2;
         int choice = Random.Range(0, max);
         _scheduledAttackTime = Random.Range(0.2f, 4.5f);
 
-        // Guardar elección para TickAttack
+        
         _pendingAttack = choice;
         _attackFired   = false;
     }
@@ -153,6 +177,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
             _hasUsedAnAttack = true;
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _pendingAttack);
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
+            e.ApplyAttackColor();
 
             if (_pendingAttack == 2)  // Lanzar arma
             {
@@ -163,7 +188,11 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
         }
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void EndAttackPhase(EnemyController e)
+    {
+        _attackFired = false;
+        e.EndAttackColor();
+    }
 
     public bool PrefersBlock(EnemyController e) => true;  // siempre bloquea (reduce daño a 0)
 
@@ -209,7 +238,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
             _attackFired = true;
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, 0);  // Lanzar objeto
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
-            
+            e.ApplyAttackColor();
         }
     }
 
@@ -219,13 +248,95 @@ public class DirtyPlaySpecialty : IEnemySpecialty
         e.Stats.ReloadThrowable();
     }
 
-    public void EndAttackPhase(EnemyController e) => _attackFired = false;
+    public void EndAttackPhase(EnemyController e)
+    {
+        _attackFired = false;
+        e.EndAttackColor();
+    }
 
-    public bool PrefersBlock(EnemyController e) => false;  // siempre prefiere alejarse
-
+    public bool PrefersBlock(EnemyController e) => false; 
     public void OnDefeated(EnemyController e)
     {
-        e.Stats.DropThrowable();   // el jugador puede recogerlo
+        e.Stats.DropThrowable();   
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  Helper: Hitbox temporal y visible para depuración / impacto
+// ═══════════════════════════════════════════════════════════════════════════
+public class EnemyHitbox : MonoBehaviour
+{
+    EnemyController _owner;
+    int _damage;
+    float _expiryTime;
+    Material _mat;
+
+    public static void Create(EnemyController owner, Vector3 center, float radius, int damage, float duration)
+    {
+        var go = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        go.name = owner.name + "_Hitbox";
+        go.transform.position = center;
+        go.transform.localScale = Vector3.one * radius * 2f;
+        var col = go.GetComponent<SphereCollider>();
+        col.isTrigger = true;
+        go.layer = LayerMask.NameToLayer("Ignore Raycast");
+        var hb = go.AddComponent<EnemyHitbox>();
+        hb._owner = owner;
+        hb._damage = damage;
+        hb._expiryTime = Time.time + duration;
+        var rend = go.GetComponent<MeshRenderer>();
+        if (rend != null)
+        {
+            hb._mat = new Material(Shader.Find("Standard"));
+            hb._mat.color = new Color(1f, 0f, 0f, 0.35f);
+            hb._mat.SetFloat("_Mode", 3);
+            hb._mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            hb._mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            hb._mat.SetInt("_ZWrite", 0);
+            hb._mat.DisableKeyword("_ALPHATEST_ON");
+            hb._mat.EnableKeyword("_ALPHABLEND_ON");
+            hb._mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            hb._mat.renderQueue = 3000;
+            rend.material = hb._mat;
+        }
+        var rb = go.AddComponent<Rigidbody>();
+        rb.isKinematic = true;
+    }
+
+    void Update()
+    {
+        if (Time.time >= _expiryTime)
+        {
+            if (_mat != null)
+                Destroy(_mat);
+            Destroy(gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
+            other.SendMessage("OnHit", _owner.transform.position, SendMessageOptions.DontRequireReceiver);
+            if (_mat != null) Destroy(_mat);
+            Destroy(gameObject);
+            return;
+        }
+        var pc = other.GetComponentInParent<PlayerController>();
+        if (pc != null)
+        {
+            other.SendMessage("TakeDamage", _damage, SendMessageOptions.DontRequireReceiver);
+            if (_mat != null) Destroy(_mat);
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    void OnDestroy()
+    {
+        if (_mat != null)
+            Destroy(_mat);
     }
 }
 
