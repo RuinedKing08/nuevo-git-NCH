@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.InputSystem;
 public class PlayerMove : MonoBehaviour
 {
     Rigidbody rb;
@@ -12,16 +12,22 @@ public class PlayerMove : MonoBehaviour
     [Header("Rotationt Variables")]
     [SerializeField] float rotateSpeed;
     [SerializeField] Transform cam;
-
+    [Header("SideStep Variables")]
+    [SerializeField] float sideStepForce;
+    [SerializeField] float sideStepDistance;
+    [SerializeField] LayerMask layers;
+    bool sideStepActivated;
+    float timerSideStep;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        InputsParent.Instance.SideStepInput().performed += SideStep;
     }
     void Update()
     {
         GetInput();
         SpeedLimit();
-        
+        TimerSideStep();
     }
     private void FixedUpdate()
     {
@@ -30,17 +36,7 @@ public class PlayerMove : MonoBehaviour
     }
     private void Movement()
     {
-        /*Vector3 vel = Vector3.zero;
-        if(moveXfloat != 0 || moveZfloat != 0 )
-        {
-            Vector3 direction = (transform.forward * moveZfloat + transform.right * moveXfloat).normalized;
-            vel = direction * moveSpeed;
-        }
-        vel.y = rb.linearVelocity.y;
-        rb.linearVelocity = vel;*/
-
         Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
-        //Debug.Log(direction.magnitude);
         Vector3 vel = Vector3.zero;
         if (direction.magnitude >= 0.1f)
         {
@@ -70,6 +66,39 @@ public class PlayerMove : MonoBehaviour
             Vector3 limitVel = flatVel.normalized * moveSpeed;
             rb.linearVelocity = new Vector3(limitVel.x, rb.linearVelocity.y, limitVel.z);
             //rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
+        }
+    }
+    
+    void SideStep(InputAction.CallbackContext context)
+    {
+        if (!sideStepActivated)
+        {
+            Vector3 direction = transform.forward;
+            direction.y = 0;
+            direction.Normalize();
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, sideStepDistance, layers))
+            {
+                float safeDis = hit.distance - 0.5f;
+                if (safeDis < 0) safeDis = 0;
+                rb.AddForce(direction * safeDis, ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(direction * sideStepForce, ForceMode.Impulse);
+                sideStepActivated = true;
+            }            
+        }
+    }
+    void TimerSideStep()
+    {
+        if (sideStepActivated)
+        {
+            timerSideStep += Time.deltaTime;
+            if(timerSideStep >= 0.5f)
+            {
+                sideStepActivated = false;
+                timerSideStep = 0;
+            }
         }
     }
     private void GetInput()

@@ -2,16 +2,14 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    InputsParent inputs;
     [SerializeField] GameObject hitCollider;
     [Header("Input Values")]
-    [SerializeField] public float attackfloat;
+    [SerializeField] public float lightAttackfloat;
 
     
     void Start()
     {
         hitCollider.SetActive(false);
-        inputs = GameObject.FindWithTag("Player").GetComponent<InputsParent>();
     }
     [SerializeField] float timer;
     bool timerOn;
@@ -22,7 +20,7 @@ public class PlayerAttack : MonoBehaviour
     }
     private void Attack()
     {
-        if (attackfloat > 0)
+        if (lightAttackfloat > 0)
         {
             hitCollider.SetActive(true);
             timerOn = true;
@@ -40,6 +38,6 @@ public class PlayerAttack : MonoBehaviour
     }
     private void GetInput()
     {
-        attackfloat = inputs.AttackInput().ReadValue<float>();
+        lightAttackfloat = InputsParent.Instance.LightAttackInput().ReadValue<float>();
     }
 }
