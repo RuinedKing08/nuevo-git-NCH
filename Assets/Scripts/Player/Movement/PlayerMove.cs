@@ -40,7 +40,7 @@ public class PlayerMove : MonoBehaviour
         rb.linearVelocity = vel;*/
 
         Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
-        Debug.Log(direction.magnitude);
+        //Debug.Log(direction.magnitude);
         Vector3 vel = Vector3.zero;
         if (direction.magnitude >= 0.1f)
         {

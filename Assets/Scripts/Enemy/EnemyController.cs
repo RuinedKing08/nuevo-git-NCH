@@ -235,6 +235,36 @@ public class EnemyController : MonoBehaviour
         enabled = false;
         Destroy(gameObject, 2f);
     }
+
+    
+    public void ApplyMeleeDamage(Vector3 center, float radius, int damage)
+    {
+        Debug.Log($"ApplyMeleeDamage: center={center} radius={radius} damage={damage}");
+        var cols = Physics.OverlapSphere(center, radius);
+        Debug.Log($"ApplyMeleeDamage: OverlapSphere found {cols.Length} colliders");
+        foreach (var c in cols)
+        {
+            Debug.Log($" ApplyMeleeDamage collider: {c.name} layer={LayerMask.LayerToName(c.gameObject.layer)}");
+            var ph = c.GetComponentInParent<PlayerHealth>();
+            if (ph != null)
+            {
+                Debug.Log($" ApplyMeleeDamage -> applying {damage} to PlayerHealth on {ph.gameObject.name}");
+                ph.TakeDamage(damage);
+                var pc = c.GetComponentInParent<PlayerController>();
+                pc?.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
+
+            var pcFallback = c.GetComponentInParent<PlayerController>();
+            if (pcFallback != null)
+            {
+                Debug.Log($" ApplyMeleeDamage -> sending TakeDamage to PlayerController on {pcFallback.gameObject.name}");
+                pcFallback.gameObject.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
+                pcFallback.gameObject.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
+        }
+    }
     void TryRegisterToNearestCombatGroup()
     {
         var groups = FindObjectsOfType<EnemyCombatGroup>();
