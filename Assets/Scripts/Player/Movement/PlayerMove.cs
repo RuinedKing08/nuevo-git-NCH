@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
+using System.Collections.Generic;
 public class PlayerMove : MonoBehaviour
 {
     Rigidbody rb;
@@ -15,13 +17,16 @@ public class PlayerMove : MonoBehaviour
     [Header("SideStep Variables")]
     [SerializeField] float sideStepForce;
     [SerializeField] float sideStepDistance;
+    [SerializeField] float sideStepDuration;
     [SerializeField] LayerMask layers;
     bool sideStepActivated;
-    float timerSideStep;
+    [SerializeField] float timerSideStep;
+    [SerializeField] float maxTimerSideStep;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         InputsParent.Instance.SideStepInput().performed += SideStep;
+        StartCoroutine(SideStepOn());
     }
     void Update()
     {
@@ -31,8 +36,11 @@ public class PlayerMove : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Movement();
-        
+        if (!sideStepActivated)
+        {
+            Movement();
+
+        }
     }
     private void Movement()
     {
@@ -73,7 +81,8 @@ public class PlayerMove : MonoBehaviour
     {
         if (!sideStepActivated)
         {
-            Vector3 direction = transform.forward;
+            sideStepActivated = true;
+            /*Vector3 direction = transform.forward;
             direction.y = 0;
             direction.Normalize();
             if (Physics.Raycast(transform.position, direction, out RaycastHit hit, sideStepDistance, layers))
@@ -86,15 +95,48 @@ public class PlayerMove : MonoBehaviour
             {
                 rb.AddForce(direction * sideStepForce, ForceMode.Impulse);
                 sideStepActivated = true;
-            }            
+            }    */
         }
+    }
+    IEnumerator SideStepOn()
+    {
+        while (true)
+        {
+            yield return null;
+            while (sideStepActivated)
+            {
+                Vector3 direction = transform.forward;
+                float startTime = Time.time;
+                rb.linearVelocity = Vector3.zero;
+                if (Physics.Raycast(transform.position, direction, out RaycastHit hit, sideStepDistance, layers))
+                {
+                    float safeDis = hit.distance - 0.5f;
+                    if (safeDis < 0) safeDis = 0;
+                    while (Time.time < startTime + sideStepDuration)
+                    {
+                        rb.linearVelocity = direction * safeDis;
+                        yield return null;
+                    }
+                }
+                else
+                {
+                    while (Time.time < startTime + sideStepDuration)
+                    {
+                        rb.linearVelocity = direction * sideStepForce;
+                        yield return null;
+                    }
+                    rb.linearVelocity = Vector3.zero;
+                }   
+            }
+        }
+        
     }
     void TimerSideStep()
     {
         if (sideStepActivated)
         {
             timerSideStep += Time.deltaTime;
-            if(timerSideStep >= 0.5f)
+            if(timerSideStep >= maxTimerSideStep)
             {
                 sideStepActivated = false;
                 timerSideStep = 0;

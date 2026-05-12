@@ -634,7 +634,7 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""970a62a1-e9cb-448d-a56d-f99bf4bbb05f"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

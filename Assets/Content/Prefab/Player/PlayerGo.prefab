@@ -284,11 +284,14 @@ MonoBehaviour:
   moveSpeed: 10
   rotateSpeed: 10
   cam: {fileID: 0}
-  sideStepForce: 35
-  sideStepDistance: 1.75
+  sideStepForce: 20
+  sideStepDistance: 3
+  sideStepDuration: 0.18
   layers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 31
+  timerSideStep: 0
+  maxTimerSideStep: 0.18
 --- !u!114 &2540410287005200011
 MonoBehaviour:
   m_ObjectHideFlags: 0
