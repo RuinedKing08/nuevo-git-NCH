@@ -1097,9 +1097,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PlayerAttack",
+                    "name": "LightAttack",
                     "type": "Button",
                     "id": "583eaca6-fc70-4c06-ab26-49c2edb14536",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "HeavyAttack",
+                    "type": "Button",
+                    "id": "a7bfde56-d612-4c1f-8357-c9b24f9c2cc2",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1115,9 +1124,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Throw",
+                    "name": "Block",
                     "type": "Button",
-                    "id": "95c1f491-9ac9-4f68-974c-705b723d753c",
+                    "id": "8dc5baeb-b73a-46aa-9b69-84cfb49846d9",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1127,6 +1136,24 @@
                     "name": "LockOn",
                     "type": "Button",
                     "id": "8b3b743c-1d83-40be-86b1-b7b54e97989d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SideStep",
+                    "type": "Button",
+                    "id": "e395b6fe-b978-41b7-8d62-54f40105d226",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Throw",
+                    "type": "Button",
+                    "id": "95c1f491-9ac9-4f68-974c-705b723d753c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1207,7 +1234,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "PlayerAttack",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1236,11 +1263,44 @@
                 {
                     "name": "",
                     "id": "ff0dfaa4-1138-4487-91c4-ec9da88997e7",
-                    "path": "<Keyboard>/r",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "LockOn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8f18bc6a-1202-4f9d-bc87-404c365726ab",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "SideStep",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "770d540b-14b4-43db-a3fc-d7d7688772b5",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Block",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fedb0442-d513-4a0d-b227-6462c20caa79",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "HeavyAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

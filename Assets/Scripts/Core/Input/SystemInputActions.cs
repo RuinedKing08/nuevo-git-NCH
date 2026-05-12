@@ -1183,9 +1183,18 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PlayerAttack"",
+                    ""name"": ""LightAttack"",
                     ""type"": ""Button"",
                     ""id"": ""583eaca6-fc70-4c06-ab26-49c2edb14536"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""HeavyAttack"",
+                    ""type"": ""Button"",
+                    ""id"": ""a7bfde56-d612-4c1f-8357-c9b24f9c2cc2"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1201,9 +1210,9 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Throw"",
+                    ""name"": ""Block"",
                     ""type"": ""Button"",
-                    ""id"": ""95c1f491-9ac9-4f68-974c-705b723d753c"",
+                    ""id"": ""8dc5baeb-b73a-46aa-9b69-84cfb49846d9"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1213,6 +1222,24 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""name"": ""LockOn"",
                     ""type"": ""Button"",
                     ""id"": ""8b3b743c-1d83-40be-86b1-b7b54e97989d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SideStep"",
+                    ""type"": ""Button"",
+                    ""id"": ""e395b6fe-b978-41b7-8d62-54f40105d226"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""95c1f491-9ac9-4f68-974c-705b723d753c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -1293,7 +1320,7 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""PlayerAttack"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -1322,11 +1349,44 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""ff0dfaa4-1138-4487-91c4-ec9da88997e7"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""path"": ""<Keyboard>/space"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""LockOn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8f18bc6a-1202-4f9d-bc87-404c365726ab"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SideStep"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""770d540b-14b4-43db-a3fc-d7d7688772b5"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""Block"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fedb0442-d513-4a0d-b227-6462c20caa79"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""HeavyAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1426,10 +1486,13 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         m_PlayerAction = asset.FindActionMap("PlayerAction", throwIfNotFound: true);
         m_PlayerAction_PlayerMoveX = m_PlayerAction.FindAction("PlayerMoveX", throwIfNotFound: true);
         m_PlayerAction_PlayerMoveZ = m_PlayerAction.FindAction("PlayerMoveZ", throwIfNotFound: true);
-        m_PlayerAction_PlayerAttack = m_PlayerAction.FindAction("PlayerAttack", throwIfNotFound: true);
+        m_PlayerAction_LightAttack = m_PlayerAction.FindAction("LightAttack", throwIfNotFound: true);
+        m_PlayerAction_HeavyAttack = m_PlayerAction.FindAction("HeavyAttack", throwIfNotFound: true);
         m_PlayerAction_Interaction = m_PlayerAction.FindAction("Interaction", throwIfNotFound: true);
-        m_PlayerAction_Throw = m_PlayerAction.FindAction("Throw", throwIfNotFound: true);
+        m_PlayerAction_Block = m_PlayerAction.FindAction("Block", throwIfNotFound: true);
         m_PlayerAction_LockOn = m_PlayerAction.FindAction("LockOn", throwIfNotFound: true);
+        m_PlayerAction_SideStep = m_PlayerAction.FindAction("SideStep", throwIfNotFound: true);
+        m_PlayerAction_Throw = m_PlayerAction.FindAction("Throw", throwIfNotFound: true);
     }
 
     ~@SystemInputActions()
@@ -1926,10 +1989,13 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
     private List<IPlayerActionActions> m_PlayerActionActionsCallbackInterfaces = new List<IPlayerActionActions>();
     private readonly InputAction m_PlayerAction_PlayerMoveX;
     private readonly InputAction m_PlayerAction_PlayerMoveZ;
-    private readonly InputAction m_PlayerAction_PlayerAttack;
+    private readonly InputAction m_PlayerAction_LightAttack;
+    private readonly InputAction m_PlayerAction_HeavyAttack;
     private readonly InputAction m_PlayerAction_Interaction;
-    private readonly InputAction m_PlayerAction_Throw;
+    private readonly InputAction m_PlayerAction_Block;
     private readonly InputAction m_PlayerAction_LockOn;
+    private readonly InputAction m_PlayerAction_SideStep;
+    private readonly InputAction m_PlayerAction_Throw;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerAction".
     /// </summary>
@@ -1950,21 +2016,33 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @PlayerMoveZ => m_Wrapper.m_PlayerAction_PlayerMoveZ;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerAction/PlayerAttack".
+        /// Provides access to the underlying input action "PlayerAction/LightAttack".
         /// </summary>
-        public InputAction @PlayerAttack => m_Wrapper.m_PlayerAction_PlayerAttack;
+        public InputAction @LightAttack => m_Wrapper.m_PlayerAction_LightAttack;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerAction/HeavyAttack".
+        /// </summary>
+        public InputAction @HeavyAttack => m_Wrapper.m_PlayerAction_HeavyAttack;
         /// <summary>
         /// Provides access to the underlying input action "PlayerAction/Interaction".
         /// </summary>
         public InputAction @Interaction => m_Wrapper.m_PlayerAction_Interaction;
         /// <summary>
-        /// Provides access to the underlying input action "PlayerAction/Throw".
+        /// Provides access to the underlying input action "PlayerAction/Block".
         /// </summary>
-        public InputAction @Throw => m_Wrapper.m_PlayerAction_Throw;
+        public InputAction @Block => m_Wrapper.m_PlayerAction_Block;
         /// <summary>
         /// Provides access to the underlying input action "PlayerAction/LockOn".
         /// </summary>
         public InputAction @LockOn => m_Wrapper.m_PlayerAction_LockOn;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerAction/SideStep".
+        /// </summary>
+        public InputAction @SideStep => m_Wrapper.m_PlayerAction_SideStep;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerAction/Throw".
+        /// </summary>
+        public InputAction @Throw => m_Wrapper.m_PlayerAction_Throw;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1997,18 +2075,27 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
             @PlayerMoveZ.started += instance.OnPlayerMoveZ;
             @PlayerMoveZ.performed += instance.OnPlayerMoveZ;
             @PlayerMoveZ.canceled += instance.OnPlayerMoveZ;
-            @PlayerAttack.started += instance.OnPlayerAttack;
-            @PlayerAttack.performed += instance.OnPlayerAttack;
-            @PlayerAttack.canceled += instance.OnPlayerAttack;
+            @LightAttack.started += instance.OnLightAttack;
+            @LightAttack.performed += instance.OnLightAttack;
+            @LightAttack.canceled += instance.OnLightAttack;
+            @HeavyAttack.started += instance.OnHeavyAttack;
+            @HeavyAttack.performed += instance.OnHeavyAttack;
+            @HeavyAttack.canceled += instance.OnHeavyAttack;
             @Interaction.started += instance.OnInteraction;
             @Interaction.performed += instance.OnInteraction;
             @Interaction.canceled += instance.OnInteraction;
-            @Throw.started += instance.OnThrow;
-            @Throw.performed += instance.OnThrow;
-            @Throw.canceled += instance.OnThrow;
+            @Block.started += instance.OnBlock;
+            @Block.performed += instance.OnBlock;
+            @Block.canceled += instance.OnBlock;
             @LockOn.started += instance.OnLockOn;
             @LockOn.performed += instance.OnLockOn;
             @LockOn.canceled += instance.OnLockOn;
+            @SideStep.started += instance.OnSideStep;
+            @SideStep.performed += instance.OnSideStep;
+            @SideStep.canceled += instance.OnSideStep;
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
         }
 
         /// <summary>
@@ -2026,18 +2113,27 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
             @PlayerMoveZ.started -= instance.OnPlayerMoveZ;
             @PlayerMoveZ.performed -= instance.OnPlayerMoveZ;
             @PlayerMoveZ.canceled -= instance.OnPlayerMoveZ;
-            @PlayerAttack.started -= instance.OnPlayerAttack;
-            @PlayerAttack.performed -= instance.OnPlayerAttack;
-            @PlayerAttack.canceled -= instance.OnPlayerAttack;
+            @LightAttack.started -= instance.OnLightAttack;
+            @LightAttack.performed -= instance.OnLightAttack;
+            @LightAttack.canceled -= instance.OnLightAttack;
+            @HeavyAttack.started -= instance.OnHeavyAttack;
+            @HeavyAttack.performed -= instance.OnHeavyAttack;
+            @HeavyAttack.canceled -= instance.OnHeavyAttack;
             @Interaction.started -= instance.OnInteraction;
             @Interaction.performed -= instance.OnInteraction;
             @Interaction.canceled -= instance.OnInteraction;
-            @Throw.started -= instance.OnThrow;
-            @Throw.performed -= instance.OnThrow;
-            @Throw.canceled -= instance.OnThrow;
+            @Block.started -= instance.OnBlock;
+            @Block.performed -= instance.OnBlock;
+            @Block.canceled -= instance.OnBlock;
             @LockOn.started -= instance.OnLockOn;
             @LockOn.performed -= instance.OnLockOn;
             @LockOn.canceled -= instance.OnLockOn;
+            @SideStep.started -= instance.OnSideStep;
+            @SideStep.performed -= instance.OnSideStep;
+            @SideStep.canceled -= instance.OnSideStep;
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
         }
 
         /// <summary>
@@ -2328,12 +2424,19 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPlayerMoveZ(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "PlayerAttack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "LightAttack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnPlayerAttack(InputAction.CallbackContext context);
+        void OnLightAttack(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "HeavyAttack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHeavyAttack(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Interaction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
@@ -2342,12 +2445,12 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteraction(InputAction.CallbackContext context);
         /// <summary>
-        /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "Block" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnThrow(InputAction.CallbackContext context);
+        void OnBlock(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "LockOn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
@@ -2355,5 +2458,19 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLockOn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SideStep" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSideStep(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Throw" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnThrow(InputAction.CallbackContext context);
     }
 }
