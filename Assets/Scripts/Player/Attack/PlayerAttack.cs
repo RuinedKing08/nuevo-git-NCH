@@ -2,44 +2,64 @@ using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    InputsParent inputs;
     [SerializeField] GameObject hitCollider;
+    [SerializeField] GameObject hitColliderHeavy;
     [Header("Input Values")]
-    [SerializeField] public float attackfloat;
+    [SerializeField] public float lightAttackfloat;
+    [SerializeField] public float heavyAttackfloat;
+    float timerLight, timerHeavy;
 
-    
     void Start()
     {
         hitCollider.SetActive(false);
-        inputs = GameObject.FindWithTag("Player").GetComponent<InputsParent>();
     }
-    [SerializeField] float timer;
+    
     bool timerOn;
     void Update()
     {
         GetInput();
-        Attack();
+        LightAttack();
     }
-    private void Attack()
+    private void LightAttack()
     {
-        if (attackfloat > 0)
+        if (lightAttackfloat > 0)
         {
             hitCollider.SetActive(true);
             timerOn = true;
         }
         if (timerOn)
         {
-            timer += Time.deltaTime;
+            timerLight += Time.deltaTime;
+            if (timerLight >= 0.4f)
+            {
+                hitCollider.SetActive(false);
+                timerLight = 0;
+                timerOn = false;
+            }
         }
-        if (timer >= 0.4f)
+    }
+    private void HeavyAttack()
+    {
+        if (heavyAttackfloat > 0)
         {
-            hitCollider.SetActive(false);
-            timer = 0;
-            timerOn = false;
+            hitColliderHeavy.SetActive(true);
+            timerOn = true;
+        }
+        if (timerOn)
+        {
+            timerHeavy += Time.deltaTime;
+
+            if (timerHeavy >= 0.4f)
+            {
+                hitColliderHeavy.SetActive(false);
+                timerHeavy = 0;
+                timerOn = false;
+            }
         }
     }
     private void GetInput()
     {
-        attackfloat = inputs.AttackInput().ReadValue<float>();
+        lightAttackfloat = InputsParent.Instance.LightAttackInput().ReadValue<float>();
+        heavyAttackfloat = InputsParent.Instance.HeavyAttackInput().ReadValue<float>();
     }
 }

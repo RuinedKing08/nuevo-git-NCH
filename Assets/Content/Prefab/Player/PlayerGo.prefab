@@ -247,9 +247,11 @@ MonoBehaviour:
   moveX: {fileID: 4389398138247705333, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   moveZ: {fileID: 2963529052396742954, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   interaction: {fileID: -4783851633675043245, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  attack: {fileID: -719493453844578930, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  lightAttack: {fileID: -719493453844578930, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  heavyAttack: {fileID: 8594842635905794816, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   throwI: {fileID: -360913258185141060, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lockOn: {fileID: -8758271524718880939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  sideStep: {fileID: -2092556331638605850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &5348921843886745016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,8 +265,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   hitCollider: {fileID: 1273533528077297247}
-  attackfloat: 0
-  timer: 0
+  hitColliderHeavy: {fileID: 0}
+  lightAttackfloat: 0
+  heavyAttackfloat: 0
 --- !u!114 &7357183514607760246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -282,6 +285,19 @@ MonoBehaviour:
   moveSpeed: 10
   rotateSpeed: 10
   cam: {fileID: 0}
+  sideStepForce: 20
+  sideStepDistanceToWall: 3
+  sideStepDuration: 0.16
+  layers:
+    serializedVersion: 2
+    m_Bits: 31
+  timerSideStep: 0
+  maxTimerSideStep: 0.5
+  targetGroup: {fileID: 0}
+  lockOnRadius: 20
+  lockOnLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &2540410287005200011
 MonoBehaviour:
   m_ObjectHideFlags: 0
