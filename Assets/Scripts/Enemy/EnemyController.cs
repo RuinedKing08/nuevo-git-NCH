@@ -89,7 +89,7 @@ public class EnemyController : MonoBehaviour
         
         StateMachine.Initialize(initialState);
         Stats.NavAgent.avoidancePriority = Random.Range(0, 100);
-        Debug.Log("Estado inicial: " + initialState.GetType().Name);
+        //Debug.Log("Estado inicial: " + initialState.GetType().Name);
     }
 
 
@@ -239,16 +239,16 @@ public class EnemyController : MonoBehaviour
     
     public void ApplyMeleeDamage(Vector3 center, float radius, int damage)
     {
-        Debug.Log($"ApplyMeleeDamage: center={center} radius={radius} damage={damage}");
+       // Debug.Log($"ApplyMeleeDamage: center={center} radius={radius} damage={damage}");
         var cols = Physics.OverlapSphere(center, radius);
-        Debug.Log($"ApplyMeleeDamage: OverlapSphere found {cols.Length} colliders");
+       // Debug.Log($"ApplyMeleeDamage: OverlapSphere found {cols.Length} colliders");
         foreach (var c in cols)
         {
-            Debug.Log($" ApplyMeleeDamage collider: {c.name} layer={LayerMask.LayerToName(c.gameObject.layer)}");
+            //Debug.Log($" ApplyMeleeDamage collider: {c.name} layer={LayerMask.LayerToName(c.gameObject.layer)}");
             var ph = c.GetComponentInParent<PlayerHealth>();
             if (ph != null)
             {
-                Debug.Log($" ApplyMeleeDamage -> applying {damage} to PlayerHealth on {ph.gameObject.name}");
+               // Debug.Log($" ApplyMeleeDamage -> applying {damage} to PlayerHealth on {ph.gameObject.name}");
                 ph.TakeDamage(damage);
                 var pc = c.GetComponentInParent<PlayerController>();
                 pc?.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
@@ -258,7 +258,7 @@ public class EnemyController : MonoBehaviour
             var pcFallback = c.GetComponentInParent<PlayerController>();
             if (pcFallback != null)
             {
-                Debug.Log($" ApplyMeleeDamage -> sending TakeDamage to PlayerController on {pcFallback.gameObject.name}");
+                //Debug.Log($" ApplyMeleeDamage -> sending TakeDamage to PlayerController on {pcFallback.gameObject.name}");
                 pcFallback.gameObject.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
                 pcFallback.gameObject.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
                 return;

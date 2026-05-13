@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using System;
 
 public class EnemyCombatGroup : MonoBehaviour
 {
@@ -12,16 +12,26 @@ public class EnemyCombatGroup : MonoBehaviour
     private int _finishedAttackersCount = 0;
     private bool _roundInProgress = false;
     const int MaxAttackers = 3;
-
+    public static EnemyCombatGroup Instance;
+    public event ChangeCurrentAttackers OnChangeCurrentAttackers;
+    public delegate void ChangeCurrentAttackers();
+    private void Awake()
+    {
+        Instance = this;
+    }
     public void AddEnemy(EnemyController e)
     {
-        if (!_members.Contains(e)) _members.Add(e);        
+        if (!_members.Contains(e))
+        {
+            _members.Add(e);
+        }
     }
 
     public void RemoveEnemy(EnemyController e)
     {
         _members.Remove(e);
         _currentAttackers.Remove(e);
+        InvokeChangeCurrentAttackers();
     }
     public void ReportAttackFinished(EnemyController e)
     {
@@ -30,7 +40,8 @@ public class EnemyCombatGroup : MonoBehaviour
             _finishedAttackersCount++;
         }
     }
-
+    public List<EnemyController> GetCurrentAttackers() { return _currentAttackers; }
+    public void InvokeChangeCurrentAttackers() { OnChangeCurrentAttackers?.Invoke(); }
     public void NotifyExchangeReady(EnemyController e)
     {
         if (!_roundInProgress && _currentAttackers.Count == 0)
@@ -54,7 +65,7 @@ public class EnemyCombatGroup : MonoBehaviour
         
        
         bool anyPlayerNearby = _members.Any(m => m.Detection != null && (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea));
-        Debug.Log($"BeginAttackRound: members={_members.Count}, anyPlayerNearby={anyPlayerNearby}");
+        //Debug.Log($"BeginAttackRound: members={_members.Count}, anyPlayerNearby={anyPlayerNearby}");
         if (!anyPlayerNearby || _members.Count == 0)
         {
             _roundInProgress = false;
@@ -72,11 +83,11 @@ public class EnemyCombatGroup : MonoBehaviour
         
         if (candidates.Count == 0)
         {
-            Debug.Log("BeginAttackRound: no candidates found (none in idle or in range). Members:");
+           // Debug.Log("BeginAttackRound: no candidates found (none in idle or in range). Members:");
             foreach (var m in _members)
             {
                 var dist = Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition);
-                Debug.Log($" - {m.name}: state={m.StateMachine.CurrentState?.GetType().Name}, sub={m.CombatState.GetSubStateName()}, distToPlayer={dist}, inInterest={m.Detection.PlayerInInterestArea}, inDanger={m.Detection.PlayerInDangerArea}");
+                //Debug.Log($" - {m.name}: state={m.StateMachine.CurrentState?.GetType().Name}, sub={m.CombatState.GetSubStateName()}, distToPlayer={dist}, inInterest={m.Detection.PlayerInInterestArea}, inDanger={m.Detection.PlayerInDangerArea}");
             }
             _roundInProgress = false;
             yield break; 
@@ -88,8 +99,9 @@ public class EnemyCombatGroup : MonoBehaviour
 
         for (int i = 0; i < attackerCount; i++)
         {
-            int idx = Random.Range(0, candidates.Count);
+            int idx = UnityEngine.Random.Range(0, candidates.Count);
             _currentAttackers.Add(candidates[idx]);
+            InvokeChangeCurrentAttackers();
             candidates.RemoveAt(idx);
         }
         //Debug.Log($"BeginAttackRound: selected attackers: {string.Join(", ", _currentAttackers.Select(a=>a.name))}");

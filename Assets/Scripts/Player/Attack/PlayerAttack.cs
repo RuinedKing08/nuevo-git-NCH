@@ -7,8 +7,8 @@ public class PlayerAttack : MonoBehaviour
     [Header("Input Values")]
     [SerializeField] public float lightAttackfloat;
     [SerializeField] public float heavyAttackfloat;
+    float timerLight, timerHeavy;
 
-    
     void Start()
     {
         hitCollider.SetActive(false);
@@ -29,12 +29,11 @@ public class PlayerAttack : MonoBehaviour
         }
         if (timerOn)
         {
-            float timer = 0;
-            timer += Time.deltaTime;
-            if (timer >= 0.4f)
+            timerLight += Time.deltaTime;
+            if (timerLight >= 0.4f)
             {
                 hitCollider.SetActive(false);
-                timer = 0;
+                timerLight = 0;
                 timerOn = false;
             }
         }
@@ -48,13 +47,12 @@ public class PlayerAttack : MonoBehaviour
         }
         if (timerOn)
         {
-            float timer = 0;
-            timer += Time.deltaTime;
+            timerHeavy += Time.deltaTime;
 
-            if (timer >= 0.4f)
+            if (timerHeavy >= 0.4f)
             {
                 hitColliderHeavy.SetActive(false);
-                timer = 0;
+                timerHeavy = 0;
                 timerOn = false;
             }
         }

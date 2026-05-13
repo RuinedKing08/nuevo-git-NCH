@@ -299,7 +299,7 @@ public class AttackSubState : IEnemyState
         else 
         {
             
-            Debug.Log($"AttackSubState: attempting TickAttack for {_e.name} (timer={_attackWindowTimer:F2}) distance={distanceToPlayer:F2}");
+            //Debug.Log($"AttackSubState: attempting TickAttack for {_e.name} (timer={_attackWindowTimer:F2}) distance={distanceToPlayer:F2}");
             _e.Stats.Specialty?.TickAttack(_e, _attackWindowTimer);
 
             if (distanceToPlayer > attackRange)

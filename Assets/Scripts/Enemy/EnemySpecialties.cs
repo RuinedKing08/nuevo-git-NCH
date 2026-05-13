@@ -30,7 +30,7 @@ public static class SpecialtyFactory
     public static IEnemySpecialty Resolve(EnemyController e)
     {
         // Force BareKnuckle specialty for now (disable other specialties during debugging)
-        Debug.Log($"SpecialtyFactory.Resolve: forcing BareKnuckleSpecialty for {e.name}");
+        //Debug.Log($"SpecialtyFactory.Resolve: forcing BareKnuckleSpecialty for {e.name}");
         return new BareKnuckleSpecialty();
    }
 }
@@ -74,12 +74,12 @@ public class BareKnuckleSpecialty : IEnemySpecialty
         // DEBUG: forzar impacto inmediato para verificar OverlapSphere
         _prepDuration = 0f;
 
-        Debug.Log($"BareKnuckleSpecialty.BeginAttackPhase: enemy={e.name} chosen={_chosenAttack} prepDuration={_prepDuration}");
+        //Debug.Log($"BareKnuckleSpecialty.BeginAttackPhase: enemy={e.name} chosen={_chosenAttack} prepDuration={_prepDuration}");
     }
 
     public void TickAttack(EnemyController e, float elapsed)
     {
-        Debug.Log($"BareKnuckleSpecialty.TickAttack: enemy={e.name} elapsed={elapsed} prep={_prepDuration} attackFired={_attackFired}");
+        //Debug.Log($"BareKnuckleSpecialty.TickAttack: enemy={e.name} elapsed={elapsed} prep={_prepDuration} attackFired={_attackFired}");
         if (elapsed >= _prepDuration && !_attackFired)
         {
             _attackFired = true;            

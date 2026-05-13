@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7773421830137201781}
   - component: {fileID: 785778361648510724}
   - component: {fileID: 6367548114521120724}
+  - component: {fileID: 7462418174952812931}
   m_Layer: 0
   m_Name: 3PCamera
   m_TagString: Untagged
@@ -160,7 +161,7 @@ MonoBehaviour:
   Composition:
     ScreenPosition: {x: 0, y: 0}
     DeadZone:
-      Enabled: 0
+      Enabled: 1
       Size: {x: 0.2, y: 0.2}
     HardLimits:
       Enabled: 0
@@ -308,3 +309,25 @@ MonoBehaviour:
   smoothingOut: 5
   maxDistance: 5
   sphereRadius: 0.25
+  targetGroup: {fileID: 0}
+--- !u!114 &7462418174952812931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5303967117203520225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb4843bae7d24943842ea23130dcd55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineGroupFraming
+  FramingMode: 2
+  FramingSize: 0.8
+  CenterOffset: {x: 0, y: 0}
+  Damping: 2
+  SizeAdjustment: 0
+  LateralAdjustment: 0
+  FovRange: {x: 1, y: 101}
+  DollyRange: {x: -243, y: 578.2}
+  OrthoSizeRange: {x: 1, y: 1000}

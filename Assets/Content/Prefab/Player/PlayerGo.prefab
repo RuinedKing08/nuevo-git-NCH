@@ -265,8 +265,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   hitCollider: {fileID: 1273533528077297247}
+  hitColliderHeavy: {fileID: 0}
   lightAttackfloat: 0
-  timer: 0
+  heavyAttackfloat: 0
 --- !u!114 &7357183514607760246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,13 +286,18 @@ MonoBehaviour:
   rotateSpeed: 10
   cam: {fileID: 0}
   sideStepForce: 20
-  sideStepDistance: 3
-  sideStepDuration: 0.18
+  sideStepDistanceToWall: 3
+  sideStepDuration: 0.16
   layers:
     serializedVersion: 2
     m_Bits: 31
   timerSideStep: 0
-  maxTimerSideStep: 0.18
+  maxTimerSideStep: 0.5
+  targetGroup: {fileID: 0}
+  lockOnRadius: 20
+  lockOnLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &2540410287005200011
 MonoBehaviour:
   m_ObjectHideFlags: 0
