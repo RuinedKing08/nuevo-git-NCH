@@ -300,4 +300,34 @@ public class EnemyController : MonoBehaviour
         if (nearest != null)
             this.CombatGroup = nearest;
     }
+
+    
+    public void SetAttackDamage(int damage)
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.SetDamage(damage);
+        }
+    }
+
+    
+    public void EnableAttackColliders()
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.OnAttackStart();
+        }
+    }
+
+    
+    public void DisableAttackColliders()
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.OnAttackEnd();
+        }
+    }
 }
