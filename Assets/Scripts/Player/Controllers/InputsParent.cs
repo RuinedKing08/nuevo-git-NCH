@@ -14,7 +14,8 @@ public class InputsParent : MonoBehaviour
     [SerializeField] private InputActionReference throwI;
     [SerializeField] private InputActionReference lockOn;
     [SerializeField] private InputActionReference sideStep;
-    private InputAction moveXAction, moveZAction, interactionAction, lightAttackAction, heavyAttackAction, throwAction, lockOnAction, sideStepAction;
+    [SerializeField] private InputActionReference block;
+    private InputAction moveXAction, moveZAction, interactionAction, lightAttackAction, heavyAttackAction, throwAction, lockOnAction, sideStepAction, blockAction;
     public static InputsParent Instance;
     private void Awake()
     {
@@ -31,6 +32,7 @@ public class InputsParent : MonoBehaviour
         throwAction = throwI.ToInputAction();
         lockOnAction = lockOn.ToInputAction();
         sideStepAction = sideStep.ToInputAction();
+        blockAction = block.ToInputAction();
     }
 
     public InputAction MoveXInput() {return moveXAction; }
@@ -40,7 +42,8 @@ public class InputsParent : MonoBehaviour
     public InputAction LightAttackInput() {return lightAttackAction; }
     public InputAction HeavyAttackInput() {return heavyAttackAction; }
     public InputAction LockOnInput() {return lockOnAction; }
-    public InputAction SideStepInput() {return sideStep; }
+    public InputAction SideStepInput() {return sideStepAction; }
+    public InputAction BlockInput() {return blockAction; }
     private void OnEnable()
     {
         moveXAction = moveX.ToInputAction();
@@ -66,6 +69,9 @@ public class InputsParent : MonoBehaviour
 
         sideStepAction = sideStep.ToInputAction();
         sideStepAction.Enable();
+
+        blockAction = block.ToInputAction();
+        blockAction.Enable();
     }
 
     private void OnDisable()
@@ -78,5 +84,6 @@ public class InputsParent : MonoBehaviour
         throwAction.Disable();
         lockOnAction.Disable();
         sideStepAction.Disable();
+        blockAction.Disable();
     }
 }

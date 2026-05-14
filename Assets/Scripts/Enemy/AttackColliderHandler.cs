@@ -72,10 +72,27 @@ public class AttackColliderHandler : MonoBehaviour
         if (playerHealth != null)
         {
             //Debug.Log($"[AttackCollider] Hit PlayerHealth! Damage: {_damageAmount}");
-            playerHealth.TakeDamage(_damageAmount);
+            if (PlayerMove.blocking)
+            {
+                Blocking(other.transform, playerHealth);
+            }
+            else playerHealth.TakeDamage(_damageAmount);
         }
     }
-
+    void Blocking(Transform other, PlayerHealth playerHealth)
+    {
+        Vector3 directionFromOtherToMe = (transform.position - other.transform.position).normalized;
+        directionFromOtherToMe.y = 0;
+        Vector3 otherForward = other.transform.forward;
+        otherForward.y = 0;
+        float dot = Vector3.Dot(otherForward, directionFromOtherToMe.normalized);
+        if (dot > 0.5f)
+        {
+            Debug.Log("Blocked");
+            return;
+        }
+        else playerHealth.TakeDamage(_damageAmount);
+    }
     
     public void SetDamage(int amount)
     {
