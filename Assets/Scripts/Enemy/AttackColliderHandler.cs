@@ -73,21 +73,6 @@ public class AttackColliderHandler : MonoBehaviour
         {
             //Debug.Log($"[AttackCollider] Hit PlayerHealth! Damage: {_damageAmount}");
             playerHealth.TakeDamage(_damageAmount);
-            
-            var playerController = other.GetComponentInParent<PlayerController>();
-            if (playerController != null)
-            {
-                playerController.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
-            }
-            return;
-        }
-        
-        var pc = other.GetComponentInParent<PlayerController>();
-        if (pc != null)
-        {
-            //Debug.Log($"[AttackCollider] Hit PlayerController! Damage: {_damageAmount}");
-            pc.gameObject.SendMessage("TakeDamage", _damageAmount, SendMessageOptions.DontRequireReceiver);
-            pc.gameObject.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
         }
     }
 

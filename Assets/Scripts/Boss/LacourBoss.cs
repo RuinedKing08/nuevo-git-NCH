@@ -1,4 +1,4 @@
-using UnityEngine;
+/*using UnityEngine;
 
 public class LacourBoss : BossController
 {
@@ -104,3 +104,5 @@ public class BossPhaseTwo : BossPhase
         Boss.ApplyDamage(damage);
     }
 }
+
+*/
