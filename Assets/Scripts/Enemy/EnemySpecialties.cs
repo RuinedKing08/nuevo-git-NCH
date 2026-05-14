@@ -90,11 +90,9 @@ public class BareKnuckleSpecialty : IEnemySpecialty
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _chosenAttack);
             e.Animator.SetTrigger(EnemyController.Hash_Attack);
             e.ApplyAttackColor();
-            Vector3 center = e.transform.position + e.transform.forward * 1.25f + Vector3.up * 0.9f;
-            float radius = 1.0f;
-            float duration = 0.25f;
             
-            e.ApplyMeleeDamage(center, radius, Mathf.Max(1, e.Stats.Damage));
+            // Actualizar daño en el collider del ataque
+            e.SetAttackDamage(Mathf.Max(1, e.Stats.Damage));
         }
     }
 
@@ -168,6 +166,9 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, _pendingAttack);
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
             e.ApplyAttackColor();
+
+            // Actualizar daño en colliders (20 para arma blanca)
+            e.SetAttackDamage(20);
 
             if (_pendingAttack == 2)  // Lanzar arma
             {

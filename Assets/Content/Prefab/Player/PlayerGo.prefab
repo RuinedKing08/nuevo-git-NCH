@@ -81,62 +81,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!1 &1523083217719958826
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6360707529440123258}
-  - component: {fileID: 2404960779462286813}
-  m_Layer: 6
-  m_Name: PlayerCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6360707529440123258
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523083217719958826}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4406878758003356550}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2404960779462286813
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1523083217719958826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ec56dc91020cdd4c9ffe08f2b2b5ccd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
-  _CMcamera: {fileID: 0}
-  MainCamera: {fileID: 0}
-  _gain:
-  - 1
-  - 1
-  rotationSpeed: 20
-  maxLockOnDistance: 10
-  lockOnLayer:
-    serializedVersion: 2
-    m_Bits: 128
-  lockOnTarget: {fileID: 0}
-  inSight: 0
 --- !u!1 &3287532526747045482
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +117,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4820443943712732819}
-  - {fileID: 6360707529440123258}
   - {fileID: 3901974141127531938}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -252,6 +195,7 @@ MonoBehaviour:
   throwI: {fileID: -360913258185141060, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lockOn: {fileID: -8758271524718880939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sideStep: {fileID: -2092556331638605850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  block: {fileID: -7763182533195424918, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &5348921843886745016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -280,6 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0e53213890e568469015ab57a24b070, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
+  moveType: 0
   moveXfloat: 0
   moveZfloat: 0
   moveSpeed: 10

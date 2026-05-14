@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 using System.Collections.Generic;
 public class PlayerMove : MonoBehaviour
 {
-    public enum MovementType {freeMove, lockMove }
+    public enum MovementType { freeMove, lockMove }
     public MovementType moveType;
     Rigidbody rb;
     [Header("Input Values")]
@@ -32,12 +32,17 @@ public class PlayerMove : MonoBehaviour
     GameObject cameraTarget;
     public static bool isLockOn;
     Transform currentEnemy;
+    [Header("Block Variables")]
+    public static bool blocking;
+    Transform currentEnemyBlocking;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         InputsParent.Instance.SideStepInput().started += SideStep;
         InputsParent.Instance.LockOnInput().performed += LockOn;
         InputsParent.Instance.LockOnInput().canceled += UnLockOn;
+        InputsParent.Instance.BlockInput().performed += Block;
+        InputsParent.Instance.BlockInput().canceled += UnBlock;
         StartCoroutine(SideStepOn());
         cameraTarget = transform.Find("CameraTarget").gameObject;
     }
@@ -52,11 +57,12 @@ public class PlayerMove : MonoBehaviour
         if (!sideStepActivated)
         {
             ChangeMovement();
-
         }
+        if(blocking)Blocking();
     }
     private void ChangeMovement()
     {
+        if (blocking) return;
         if (isLockOn)
         {
             moveType = MovementType.lockMove;
@@ -91,7 +97,7 @@ public class PlayerMove : MonoBehaviour
             camRight.y = 0;
             camRight.Normalize();
             Vector3 moveDirection = (camForward * direction.z + camRight * direction.x).normalized;
-            if(camForward != Vector3.zero)
+            if (camForward != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
                 rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotateSpeed * Time.fixedDeltaTime));
@@ -112,7 +118,7 @@ public class PlayerMove : MonoBehaviour
             //rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxSpeed);
         }
     }
-    
+
     void SideStep(InputAction.CallbackContext context)
     {
         if (!sideStepStart)
@@ -142,7 +148,7 @@ public class PlayerMove : MonoBehaviour
                         break;
                 }
 
-                
+
                 float startTime = Time.time;
                 rb.linearVelocity = Vector3.zero;
                 if (Physics.Raycast(transform.position, direction, out RaycastHit hit, sideStepDistanceToWall, layers))
@@ -165,7 +171,7 @@ public class PlayerMove : MonoBehaviour
                     rb.linearVelocity = Vector3.zero;
                 }
             }
-        }        
+        }
     }
     Vector3 NormalSideStep()
     {
@@ -182,7 +188,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
-            direction = -transform.forward;
+            direction = transform.forward;
         }
         return direction;
     }
@@ -191,7 +197,7 @@ public class PlayerMove : MonoBehaviour
         if (sideStepStart)
         {
             timerSideStep += Time.deltaTime;
-            if(timerSideStep >= sideStepDuration)
+            if (timerSideStep >= sideStepDuration)
             {
                 sideStepActivated = false;
             }
@@ -205,22 +211,52 @@ public class PlayerMove : MonoBehaviour
     }
     void LockOnMovement()
     {
-        Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
-        if(isLockOn && currentEnemy!= null)
+        if (isLockOn && currentEnemy != null)
         {
-            Vector3 directionToEnemy = (currentEnemy.position - transform.position).normalized;
-            directionToEnemy.y = 0;
-            Quaternion targetRot = Quaternion.LookRotation(directionToEnemy);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.fixedDeltaTime);
+            LockRotation(currentEnemy);
             Vector3 moveVec = (transform.forward * moveZfloat + transform.right * moveXfloat).normalized;
             rb.linearVelocity = new Vector3(moveVec.x * moveSpeed, rb.linearVelocity.y, moveVec.z * moveSpeed);
         }
     }
+    void LockRotation(Transform currentEnemy)
+    {
+        Vector3 directionToEnemy = (currentEnemy.position - transform.position).normalized;
+        directionToEnemy.y = 0;
+        Quaternion targetRot = Quaternion.LookRotation(directionToEnemy);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.fixedDeltaTime);
+    }
+    void Block(InputAction.CallbackContext context)
+    {
+        blocking = true;
+        rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        currentEnemyBlocking = GetClosestEnemy();
+        /*Debug.Log("Bloqueando");
+        Debug.Log(blocking);*/
+        
+    }
+    void UnBlock(InputAction.CallbackContext context)
+    {
+        blocking = false;
+    }
+    void Blocking()
+    {
+        if (!sideStepActivated)
+        {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        }
+        
+        if (currentEnemyBlocking != null)
+        {
+            LockRotation(currentEnemyBlocking);
+        }
+    }
     void LockOn(InputAction.CallbackContext context)
     {
+        //Debug.Log("Input LockOn");
         currentEnemy = GetClosestEnemy();
         if (currentEnemy == null) return;
         isLockOn = true;
+        //Debug.Log("Lockeando");
         targetGroup.Targets.Clear();
         targetGroup.AddMember(cameraTarget.transform, 2f, 6f);
         targetGroup.AddMember(currentEnemy, 1f, 3f);
@@ -236,16 +272,26 @@ public class PlayerMove : MonoBehaviour
     }
     Transform GetClosestEnemy()
     {
+        //Debug.Log("gettingClosestEnemy");
         Collider[] hits = Physics.OverlapSphere(transform.position, lockOnRadius, lockOnLayer);
         Transform closest = null;
         float closestDis = Mathf.Infinity;
-        foreach(Collider hit in hits)
+        Camera mainCam = Camera.main;
+        
+        foreach (Collider hit in hits)
         {
-            float dis = Vector3.Distance(transform.position, hit.transform.position);
-            if(dis < closestDis)
+            Vector3 viweportPos = mainCam.WorldToViewportPoint(hit.transform.position);
+            bool isVisible = viweportPos.x >= 0 && viweportPos.x <= 1 &&
+                             viweportPos.y >= 0 && viweportPos.y <= 1 &&
+                             viweportPos.z > 0;
+            if (isVisible && !Physics.Linecast(transform.position + Vector3.up, hit.transform.position + Vector3.up, layers))
             {
-                closestDis = dis;
-                closest = hit.transform;
+                float dis = Vector3.Distance(transform.position, hit.transform.position);
+                if (dis < closestDis)
+                {
+                    closestDis = dis;
+                    closest = hit.transform;
+                }
             }
         }
         return closest;

@@ -250,17 +250,6 @@ public class EnemyController : MonoBehaviour
             {
                // Debug.Log($" ApplyMeleeDamage -> applying {damage} to PlayerHealth on {ph.gameObject.name}");
                 ph.TakeDamage(damage);
-                var pc = c.GetComponentInParent<PlayerController>();
-                pc?.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
-                return;
-            }
-
-            var pcFallback = c.GetComponentInParent<PlayerController>();
-            if (pcFallback != null)
-            {
-                //Debug.Log($" ApplyMeleeDamage -> sending TakeDamage to PlayerController on {pcFallback.gameObject.name}");
-                pcFallback.gameObject.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
-                pcFallback.gameObject.SendMessage("OnHit", transform.position, SendMessageOptions.DontRequireReceiver);
                 return;
             }
         }
@@ -299,5 +288,35 @@ public class EnemyController : MonoBehaviour
         
         if (nearest != null)
             this.CombatGroup = nearest;
+    }
+
+    
+    public void SetAttackDamage(int damage)
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.SetDamage(damage);
+        }
+    }
+
+    
+    public void EnableAttackColliders()
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.OnAttackStart();
+        }
+    }
+
+    
+    public void DisableAttackColliders()
+    {
+        var handlers = GetComponentsInChildren<AttackColliderHandler>();
+        foreach (var handler in handlers)
+        {
+            handler.OnAttackEnd();
+        }
     }
 }

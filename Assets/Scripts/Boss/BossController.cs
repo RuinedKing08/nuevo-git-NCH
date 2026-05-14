@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
+    /*
     public int MaxHealth = 200;
     public int CurrentHealth;
     public bool IsPhaseTwo;
@@ -108,4 +109,5 @@ public class BossController : MonoBehaviour
         CurrentPhase?.Exit();
         Destroy(gameObject, 2f);
     }
+    */
 }
