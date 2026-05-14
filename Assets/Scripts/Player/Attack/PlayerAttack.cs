@@ -8,6 +8,7 @@ public class PlayerAttack : MonoBehaviour
     [Header("Input Values")]
     [SerializeField] public float lightAttackfloat;
     [SerializeField] public float heavyAttackfloat;
+    [SerializeField] GameObject attackShadow;
 
     private void Awake()
     {
@@ -41,11 +42,18 @@ public class PlayerAttack : MonoBehaviour
         if (lightAttackfloat > 0)
         {
             _combatSystem.PerformLightAttack();
+            attackShadow.SetActive(true);
         }
-        
+        else
+        {
+            attackShadow.SetActive(false);
+        }
+
         if (heavyAttackfloat > 0)
         {
             _combatSystem.PerformHeavyAttack();
+            attackShadow.SetActive(true);
+
         }
     }
 
