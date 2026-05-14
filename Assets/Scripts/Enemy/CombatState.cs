@@ -43,7 +43,7 @@ public class CombatState : IEnemyState
         // Force BareKnuckle specialty for now (debugging)
         if (!(_e.Stats.Specialty is BareKnuckleSpecialty))
         {
-            Debug.Log($"CombatState.EnterState: assigning BareKnuckleSpecialty to {_e.name}");
+            //Debug.Log($"CombatState.EnterState: assigning BareKnuckleSpecialty to {_e.name}");
             _e.Stats.SetSpecialty(new BareKnuckleSpecialty());
         }
 
@@ -280,7 +280,7 @@ public class AttackSubState : IEnemyState
 
 
         _e.Stats.Specialty?.BeginAttackPhase(_e);
-        Debug.Log("attackSubstate");
+        //Debug.Log("attackSubstate");
     }
 
     public void UpdateState()

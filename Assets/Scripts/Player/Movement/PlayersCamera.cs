@@ -94,13 +94,13 @@ public class PlayersCamera : MonoBehaviour
         if (orbitY != null)
         {
             orbitY.Enabled = isEnabled;
-            Debug.Log("Fnciona?");
+           // Debug.Log("Fnciona?");
         }
         else
         {
             foreach (var controller in axisController.Controllers)
             {
-                Debug.Log($"Ejes disponibles: {controller.Name}");
+               // Debug.Log($"Ejes disponibles: {controller.Name}");
             }
         }
     }
