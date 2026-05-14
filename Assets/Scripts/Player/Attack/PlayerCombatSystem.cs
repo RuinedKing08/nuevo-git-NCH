@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerCombatSystem : MonoBehaviour
@@ -14,12 +15,18 @@ public class PlayerCombatSystem : MonoBehaviour
 
     [Header("Tiempos de Combo")]
     [SerializeField] private float _comboResetTime = 1.0f;
-    
-    
+
+    //temporal — sustituir por Animation Events
+    [Header("Temporal — hit sin Animation Events")]
+    [SerializeField] private bool _temporalManualHitWindow = true;
+    [SerializeField] private float _temporalHitDelay = 0.12f;
+    [SerializeField] private float _temporalHitActiveDuration = 0.25f;
+
     private int _currentComboIndex = 0;
     private float _lastAttackTime = 0f;
     private bool _isAttacking = false;
     private bool _canCombo = true;
+    private Coroutine _temporalAttackHitRoutine;
 
     private static readonly int Hash_AttackType = Animator.StringToHash("AttackType");
     private static readonly int Hash_ComboIndex = Animator.StringToHash("ComboIndex");
@@ -107,35 +114,64 @@ public class PlayerCombatSystem : MonoBehaviour
         _lastAttackTime = Time.time;
         _canCombo = false;
 
-        _animator.SetInteger(Hash_AttackType, attackType);
-        _animator.SetInteger(Hash_ComboIndex, _currentComboIndex);
-        _animator.SetTrigger(Hash_Attack);
+        if (_animator != null)
+        {
+            _animator.SetInteger(Hash_AttackType, attackType);
+            _animator.SetInteger(Hash_ComboIndex, _currentComboIndex);
+            _animator.SetTrigger(Hash_Attack);
+        }
 
-       
-        if (attackType == 0) 
+        if (attackType == 0)
         {
             _hitCollider.SetDamage(_lightAttackDamage);
         }
         else
         {
             _hitCollider.SetDamage(_heavyAttackDamage);
-        }       
+        }
+
+        //temporal — ventana de hit manual 
+        if (_temporalManualHitWindow)
+        {
+            if (_temporalAttackHitRoutine != null)
+                StopCoroutine(_temporalAttackHitRoutine);
+            _temporalAttackHitRoutine = StartCoroutine(TemporalAttackHitWindow(attackType));
+        }
     }
 
-    
+    //temporal
+    private IEnumerator TemporalAttackHitWindow(int attackType)
+    {
+        yield return new WaitForSeconds(_temporalHitDelay);
+        OnAttackHit(attackType);
+        yield return new WaitForSeconds(_temporalHitActiveDuration);
+        _temporalAttackHitRoutine = null;
+        ApplyAttackEndCore();
+    }
+
     public void OnAttackEnd()
+    {
+        //temporal — 
+        if (_temporalAttackHitRoutine != null)
+        {
+            StopCoroutine(_temporalAttackHitRoutine);
+            _temporalAttackHitRoutine = null;
+        }
+
+        ApplyAttackEndCore();
+    }
+
+    private void ApplyAttackEndCore()
     {
         _isAttacking = false;
         _canCombo = true;
-        _currentComboIndex++; 
-
+        _currentComboIndex++;
         _hitCollider.OnAttackEnd();
     }
 
-   
     public void OnAttackHit(int damageType = 0)
     {
-        _hitCollider.OnAttackStart(damageType);       
+        _hitCollider.OnAttackStart(damageType);
     }
     
     private void HandleComboReset()
@@ -181,9 +217,20 @@ public class PlayerCombatSystem : MonoBehaviour
     
     public void OnPlayerHit()
     {
-        _animator.SetTrigger(Hash_Hit);
+        //temporal
+        if (_temporalAttackHitRoutine != null)
+        {
+            StopCoroutine(_temporalAttackHitRoutine);
+            _temporalAttackHitRoutine = null;
+        }
+
+        _hitCollider.OnAttackEnd();
         _isAttacking = false;
+        _canCombo = true;
         _currentComboIndex = 0;
+
+        if (_animator != null)
+            _animator.SetTrigger(Hash_Hit);
     }
 
     
