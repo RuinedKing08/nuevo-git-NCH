@@ -276,15 +276,22 @@ public class PlayerMove : MonoBehaviour
         Collider[] hits = Physics.OverlapSphere(transform.position, lockOnRadius, lockOnLayer);
         Transform closest = null;
         float closestDis = Mathf.Infinity;
-        Camera main = Camera.main;
-
-        foreach(Collider hit in hits)
+        Camera mainCam = Camera.main;
+        
+        foreach (Collider hit in hits)
         {
-            float dis = Vector3.Distance(transform.position, hit.transform.position);
-            if(dis < closestDis)
+            Vector3 viweportPos = mainCam.WorldToViewportPoint(hit.transform.position);
+            bool isVisible = viweportPos.x >= 0 && viweportPos.x <= 1 &&
+                             viweportPos.y >= 0 && viweportPos.y <= 1 &&
+                             viweportPos.z > 0;
+            if (isVisible && !Physics.Linecast(transform.position + Vector3.up, hit.transform.position + Vector3.up, layers))
             {
-                closestDis = dis;
-                closest = hit.transform;
+                float dis = Vector3.Distance(transform.position, hit.transform.position);
+                if (dis < closestDis)
+                {
+                    closestDis = dis;
+                    closest = hit.transform;
+                }
             }
         }
         return closest;
