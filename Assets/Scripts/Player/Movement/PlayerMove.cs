@@ -12,6 +12,12 @@ public class PlayerMove : MonoBehaviour
     [HideInInspector] public float moveXfloat;
     [HideInInspector] public float moveZfloat;
 
+    [Header("Animator")]
+    [SerializeField] private Animator _animator;
+    [Tooltip("Nombre del float en el Animator (p. ej. transiciones Idle/Run).")]
+    [SerializeField] private string _speedParameterName = "Speed";
+    private int _speedParameterHash;
+
     [Header("Movement Variables")]
     [SerializeField] private float moveSpeed;
     [Header("Rotationt Variables")]
@@ -38,6 +44,9 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        if (_animator == null)
+            _animator = GetComponentInChildren<Animator>();
+        _speedParameterHash = Animator.StringToHash(_speedParameterName);
         InputsParent.Instance.SideStepInput().started += SideStep;
         InputsParent.Instance.LockOnInput().performed += LockOn;
         InputsParent.Instance.LockOnInput().canceled += UnLockOn;
@@ -51,6 +60,20 @@ public class PlayerMove : MonoBehaviour
         GetInput();
         SpeedLimit();
         TimerSideStep();
+    }
+
+    private void LateUpdate()
+    {
+        UpdateAnimatorSpeed();
+    }
+
+    private void UpdateAnimatorSpeed()
+    {
+        if (_animator == null || rb == null) return;
+
+        Vector3 flatVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        float normalized = moveSpeed > 0.01f ? Mathf.Clamp01(flatVel.magnitude / moveSpeed) : 0f;
+        _animator.SetFloat(_speedParameterHash, normalized);
     }
     private void FixedUpdate()
     {
