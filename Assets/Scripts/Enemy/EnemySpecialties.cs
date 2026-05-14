@@ -93,6 +93,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
             
             // Actualizar daño en el collider del ataque
             e.SetAttackDamage(Mathf.Max(1, e.Stats.Damage));
+            e.BeginAttackColliderWindow();
         }
     }
 
@@ -169,6 +170,7 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
 
             // Actualizar daño en colliders (20 para arma blanca)
             e.SetAttackDamage(20);
+            e.BeginAttackColliderWindow();
 
             if (_pendingAttack == 2)  // Lanzar arma
             {
@@ -230,6 +232,7 @@ public class DirtyPlaySpecialty : IEnemySpecialty
             e.Animator.SetInteger(EnemyController.Hash_AttackIndex, 0);  // Lanzar objeto
             e.Animator.SetTrigger(EnemyController.Hash_Attack);  // Trigger de ataque
             e.ApplyAttackColor();
+            e.BeginAttackColliderWindow();
         }
     }
 

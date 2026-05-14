@@ -336,6 +336,7 @@ public class AttackSubState : IEnemyState
     {
         _e.Stats.NavAgent.speed = 3.5f;
         _e.Animator.ResetTrigger(EnemyController.Hash_AttackIndex);
+        _e.CancelAttackColliderWindow();
         _e.Stats.Specialty?.EndAttackPhase(_e);
     }
 }

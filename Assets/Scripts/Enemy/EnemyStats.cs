@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class EnemyStats : MonoBehaviour
 {
@@ -56,6 +59,9 @@ public class EnemyStats : MonoBehaviour
     {
         CurrentHealth -= amount;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+#endif
     }
 
     public void SetSpecialty(IEnemySpecialty specialty)

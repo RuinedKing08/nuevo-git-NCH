@@ -7,10 +7,16 @@ public class PlayerHitCollider : MonoBehaviour
     [SerializeField] private Collider _attackCollider;
     [SerializeField] private int _lightDamage = 10;
     [SerializeField] private int _heavyDamage = 20;
-    
+
+    [Header("Solape al activar (temporal)")]
+    [Tooltip("Si el hitbox ya está dentro del enemigo al encenderse, OnTriggerEnter no siempre dispara; esto aplica daño a solapes iniciales.")]
+    [SerializeField] private bool _probeOverlapsOnAttackStart = true;
+    [SerializeField] private int _overlapProbeMax = 16;
+
     private HashSet<Collider> _hitTargets = new HashSet<Collider>();
     private bool _isAttackActive = false;
     private int _currentDamage;
+    private Collider[] _overlapBuffer;
 
     private void Awake()
     {
@@ -24,6 +30,8 @@ public class PlayerHitCollider : MonoBehaviour
             _attackCollider.isTrigger = true;
             _attackCollider.enabled = false;
         }
+
+        _overlapBuffer = new Collider[_overlapProbeMax];
     }
 
     
@@ -32,15 +40,43 @@ public class PlayerHitCollider : MonoBehaviour
         _isAttackActive = true;
         _hitTargets.Clear();
 
-        
-        _currentDamage = damageType == 1 ? _heavyDamage : _lightDamage;
+        int presetFromCombat = _currentDamage;
+        int fromColliderFields = damageType == 1 ? _heavyDamage : _lightDamage;
+        _currentDamage = fromColliderFields > 0 ? fromColliderFields : presetFromCombat;
 
         if (_attackCollider != null)
         {
             _attackCollider.enabled = true;
+            Physics.SyncTransforms();
+            if (_probeOverlapsOnAttackStart)
+                ProbeOverlappingDamage();
         }
 
         Debug.Log($"[PlayerAttack] Attack started - Damage: {_currentDamage}");
+    }
+
+    /// <summary>
+    /// Daño a enemigos que ya solapan el hitbox al encenderlo (OnTriggerEnter no siempre corre en ese caso).
+    /// </summary>
+    private void ProbeOverlappingDamage()
+    {
+        if (_attackCollider == null || !_isAttackActive) return;
+
+        Bounds b = _attackCollider.bounds;
+        int count = Physics.OverlapBoxNonAlloc(
+            b.center,
+            b.extents,
+            _overlapBuffer,
+            Quaternion.identity,
+            ~0,
+            QueryTriggerInteraction.Collide);
+
+        for (int i = 0; i < count; i++)
+        {
+            Collider c = _overlapBuffer[i];
+            if (c == null || c == _attackCollider) continue;
+            TryApplyHit(c);
+        }
     }
 
     
@@ -72,19 +108,25 @@ public class PlayerHitCollider : MonoBehaviour
         if (!_isAttackActive || _attackCollider == null)
             return;
 
-        // Evita hits múltiples al mismo enemigo en un ataque
+        TryApplyHit(other);
+    }
+
+    private void TryApplyHit(Collider other)
+    {
+        if (!_isAttackActive || _attackCollider == null || other == null)
+            return;
+
         if (_hitTargets.Contains(other))
             return;
 
         _hitTargets.Add(other);
 
-        // Busca EnemyHealth o EnemyStats en el objeto tocado
         var enemyController = other.GetComponentInParent<EnemyController>();
         if (enemyController != null)
         {
             Vector3 hitDirection = (other.transform.position - transform.position).normalized;
             enemyController.TakeDamage(_currentDamage, hitDirection);
-            
+
             Debug.Log($"[PlayerAttack] Hit enemy {enemyController.name}! Damage: {_currentDamage}");
         }
     }

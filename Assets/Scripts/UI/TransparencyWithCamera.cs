@@ -12,7 +12,7 @@ public class TransparencyWithCamera : MonoBehaviour
     [SerializeField] float initialDistance;
     void Start()
     {
-        baseColor = player.GetComponent<MeshRenderer>().material;
+        baseColor = player.GetComponent<SkinnedMeshRenderer>().material;
         baseColor.color = myColor;
         
     }

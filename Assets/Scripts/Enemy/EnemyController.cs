@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -23,9 +24,18 @@ public class EnemyController : MonoBehaviour
     [Header("Attack Feedback")]
     [SerializeField] private Color attackColor = Color.red;
 
+    [Header("Color feedback (interrupt / attack tint)")]
+    [Tooltip("Opcional: arrastra el SkinnedMeshRenderer o MeshRenderer del modelo (hijo). Si está vacío, se usan todos los Renderer bajo este objeto.")]
+    [SerializeField] private Renderer[] _colorFeedbackRenderers;
+
+    [Header("Attack colliders")]
+    [Tooltip("Tiempo que el hitbox del enemigo queda activo al atacar (si no usas solo Animation Events).")]
+    [SerializeField] private float _attackHitActiveDuration = 0.35f;
+
     private float _interruptTimer;
     private bool _isInterrupted;
     private bool _isAttackColorActive;
+    private Coroutine _attackHitWindowRoutine;
     private Material[] _interruptMaterials;
     private int[] _interruptMaterialPropertyIds;
     private Color[] _interruptOriginalColors;
@@ -176,13 +186,15 @@ public class EnemyController : MonoBehaviour
 
     private void InitializeInterruptMaterials()
     {
-        var renderers = GetComponentsInChildren<Renderer>(includeInactive: true);
+        IEnumerable<Renderer> renderers = GetColorFeedbackRenderers();
         var materials = new List<Material>();
         var propertyIds = new List<int>();
         var originalColors = new List<Color>();
 
         foreach (var renderer in renderers)
         {
+            if (renderer == null) continue;
+
             var mats = renderer.materials;
             for (int i = 0; i < mats.Length; i++)
             {
@@ -207,6 +219,19 @@ public class EnemyController : MonoBehaviour
         _interruptOriginalColors = originalColors.ToArray();
     }
 
+    private IEnumerable<Renderer> GetColorFeedbackRenderers()
+    {
+        if (_colorFeedbackRenderers != null && _colorFeedbackRenderers.Length > 0)
+        {
+            foreach (var r in _colorFeedbackRenderers)
+                yield return r;
+            yield break;
+        }
+
+        foreach (var r in GetComponentsInChildren<Renderer>(includeInactive: true))
+            yield return r;
+    }
+
     private void SetMaterialColor(Color color)
     {
         if (_interruptMaterials == null) return;
@@ -229,6 +254,7 @@ public class EnemyController : MonoBehaviour
 
     void Die()
     {
+        CancelAttackColliderWindow();
         Animator.SetTrigger(Hash_IsDead);
         Stats.Specialty?.OnDefeated(this);
         CombatGroup?.RemoveEnemy(this);
@@ -318,5 +344,36 @@ public class EnemyController : MonoBehaviour
         {
             handler.OnAttackEnd();
         }
+    }
+
+    /// <summary>
+    /// Activa los <see cref="AttackColliderHandler"/> hijos y los desactiva tras <paramref name="activeSeconds"/>.
+    /// Complementa (o sustituye) Animation Events en el clip del enemigo.
+    /// </summary>
+    public void BeginAttackColliderWindow(float activeSeconds)
+    {
+        if (_attackHitWindowRoutine != null)
+            StopCoroutine(_attackHitWindowRoutine);
+        EnableAttackColliders();
+        _attackHitWindowRoutine = StartCoroutine(AttackHitWindowRoutine(activeSeconds));
+    }
+
+    public void BeginAttackColliderWindow() => BeginAttackColliderWindow(_attackHitActiveDuration);
+
+    public void CancelAttackColliderWindow()
+    {
+        if (_attackHitWindowRoutine != null)
+        {
+            StopCoroutine(_attackHitWindowRoutine);
+            _attackHitWindowRoutine = null;
+        }
+        DisableAttackColliders();
+    }
+
+    IEnumerator AttackHitWindowRoutine(float activeSeconds)
+    {
+        yield return new WaitForSeconds(activeSeconds);
+        DisableAttackColliders();
+        _attackHitWindowRoutine = null;
     }
 }
