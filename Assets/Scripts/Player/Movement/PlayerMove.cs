@@ -282,7 +282,7 @@ public class PlayerMove : MonoBehaviour
         //Debug.Log("Lockeando");
         targetGroup.Targets.Clear();
         targetGroup.AddMember(cameraTarget.transform, 2f, 6f);
-        targetGroup.AddMember(currentEnemy, 1f, 3f);
+        targetGroup.AddMember(currentEnemy, 2f, 5f);
         if (EnemyCombatGroup.Instance.GetCurrentAttackers().Count > 0) EnemyCombatGroup.Instance.InvokeChangeCurrentAttackers();
     }
     void UnLockOn(InputAction.CallbackContext context)

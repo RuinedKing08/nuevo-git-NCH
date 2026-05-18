@@ -29,7 +29,7 @@ public class AttackColliderHandler : MonoBehaviour
     private HashSet<Collider> _hitTargets = new HashSet<Collider>();
     private bool _isAttackActive = false;
     private Collider[] _overlapBuffer;
-
+    [SerializeField] GameObject attackShadow;
     private void Awake()
     {
         _enemyController = GetComponentInParent<EnemyController>();
@@ -52,15 +52,14 @@ public class AttackColliderHandler : MonoBehaviour
 
     void LogDbg(string msg)
     {
-        if (_debugDamage)
-            Debug.Log($"[EnemyHitDbg] {msg}");
+       // if (_debugDamage) Debug.Log($"[EnemyHitDbg] {msg}");
     }
 
     public void OnAttackStart()
     {
         _isAttackActive = true;
         _hitTargets.Clear();
-
+        attackShadow.SetActive(true);
         if (_attackCollider != null)
         {
             _attackCollider.enabled = true;
@@ -74,10 +73,9 @@ public class AttackColliderHandler : MonoBehaviour
             if (_attackCollider != null)
             {
                 Bounds wb = _attackCollider.bounds;
-                Debug.Log($"[EnemyHitDbg] OnAttackStart '{name}' damage={_damageAmount} colliderEnabled={_attackCollider.enabled} boundsCenter={wb.center} extents={wb.extents}");
+               // Debug.Log($"[EnemyHitDbg] OnAttackStart '{name}' damage={_damageAmount} colliderEnabled={_attackCollider.enabled} boundsCenter={wb.center} extents={wb.extents}");
             }
-            else
-                Debug.LogWarning($"[EnemyHitDbg] OnAttackStart '{name}' sin _attackCollider asignado; no habrá hit.");
+            //else Debug.LogWarning($"[EnemyHitDbg] OnAttackStart '{name}' sin _attackCollider asignado; no habrá hit.");
         }
     }
 
@@ -195,7 +193,7 @@ public class AttackColliderHandler : MonoBehaviour
     public void OnAttackEnd()
     {
         _isAttackActive = false;
-
+        attackShadow.SetActive(false);
         if (_attackCollider != null)
             _attackCollider.enabled = false;
 
@@ -285,6 +283,7 @@ public class AttackColliderHandler : MonoBehaviour
             LogDbg($"Blocking dot={dot:F3} (>.5 = bloqueado, sin daño)");
         if (dot > 0.5f)
         {
+            Debug.Log("AtaqueBloqueado");
             if (_debugDamage)
                 LogDbg("Ataque bloqueado (dot > 0.5)");
             return;
