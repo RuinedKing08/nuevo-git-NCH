@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41ee9315f3f0d6244bb0724c4593b4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDetectionArea
-  InterestAreaRadius: 15
+  InterestAreaRadius: 100
   DangerAreaRadius: 8
   _playerInInterestArea: 0
   _playerInDangerArea: 0
@@ -235,6 +235,9 @@ MonoBehaviour:
   _fallbackSphereTowardForward: 1
   _fallbackSphereRadius: 1.25
   _fallbackSphereForwardOffset: 0.35
+  _probeFallbackIncludeDefaultLayer: 1
+  _debugDamage: 1
+  _logNonPlayerContacts: 0
 --- !u!1 &5477319986187250855
 GameObject:
   m_ObjectHideFlags: 0
