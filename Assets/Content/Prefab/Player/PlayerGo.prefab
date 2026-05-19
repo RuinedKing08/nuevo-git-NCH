@@ -97,6 +97,8 @@ MonoBehaviour:
   _attackCollider: {fileID: 9116787738533100980}
   _lightDamage: 10
   _heavyDamage: 20
+  _probeOverlapsOnAttackStart: 1
+  _overlapProbeMax: 16
 --- !u!1 &3287532526747045482
 GameObject:
   m_ObjectHideFlags: 0
@@ -113,6 +115,7 @@ GameObject:
   - component: {fileID: 7357183514607760246}
   - component: {fileID: 2540410287005200011}
   - component: {fileID: 8529380792555856155}
+  - component: {fileID: 4068905512572359836}
   m_Layer: 6
   m_Name: PlayerGo
   m_TagString: Player
@@ -228,6 +231,7 @@ MonoBehaviour:
   _combatSystem: {fileID: 8529380792555856155}
   lightAttackfloat: 0
   heavyAttackfloat: 0
+  attackShadow: {fileID: 0}
 --- !u!114 &7357183514607760246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -275,6 +279,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   health: 100
   maxHealth: 100
+  _debugDamage: 1
 --- !u!114 &8529380792555856155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -297,6 +302,24 @@ MonoBehaviour:
   _temporalManualHitWindow: 1
   _temporalHitDelay: 0.12
   _temporalHitActiveDuration: 0.25
+--- !u!114 &4068905512572359836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3287532526747045482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf6de42735645e42bc06f6aedd41082, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
+  rotateSpeed: 5
+  layer:
+    serializedVersion: 2
+    m_Bits: 512
+  startBlocking: 0
+  timerBlocking: 0
 --- !u!1 &4370221431996188853
 GameObject:
   m_ObjectHideFlags: 0

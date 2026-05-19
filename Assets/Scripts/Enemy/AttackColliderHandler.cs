@@ -258,7 +258,7 @@ public class AttackColliderHandler : MonoBehaviour
             return;
         }
 
-        if (PlayerMove.blocking)
+        if (PlayerActions.blocking)
         {
             if (_debugDamage)
                 LogDbg($"Jugador en bloqueo → evaluar ángulo…");
