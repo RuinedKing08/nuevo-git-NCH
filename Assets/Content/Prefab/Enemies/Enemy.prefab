@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 8108068666376557602}
   - component: {fileID: 2539510862011478148}
   - component: {fileID: 7112889234657804899}
+  - component: {fileID: 7204965495298516662}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: DamageToEnemies
@@ -239,6 +240,22 @@ MonoBehaviour:
   _debugDamage: 1
   _logNonPlayerContacts: 0
   attackShadow: {fileID: 5992038832679817686}
+--- !u!114 &7204965495298516662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2077412923276562435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcfb0152a630ed04c860148b85fe00b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyLayer
+  layerNorth: 10
+  layerSouth: 11
+  layerEast: 12
+  layerWest: 13
 --- !u!1 &5477319986187250855
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,10 +16,10 @@ TagManager:
   - Enemies
   - PlayerWeaponHitbox
   - Floor
-  - 
-  - 
-  - 
-  - 
+  - EnemyNorth
+  - EnemySouth
+  - EnemyEast
+  - EnemyWest
   - 
   - 
   - 

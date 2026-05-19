@@ -4,27 +4,40 @@ using System.Collections;
 using Unity.Cinemachine;
 public class PlayerActions : MonoBehaviour
 {
+    [Header("Input Values")]
+    [HideInInspector] public float moveXfloat;
+    [HideInInspector] public float moveZfloat;
     [Header("Rotation Variables")]
     [SerializeField] float rotateSpeed;
     [SerializeField] LayerMask layer;
-    [Header("Blocl Variables")]
+    [Header("Block Variables")]
     [SerializeField] bool startBlocking;
     public static bool blocking;
     [SerializeField] float timerBlocking;
+    public enum EvadeState { up,down,left,right}
+    [Header("Evade Variables")]
+    public static EvadeState evadeState;
+    public static bool canEvading;
+    public static bool evading;
+    [SerializeField] float timerEvading;
     void Start()
     {
+        evadeState = EvadeState.up;
+        canEvading = true;
         InputsParent.Instance.BlockInput().performed += Block;
         InputsParent.Instance.BlockInput().canceled += UnBlock;
+        InputsParent.Instance.SideStepInput().started += Evade;
     }
 
     void Update()
     {
-
+        GetInput();
     }
     private void FixedUpdate()
     {
         LookAtMouse();
         TimerStartBlocking();
+        TimerStartEvading();
     }
 
     void LookAtMouse()
@@ -48,6 +61,7 @@ public class PlayerActions : MonoBehaviour
 
     void Block(InputAction.CallbackContext context)
     {
+        if (evading) return;
         blocking = true;
         startBlocking = true;
         timerBlocking = 0;
@@ -70,5 +84,54 @@ public class PlayerActions : MonoBehaviour
             }
         }
         
+    }
+    void TimerStartEvading()
+    {
+        if (!canEvading)
+        {
+            timerEvading += Time.fixedDeltaTime;
+            if (timerEvading >= 0.5f)
+            {
+                evading = false;
+            }
+            if (timerEvading >= 1)
+            {
+                canEvading = true;
+            }
+        }
+        
+    }
+
+    void Evade(InputAction.CallbackContext context)
+    {
+        if (blocking) return;
+        if (!canEvading) return;
+        evading = true;
+        timerEvading = 0;
+        Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
+        switch (direction.x,direction.y,direction.z)
+        {
+            case (1,0,0):
+                evadeState = EvadeState.right;
+                break;
+            case (-1,0,0):
+                evadeState = EvadeState.left;
+                break;
+            case (0,0,1):
+                evadeState = EvadeState.up;
+                break;
+            case (0,0,-1):
+                evadeState = EvadeState.down;
+                break;
+            default:
+                evadeState = EvadeState.up;
+                break;
+        }
+        canEvading = false;
+    }
+    private void GetInput()
+    {
+        moveXfloat = InputsParent.Instance.MoveXInput().ReadValue<float>();
+        moveZfloat = InputsParent.Instance.MoveZInput().ReadValue<float>();
     }
 }

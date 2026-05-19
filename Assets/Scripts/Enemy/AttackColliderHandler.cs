@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.AI;
 public class AttackColliderHandler : MonoBehaviour
 {
     [SerializeField] private Collider _attackCollider;
@@ -30,6 +31,9 @@ public class AttackColliderHandler : MonoBehaviour
     private bool _isAttackActive = false;
     private Collider[] _overlapBuffer;
     [SerializeField] GameObject attackShadow;
+    public event Attack OnAttack;
+    public delegate void Attack();
+    private NavMeshAgent agent;
     private void Awake()
     {
         _enemyController = GetComponentInParent<EnemyController>();
@@ -47,7 +51,8 @@ public class AttackColliderHandler : MonoBehaviour
 
         _overlapBuffer = new Collider[_overlapProbeMax];
 
-       
+        agent = GetComponent<NavMeshAgent>();
+        
     }
 
     void LogDbg(string msg)
@@ -60,6 +65,7 @@ public class AttackColliderHandler : MonoBehaviour
         _isAttackActive = true;
         _hitTargets.Clear();
         attackShadow.SetActive(true);
+        OnAttack?.Invoke();
         if (_attackCollider != null)
         {
             _attackCollider.enabled = true;
@@ -264,14 +270,21 @@ public class AttackColliderHandler : MonoBehaviour
                 LogDbg($"Jugador en bloqueo → evaluar ángulo…");
             Blocking(other.transform, playerHealth);
         }
+        else if(PlayerActions.evading)
+        {
+            if (_debugDamage)
+                LogDbg($"Jugador en evade → evaluar layer y dirección…");
+            Evading(playerHealth);
+        }
         else
         {
             if (_debugDamage)
-                LogDbg($"TakeDamage al jugador amount={_damageAmount} (sin bloqueo)");
+                LogDbg($"TakeDamage al jugador amount={_damageAmount} (sin bloqueo)(sin esquive)");
             playerHealth.TakeDamage(_damageAmount);
         }
     }
 
+    bool pushBackActivated;
     void Blocking(Transform other, PlayerHealth playerHealth)
     {
         Vector3 directionFromOtherToMe = (transform.position - other.transform.position).normalized;
@@ -284,6 +297,7 @@ public class AttackColliderHandler : MonoBehaviour
         if (dot > 0.5f)
         {
             Debug.Log("AtaqueBloqueado");
+            if(!pushBackActivated) StartCoroutine(PushBack());
             if (_debugDamage)
                 LogDbg("Ataque bloqueado (dot > 0.5)");
             return;
@@ -293,7 +307,95 @@ public class AttackColliderHandler : MonoBehaviour
             LogDbg($"TakeDamage al jugador (bloqueo fallido) amount={_damageAmount}");
         playerHealth.TakeDamage(_damageAmount);
     }
-
+    IEnumerator PushBack()
+    {
+        pushBackActivated = true;
+        agent.isStopped = true;
+        agent.ResetPath();
+        agent.updatePosition = false;
+        agent.updateRotation = false;
+        float pushForce = 25f;
+        float pushDuration = 0.25f;
+        Vector3 pushDirection = -transform.forward;
+        pushDirection.y = 0;
+        pushDirection.Normalize();
+        float timer = 0;
+        while (timer < pushDuration)
+        {
+            transform.position += pushDirection * pushForce * Time.deltaTime;
+            agent.nextPosition = transform.position;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        NavMeshHit hit;
+        Vector3 finalPosition = transform.position;
+        if (NavMesh.SamplePosition(transform.position, out hit, 2, NavMesh.AllAreas))
+        {
+            finalPosition = hit.position;
+            
+        }
+        transform.position = finalPosition;        
+        agent.Warp(finalPosition);
+        agent.updatePosition = true;
+        agent.updateRotation = true;
+        agent.isStopped = false;
+        pushBackActivated = false;
+    }
+    void Evading(PlayerHealth playerHealth)
+    {
+        EnemyLayer enemyLayer = GetComponent<EnemyLayer>();
+        switch (PlayerActions.evadeState)
+        {            
+            case PlayerActions.EvadeState.up:
+                if (gameObject.layer == enemyLayer.layerNorth)
+                {
+                    playerHealth.TakeDamage(_damageAmount);
+                }
+                else
+                {
+                    PlayerActions.canEvading = true;
+                    Debug.Log("Player Evadió con éxito por el norte");
+                    return;
+                }                    
+                break;
+            case PlayerActions.EvadeState.down:
+                if (gameObject.layer == enemyLayer.layerSouth)
+                {
+                    playerHealth.TakeDamage(_damageAmount);
+                }
+                else
+                {
+                    PlayerActions.canEvading = true;
+                    Debug.Log("Player Evadió con éxito por el sur");
+                    return;
+                }
+                break;
+            case PlayerActions.EvadeState.right:
+                if (gameObject.layer == enemyLayer.layerEast)
+                {
+                    playerHealth.TakeDamage(_damageAmount);
+                }
+                else
+                {
+                    PlayerActions.canEvading = true;
+                    Debug.Log("Player Evadió con éxito por el este");
+                    return;
+                }
+                break;
+            case PlayerActions.EvadeState.left:
+                if (gameObject.layer == enemyLayer.layerWest)
+                {
+                    playerHealth.TakeDamage(_damageAmount);
+                }
+                else
+                {
+                    PlayerActions.canEvading = true;
+                    Debug.Log("Player Evadió con éxito por el oeste");
+                    return;
+                }
+                break;
+        }
+    }
     public void SetDamage(int amount)
     {
         _damageAmount = amount;
