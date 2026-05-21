@@ -283,7 +283,7 @@ public class PlayerMove : MonoBehaviour
         targetGroup.Targets.Clear();
         targetGroup.AddMember(cameraTarget.transform, 2f, 6f);
         targetGroup.AddMember(currentEnemy, 2f, 5f);
-        if (EnemyCombatGroup.Instance.GetCurrentAttackers().Count > 0) EnemyCombatGroup.Instance.InvokeChangeCurrentAttackers();
+       // if (EnemyCombatGroup.Instance.GetCurrentAttackers().Count > 0) EnemyCombatGroup.Instance.InvokeChangeCurrentAttackers();
     }
     void UnLockOn(InputAction.CallbackContext context)
     {
@@ -291,7 +291,7 @@ public class PlayerMove : MonoBehaviour
         currentEnemy = null;
         targetGroup.Targets.Clear();
         targetGroup.AddMember(cameraTarget.transform, 2f, 6f);
-        if(EnemyCombatGroup.Instance.GetCurrentAttackers().Count > 0) EnemyCombatGroup.Instance.InvokeChangeCurrentAttackers();
+        //if(EnemyCombatGroup.Instance.GetCurrentAttackers().Count > 0) EnemyCombatGroup.Instance.InvokeChangeCurrentAttackers();
     }
     Transform GetClosestEnemy()
     {

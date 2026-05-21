@@ -23,7 +23,7 @@ public class PlayersCamera : MonoBehaviour
         axisController = GetComponent<CinemachineInputAxisController>();
         groupFraming = GetComponent<CinemachineGroupFraming>();
         currentDistance = maxDistance;
-        EnemyCombatGroup.Instance.OnChangeCurrentAttackers += FindTargetsGroup;
+        //EnemyCombatGroup.Instance.OnChangeCurrentAttackers += FindTargetsGroup;
     }
     void LateUpdate()
     {
@@ -54,7 +54,7 @@ public class PlayersCamera : MonoBehaviour
     {
         if (!PlayerMove.isLockOn)
         {
-            EnemyCombatGroup.Instance.GetCurrentAttackers();
+            /*EnemyCombatGroup.Instance.GetCurrentAttackers();
             targetGroup.Targets.Clear();
             targetGroup.AddMember(target, 2f, 6f);
             for (int i = 0; i < EnemyCombatGroup.Instance.GetCurrentAttackers().Count; i++)
@@ -77,7 +77,7 @@ public class PlayersCamera : MonoBehaviour
                 orbitalFollow.VerticalAxis.Recentering.Time = 0f;
                 groupFraming.enabled = true;
                 SetOrbitYEnabled(false);
-            }
+            }*/
         }
         else
         {
@@ -106,6 +106,6 @@ public class PlayersCamera : MonoBehaviour
     }
     private void OnDestroy()
     {
-        EnemyCombatGroup.Instance.OnChangeCurrentAttackers -= FindTargetsGroup;
+        //EnemyCombatGroup.Instance.OnChangeCurrentAttackers -= FindTargetsGroup;
     }
 }

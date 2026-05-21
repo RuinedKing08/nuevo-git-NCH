@@ -13,8 +13,8 @@ public class EnemyCombatGroup : MonoBehaviour
     private bool _roundInProgress = false;
     const int MaxAttackers = 3;
     public static EnemyCombatGroup Instance;
-    public event ChangeCurrentAttackers OnChangeCurrentAttackers;
-    public delegate void ChangeCurrentAttackers();
+    public event ChangeCurrentMembers OnChangeCurrentMembers;
+    public delegate void ChangeCurrentMembers();
     private void Awake()
     {
         Instance = this;
@@ -24,6 +24,7 @@ public class EnemyCombatGroup : MonoBehaviour
         if (!_members.Contains(e))
         {
             _members.Add(e);
+            InvokeChangeCurrentMembers();
         }
     }
 
@@ -31,7 +32,7 @@ public class EnemyCombatGroup : MonoBehaviour
     {
         _members.Remove(e);
         _currentAttackers.Remove(e);
-        InvokeChangeCurrentAttackers();
+        InvokeChangeCurrentMembers();
     }
     public void ReportAttackFinished(EnemyController e)
     {
@@ -40,8 +41,8 @@ public class EnemyCombatGroup : MonoBehaviour
             _finishedAttackersCount++;
         }
     }
-    public List<EnemyController> GetCurrentAttackers() { return _currentAttackers; }
-    public void InvokeChangeCurrentAttackers() { OnChangeCurrentAttackers?.Invoke(); }
+    public List<EnemyController> GetCurrentMembers() { return _members; }
+    public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
     public void NotifyExchangeReady(EnemyController e)
     {
         if (!_roundInProgress && _currentAttackers.Count == 0)
@@ -101,7 +102,6 @@ public class EnemyCombatGroup : MonoBehaviour
         {
             int idx = UnityEngine.Random.Range(0, candidates.Count);
             _currentAttackers.Add(candidates[idx]);
-            InvokeChangeCurrentAttackers();
             candidates.RemoveAt(idx);
         }
         //Debug.Log($"BeginAttackRound: selected attackers: {string.Join(", ", _currentAttackers.Select(a=>a.name))}");
