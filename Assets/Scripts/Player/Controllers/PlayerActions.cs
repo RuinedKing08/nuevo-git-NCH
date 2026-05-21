@@ -26,7 +26,7 @@ public class PlayerActions : MonoBehaviour
         canEvading = true;
         InputsParent.Instance.BlockInput().performed += Block;
         InputsParent.Instance.BlockInput().canceled += UnBlock;
-        InputsParent.Instance.SideStepInput().started += Evade;
+        //InputsParent.Instance.SideStepInput().started += Evade;
     }
 
     void Update()
@@ -38,6 +38,7 @@ public class PlayerActions : MonoBehaviour
         LookAtMouse();
         TimerStartBlocking();
         TimerStartEvading();
+        Evade();
     }
 
     void LookAtMouse()
@@ -102,32 +103,35 @@ public class PlayerActions : MonoBehaviour
         
     }
 
-    void Evade(InputAction.CallbackContext context)
+    void Evade()
     {
         if (blocking) return;
         if (!canEvading) return;
-        evading = true;
-        timerEvading = 0;
         Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
-        switch (direction.x,direction.y,direction.z)
+        if (direction.magnitude >= 0.1f)
         {
-            case (1,0,0):
-                evadeState = EvadeState.right;
-                break;
-            case (-1,0,0):
-                evadeState = EvadeState.left;
-                break;
-            case (0,0,1):
-                evadeState = EvadeState.up;
-                break;
-            case (0,0,-1):
-                evadeState = EvadeState.down;
-                break;
-            default:
-                evadeState = EvadeState.up;
-                break;
-        }
-        canEvading = false;
+            evading = true;
+            timerEvading = 0;
+            switch (direction.x, direction.y, direction.z)
+            {
+                case (1, 0, 0):
+                    evadeState = EvadeState.right;
+                    break;
+                case (-1, 0, 0):
+                    evadeState = EvadeState.left;
+                    break;
+                case (0, 0, 1):
+                    evadeState = EvadeState.up;
+                    break;
+                case (0, 0, -1):
+                    evadeState = EvadeState.down;
+                    break;
+                default:
+                    evadeState = EvadeState.up;
+                    break;
+            }
+            canEvading = false;
+        }        
     }
     private void GetInput()
     {
