@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-[RequireComponent(typeof(Animator))]
+
 [RequireComponent(typeof(EnemyStats))]
 [RequireComponent(typeof(EnemyDetectionArea))]
 public class EnemyController : MonoBehaviour
@@ -12,7 +12,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private string _currentStateName; 
     [SerializeField] private string _currentSubStateName;
     
-    [HideInInspector] public Animator Animator;
+    public Animator Animator;
     [HideInInspector] public EnemyStats Stats;
     [HideInInspector] public EnemyDetectionArea Detection;
     [HideInInspector] public EnemyCombatGroup CombatGroup;
@@ -63,7 +63,7 @@ public class EnemyController : MonoBehaviour
 
     void Awake()
     {
-        Animator  = GetComponent<Animator>();
+        Animator  = GetComponentInChildren<Animator>();
         Stats     = GetComponent<EnemyStats>();
         Detection = GetComponent<EnemyDetectionArea>();
 
