@@ -34,7 +34,7 @@ public class PlayerActions : MonoBehaviour
         if (ArrowController.isCursorUnlocked || blocking || _mainCamera == null) return;
 
         Vector3 camForward = _mainCamera.transform.forward;
-        //camForward.y = 0;
+        camForward.y = 0;
 
         if (camForward.sqrMagnitude > 0.01f)
         {

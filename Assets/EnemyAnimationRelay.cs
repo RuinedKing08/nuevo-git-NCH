@@ -1,0 +1,38 @@
+using UnityEngine;
+
+public class EnemyAnimationRelay : MonoBehaviour
+{
+    private EnemyController _controller;
+
+    void Start()
+    {
+        
+        _controller = GetComponentInParent<EnemyController>();
+        
+        if (_controller == null)
+        {
+            Debug.LogError($"No se encontró EnemyController en los padres de {gameObject.name}");
+        }
+    }
+
+    // --- EVENTOS PARA LOS ATAQUES DEL ENEMIGO ---
+
+    public void AE_EnemyAttackStart()
+    {
+        if (_controller != null) _controller.EnableAttackColliders();
+    }
+
+    public void AE_EnemyAttackEnd()
+    {
+        if (_controller != null) _controller.DisableAttackColliders();
+    }
+
+    
+    public void AE_EnemyActionFinished()
+    {
+        if (_controller != null && _controller.CombatGroup != null)
+        {
+            _controller.CombatGroup.ReportAttackFinished(_controller);
+        }
+    }
+}

@@ -9,8 +9,7 @@ public class InputsParent : MonoBehaviour
     [SerializeField] private InputActionReference moveX;
     [SerializeField] private InputActionReference moveZ;
     [SerializeField] private InputActionReference interaction;
-    [SerializeField] private InputActionReference lightAttack;
-    [SerializeField] private InputActionReference heavyAttack;
+    [SerializeField] private InputActionReference lightAttack;    
     [SerializeField] private InputActionReference throwI;
     [SerializeField] private InputActionReference lockOn;
     [SerializeField] private InputActionReference sideStep;
@@ -27,8 +26,7 @@ public class InputsParent : MonoBehaviour
         moveXAction = moveX.ToInputAction();
         moveZAction = moveZ.ToInputAction();
         interactionAction = interaction.ToInputAction();
-        lightAttackAction = lightAttack.ToInputAction();
-        heavyAttackAction = heavyAttack.ToInputAction();
+        lightAttackAction = lightAttack.ToInputAction();        
         throwAction = throwI.ToInputAction();
         lockOnAction = lockOn.ToInputAction();
         sideStepAction = sideStep.ToInputAction();
@@ -39,8 +37,7 @@ public class InputsParent : MonoBehaviour
     public InputAction MoveZInput() {return moveZAction; }
     public InputAction ThrowInput() {return throwAction; }
     public InputAction InteractionInput() {return interactionAction; }
-    public InputAction LightAttackInput() {return lightAttackAction; }
-    public InputAction HeavyAttackInput() {return heavyAttackAction; }
+    public InputAction LightAttackInput() {return lightAttackAction; }    
     public InputAction LockOnInput() {return lockOnAction; }
     public InputAction SideStepInput() {return sideStepAction; }
     public InputAction BlockInput() {return blockAction; }
@@ -57,9 +54,7 @@ public class InputsParent : MonoBehaviour
 
         lightAttackAction = lightAttack.ToInputAction();
         lightAttackAction.Enable();
-
-        heavyAttackAction = heavyAttack.ToInputAction();
-        heavyAttackAction.Enable();
+        
 
         throwAction = throwI.ToInputAction();
         throwAction.Enable();
@@ -80,7 +75,6 @@ public class InputsParent : MonoBehaviour
         moveZAction.Disable();
         interactionAction.Disable();
         lightAttackAction.Disable();
-        heavyAttackAction.Disable();
         throwAction.Disable();
         lockOnAction.Disable();
         sideStepAction.Disable();

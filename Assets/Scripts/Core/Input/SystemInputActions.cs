@@ -1192,15 +1192,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""HeavyAttack"",
-                    ""type"": ""Button"",
-                    ""id"": ""a7bfde56-d612-4c1f-8357-c9b24f9c2cc2"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Interaction"",
                     ""type"": ""Button"",
                     ""id"": ""4063955f-afb2-4e9f-bd46-a49b0f332cad"",
@@ -1466,17 +1457,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Block"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""fedb0442-d513-4a0d-b227-6462c20caa79"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""HeavyAttack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1575,7 +1555,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         m_PlayerAction_PlayerMoveX = m_PlayerAction.FindAction("PlayerMoveX", throwIfNotFound: true);
         m_PlayerAction_PlayerMoveZ = m_PlayerAction.FindAction("PlayerMoveZ", throwIfNotFound: true);
         m_PlayerAction_LightAttack = m_PlayerAction.FindAction("LightAttack", throwIfNotFound: true);
-        m_PlayerAction_HeavyAttack = m_PlayerAction.FindAction("HeavyAttack", throwIfNotFound: true);
         m_PlayerAction_Interaction = m_PlayerAction.FindAction("Interaction", throwIfNotFound: true);
         m_PlayerAction_Block = m_PlayerAction.FindAction("Block", throwIfNotFound: true);
         m_PlayerAction_LockOn = m_PlayerAction.FindAction("LockOn", throwIfNotFound: true);
@@ -2078,7 +2057,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerAction_PlayerMoveX;
     private readonly InputAction m_PlayerAction_PlayerMoveZ;
     private readonly InputAction m_PlayerAction_LightAttack;
-    private readonly InputAction m_PlayerAction_HeavyAttack;
     private readonly InputAction m_PlayerAction_Interaction;
     private readonly InputAction m_PlayerAction_Block;
     private readonly InputAction m_PlayerAction_LockOn;
@@ -2107,10 +2085,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerAction/LightAttack".
         /// </summary>
         public InputAction @LightAttack => m_Wrapper.m_PlayerAction_LightAttack;
-        /// <summary>
-        /// Provides access to the underlying input action "PlayerAction/HeavyAttack".
-        /// </summary>
-        public InputAction @HeavyAttack => m_Wrapper.m_PlayerAction_HeavyAttack;
         /// <summary>
         /// Provides access to the underlying input action "PlayerAction/Interaction".
         /// </summary>
@@ -2166,9 +2140,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
             @LightAttack.started += instance.OnLightAttack;
             @LightAttack.performed += instance.OnLightAttack;
             @LightAttack.canceled += instance.OnLightAttack;
-            @HeavyAttack.started += instance.OnHeavyAttack;
-            @HeavyAttack.performed += instance.OnHeavyAttack;
-            @HeavyAttack.canceled += instance.OnHeavyAttack;
             @Interaction.started += instance.OnInteraction;
             @Interaction.performed += instance.OnInteraction;
             @Interaction.canceled += instance.OnInteraction;
@@ -2204,9 +2175,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
             @LightAttack.started -= instance.OnLightAttack;
             @LightAttack.performed -= instance.OnLightAttack;
             @LightAttack.canceled -= instance.OnLightAttack;
-            @HeavyAttack.started -= instance.OnHeavyAttack;
-            @HeavyAttack.performed -= instance.OnHeavyAttack;
-            @HeavyAttack.canceled -= instance.OnHeavyAttack;
             @Interaction.started -= instance.OnInteraction;
             @Interaction.performed -= instance.OnInteraction;
             @Interaction.canceled -= instance.OnInteraction;
@@ -2518,13 +2486,6 @@ public partial class @SystemInputActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnLightAttack(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "HeavyAttack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnHeavyAttack(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Interaction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

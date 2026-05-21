@@ -1106,15 +1106,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "HeavyAttack",
-                    "type": "Button",
-                    "id": "a7bfde56-d612-4c1f-8357-c9b24f9c2cc2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interaction",
                     "type": "Button",
                     "id": "4063955f-afb2-4e9f-bd46-a49b0f332cad",
@@ -1378,17 +1369,6 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "Block",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "fedb0442-d513-4a0d-b227-6462c20caa79",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "HeavyAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

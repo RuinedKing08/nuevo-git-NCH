@@ -9,7 +9,7 @@ public class PlayerCombatSystem : MonoBehaviour
     private int _comboIndex = 0;
     private bool _isAttacking = false;
     private float _lastAttackTime;
-    private float _resetTime = 1.0f;
+    private float _resetTime = 1.2f;
 
     public void PerformLightAttack()
     {
@@ -41,6 +41,5 @@ public class PlayerCombatSystem : MonoBehaviour
     public void PlayBlockHit() => _animator.SetTrigger("BlockHit");
     public void PlayTakeHit() => _animator.SetTrigger("Hit");
     public void PlayDodge() => _animator.SetTrigger("Dodge");
-
-    public void SetLightAttackDamage(int dmg) => _hitCollider.SetDamage(dmg);
+    
 }

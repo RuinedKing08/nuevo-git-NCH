@@ -5,14 +5,10 @@ using UnityEditor;
 public class PlayerHealth : HealthController
 {
     public static PlayerHealth Instance { get; private set; }
-    private PlayerCombatSystem _combatSystem;
-
-    [Header("Debug")]
-    [SerializeField] private bool _debugDamage = true;
+    private PlayerCombatSystem _combatSystem;    
 
     protected override void Start()
     {
-        
         base.Start();
         Instance = this;
         _combatSystem = GetComponent<PlayerCombatSystem>();
@@ -25,61 +21,25 @@ public class PlayerHealth : HealthController
         health = maxHealth;
     }
 
-    
-    protected override void GetLife(int heal)
-    {
-        health += heal;
-        if (health > maxHealth) health = maxHealth;
-    }
-
-    
-    protected override void GetMaxLife(int extraHealth)
-    {
-        maxHealth += extraHealth;
-        if (maxHealth < 1) maxHealth = 1;
-        
-        if (health > maxHealth) health = maxHealth;
-    }
+    protected override void GetLife(int heal) => health = Mathf.Min(maxHealth, health + heal);
+    protected override void GetMaxLife(int extra) => maxHealth += extra;
 
     
     protected override void GetDamage(int damage)
     {
-        if (_debugDamage)
-            //Debug.Log($"[PlayerHealth] Daño recibido: {damage}. Bloqueando: {PlayerActions.blocking}");
-
-        
-        if (PlayerActions.blocking)
+       if (PlayerActions.blocking)
         {
-            if (_combatSystem != null) _combatSystem.PlayBlockHit();
-             
-            return; 
+            _combatSystem.PlayBlockHit();
+            return;
         }
 
-       
-        health -= damage;
-        health = Mathf.Max(0, health);
-
-        if (_combatSystem != null) 
-            _combatSystem.PlayTakeHit();
-
-        
+        health = Mathf.Max(0, health - damage);
+        _combatSystem.PlayTakeHit();
         gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
-        if (health <= 0)
-        {
-            Die();
-        }
+        if (health <= 0) Die();
     }
 
-    private void Die()
-    {
-       // Debug.Log("Jugador ha muerto");
-        gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
-    }
-
-    
-    public void TakeDamage(int amount) => ApplyDamage(amount);
-    
-    public int CurrentHealth => health;
-    public int MaxHealth => maxHealth;
+    public void TakeDamage(int damage) => ApplyDamage(damage);
+    private void Die() => gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
 }
