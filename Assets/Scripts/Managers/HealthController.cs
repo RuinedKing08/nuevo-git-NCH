@@ -2,8 +2,8 @@ using UnityEngine;
 
 public abstract class HealthController : MonoBehaviour
 {
-    [SerializeField] protected int health;
-    [SerializeField] protected int maxHealth;
+    [SerializeField] protected float health;
+    [SerializeField] protected float maxHealth;
     protected virtual void Start()
     {
         SetLife();
