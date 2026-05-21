@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -7,22 +9,28 @@ public class PlayerHealth : HealthController
 {
     public static PlayerHealth Instance { get; private set; }
 
+    [SerializeField] private Image lifeBar;
+    private string thisScene;
     [Header("Debug vida")]
     [SerializeField] private bool _debugDamage = true;
 
-    public int CurrentHealth => health;
-    public int MaxHealth => maxHealth;
+    public float CurrentHealth => health;
+    public float MaxHealth => maxHealth;
 
     protected override void Start()
     {
+        lifeBar = GameObject.Find("Canvas").transform.Find("PlayerLifeBar").GetComponent<Image>();
+        thisScene = SceneManager.GetActiveScene().name;
         base.Start();
         Instance = this;
+        SetHealthHUD();
     }
 
     protected override void SetLife()
     {
         if (maxHealth <= 0) maxHealth = 100;
         health = maxHealth;
+        SetHealthHUD();
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
 #endif
@@ -31,6 +39,7 @@ public class PlayerHealth : HealthController
     protected override void GetLife(int heal)
     {
         health += heal;
+        SetHealthHUD();
         if (health > maxHealth) health = maxHealth;
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
@@ -40,6 +49,7 @@ public class PlayerHealth : HealthController
     protected override void GetMaxLife(int extraHealth)
     {
         maxHealth += extraHealth;
+        SetHealthHUD();
         if (maxHealth < 1) maxHealth = 1;
         if (health > maxHealth) health = maxHealth;
 #if UNITY_EDITOR
@@ -57,6 +67,7 @@ public class PlayerHealth : HealthController
 
         health -= damage;
         health = Mathf.Max(0, health);
+        SetHealthHUD();
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
 #endif
@@ -71,7 +82,7 @@ public class PlayerHealth : HealthController
 
     void Die()
     {
-       
+        SceneManager.LoadScene(thisScene);
         gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
     }
 
@@ -81,8 +92,13 @@ public class PlayerHealth : HealthController
         if (_debugDamage)
             Debug.Log($"[PlayerHpDbg] TakeDamage llamado amount={damage} → ApplyDamage");
         ApplyDamage(damage);
+        ResetCombo();
     }
 
+    public void ResetCombo()
+    {
+        ChangeCombo.Instance.Combo(true);
+    }
     public void TakeDamagePercent(float percent)
     {
         int dmg = Mathf.CeilToInt(maxHealth * percent);
@@ -100,5 +116,10 @@ public class PlayerHealth : HealthController
     {
         if (health <= threshold)
             gameObject.SendMessage("OnExecuteAvailable", SendMessageOptions.DontRequireReceiver);
+    }
+
+    void SetHealthHUD()
+    {
+        lifeBar.fillAmount = health / maxHealth;
     }
 }

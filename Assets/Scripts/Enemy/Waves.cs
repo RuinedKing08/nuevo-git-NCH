@@ -198,7 +198,7 @@ public class Waves : MonoBehaviour
             {
                 for (int i = 0; i < amountToSpawn; i++)
                 {
-                    Debug.Log(i);
+                    //Debug.Log(i);
                     ChooseEnemiesToSpawn(enemiesToSpawn);
                     spawnEnemy = true;
                     Spawn(enemiesToSpawn);
@@ -219,10 +219,10 @@ public class Waves : MonoBehaviour
         if (spawnEnemy)
         {
             spawnEnemy = false;
-            Debug.Log(enemiesToSpawn);
+           /* Debug.Log(enemiesToSpawn);
             Debug.Log(indexSpawn);
             Debug.Log(spawnPoints[indexSpawn].transform);
-            Debug.Log(indexEnemies + "IndexEnemies");
+            Debug.Log(indexEnemies + "IndexEnemies");*/
             GameObject obj = Instantiate(enemiesToSpawn[indexEnemies], spawnPoints[indexSpawn].transform);
             indexSpawn = Random.Range(0, spawnPoints.Length);
         }

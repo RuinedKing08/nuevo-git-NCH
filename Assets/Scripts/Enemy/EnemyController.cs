@@ -58,7 +58,6 @@ public class EnemyController : MonoBehaviour
     public static readonly int Hash_MoveY = Animator.StringToHash("MoveY");
     public static readonly int Hash_Attack = Animator.StringToHash("Attack");
 
-
     
 
     void Awake()
@@ -136,6 +135,7 @@ public class EnemyController : MonoBehaviour
     public void TakeDamage(int amount, Vector3 hitDirection)
     {
         Stats.TakeDamage(amount);
+        Combo();
         Interrupt();
 
         if (StateMachine.CurrentState == CombatState)
@@ -146,7 +146,10 @@ public class EnemyController : MonoBehaviour
         if (Stats.IsDead)
             Die();
     }
-
+    public void Combo()
+    {
+        ChangeCombo.Instance.Combo(false);
+    }
     public bool IsInterrupted => _isInterrupted;
 
     public void ApplyAttackColor()
