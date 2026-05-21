@@ -2,45 +2,44 @@ using UnityEngine;
 
 public class ArrowController : MonoBehaviour
 {
-    [SerializeField] private bool unlock;
-    [SerializeField] public bool wantToUnlock;
+     public static bool isCursorUnlocked;
+
+    void Start()
+    {
+        LockCursor();
+    }
+
     void Update()
     {
-        if (wantToUnlock)
+        
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
-            WantToUnlockArrow();
-        }
-        else
-        {
-            if (Input.GetKeyUp(KeyCode.LeftAlt))
-            {
-                unlock = false;
-                WantTolockArrow();
-            }
-            if (Time.timeScale == 1 && !unlock)
-            {
-                WantTolockArrow();
-            }
-            if (Input.GetKeyDown(KeyCode.LeftAlt))
-            {
-                unlock = true;
-                WantToUnlockArrow();
-            }
-            if (Time.timeScale == 0)
-            {
-                WantToUnlockArrow();
-            }
+            UnlockCursor();
         }
 
+        if (Input.GetKeyUp(KeyCode.LeftAlt))
+        {
+            LockCursor();
+        }
 
+        
+        if (Time.timeScale == 0 && !isCursorUnlocked)
+        {
+            UnlockCursor();
+        }
     }
 
-    void WantToUnlockArrow()
+    public void UnlockCursor()
     {
+        isCursorUnlocked = true;
         Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
-    void WantTolockArrow()
+
+    public void LockCursor()
     {
+        isCursorUnlocked = false;
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

@@ -6,7 +6,7 @@ public class PlayerActions : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private PlayerCombatSystem _combatSystem;
-    private Camera _mainCamera;
+    [SerializeField] private Camera _mainCamera;
 
     [Header("Configuración de Rotación")]
     [SerializeField] private float rotateSpeed = 10f;
@@ -31,10 +31,10 @@ public class PlayerActions : MonoBehaviour
 
     void LookWithCamera()
     {
-        if (blocking || _mainCamera == null) return;
+        if (ArrowController.isCursorUnlocked || blocking || _mainCamera == null) return;
 
         Vector3 camForward = _mainCamera.transform.forward;
-        camForward.y = 0;
+        //camForward.y = 0;
 
         if (camForward.sqrMagnitude > 0.01f)
         {
