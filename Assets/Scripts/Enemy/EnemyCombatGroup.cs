@@ -11,6 +11,8 @@ public class EnemyCombatGroup : MonoBehaviour
     [SerializeField] private List<EnemyController> _currentAttackers = new();
     private bool _roundInProgress = false;
     private int _finishedCount = 0;
+    public event ChangeCurrentMembers OnChangeCurrentMembers;
+    public delegate void ChangeCurrentMembers();
 
     private void Awake() { Instance = this; }
 
@@ -70,6 +72,8 @@ public class EnemyCombatGroup : MonoBehaviour
         _currentAttackers.Clear();
         _roundInProgress = false;
     }
+    public List<EnemyController> GetCurrentMembers() { return _members; }
+    public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
 }
 //═════════════════════════════════════════════════════════════════════════
 

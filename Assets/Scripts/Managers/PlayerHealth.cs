@@ -1,11 +1,17 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class PlayerHealth : HealthController
 {
     public static PlayerHealth Instance { get; private set; }
     private PlayerCombatSystem _combatSystem;    
+    [SerializeField] private Image lifeBar;
+    private string thisScene;
+    public float CurrentHealth => health;
+    public float MaxHealth => maxHealth;
 
     protected override void Start()
     {
@@ -19,10 +25,22 @@ public class PlayerHealth : HealthController
     {
         if (maxHealth <= 0) maxHealth = 100;
         health = maxHealth;
+        SetHealthHUD();
     }
 
-    protected override void GetLife(int heal) => health = Mathf.Min(maxHealth, health + heal);
-    protected override void GetMaxLife(int extra) => maxHealth += extra;
+    protected override void GetLife(int heal)
+    {
+        health += heal;
+        SetHealthHUD();
+        if (health > maxHealth) health = maxHealth;
+    }
+     protected override void GetMaxLife(int extraHealth)
+    {
+        maxHealth += extraHealth;
+        SetHealthHUD();
+        if (maxHealth < 1) maxHealth = 1;
+        if (health > maxHealth) health = maxHealth;
+    }
 
     
     protected override void GetDamage(int damage)
@@ -38,8 +56,29 @@ public class PlayerHealth : HealthController
         gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
         if (health <= 0) Die();
+        SetHealthHUD();
+
     }
 
-    public void TakeDamage(int damage) => ApplyDamage(damage);
-    private void Die() => gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
+   public void TakeDamage(int damage)
+    {       
+        ApplyDamage(damage);
+        ResetCombo();
+    }
+
+    public void ResetCombo()
+    {
+        ChangeCombo.Instance.Combo(true);
+    }
+
+    void SetHealthHUD()
+    {
+        lifeBar.fillAmount = health / maxHealth;
+    }
+    void Die()
+    {
+       
+        SceneManager.LoadScene(thisScene);
+        gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
+    }
 }

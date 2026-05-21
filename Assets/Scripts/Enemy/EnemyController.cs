@@ -95,6 +95,7 @@ public class EnemyController : MonoBehaviour
         Stats.TakeDamage(amount);
         Animator.SetTrigger(Hash_IsHit);
         if (Stats.IsDead) Die();
+        Combo();
     }
 
     void Die()
@@ -102,6 +103,10 @@ public class EnemyController : MonoBehaviour
         Animator.SetTrigger(Hash_IsDead);
         if (Stats.NavAgent != null) Stats.NavAgent.enabled = false;
         Destroy(gameObject, 2.5f);
+    }
+     public void Combo()
+    {
+        ChangeCombo.Instance.Combo(false);
     }
 
     public void EnableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackStart(); }
