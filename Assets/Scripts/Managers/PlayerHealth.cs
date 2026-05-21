@@ -17,6 +17,7 @@ public class PlayerHealth : HealthController
     {
         base.Start();
         Instance = this;
+        thisScene = SceneManager.GetActiveScene().name;
         _combatSystem = GetComponent<PlayerCombatSystem>();
     }
 
@@ -69,6 +70,7 @@ public class PlayerHealth : HealthController
     public void ResetCombo()
     {
         ChangeCombo.Instance.Combo(true);
+        HitBlur.Instance.Play();
     }
 
     void SetHealthHUD()

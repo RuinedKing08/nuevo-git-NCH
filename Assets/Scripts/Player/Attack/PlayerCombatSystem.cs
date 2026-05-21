@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 public class PlayerCombatSystem : MonoBehaviour
 {
    [SerializeField] private Animator _animator;
-    [SerializeField] private PlayerHitCollider _hitCollider;
+   [SerializeField] private PlayerHitCollider _hitCollider;
     
     private int _comboIndex = 0;
     private bool _isAttacking = false;
