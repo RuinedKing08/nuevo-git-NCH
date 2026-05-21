@@ -10,7 +10,7 @@ public class EnemyLayer : MonoBehaviour
     void Start()
     {
         AttackColliderHandler = GetComponent<AttackColliderHandler>();
-        AttackColliderHandler.OnAttack += ChangeLayer;
+        
     }
 
     void ChangeLayer()

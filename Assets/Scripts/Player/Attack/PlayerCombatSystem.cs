@@ -3,250 +3,44 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerCombatSystem : MonoBehaviour
 {
-    [Header("Referencias")]
-    [SerializeField] private Animator _animator;
+   [SerializeField] private Animator _animator;
     [SerializeField] private PlayerHitCollider _hitCollider;
-    [SerializeField] private PlayerMove _playerMove;
-
-    [Header("Parámetros de Daño")]
-    [SerializeField] private int _lightAttackDamage = 10;
-    [SerializeField] private int _heavyAttackDamage = 20;
-    [SerializeField] private int _grabDamage = 15;
-
-    [Header("Tiempos de Combo")]
-    [SerializeField] private float _comboResetTime = 1.0f;
-
-    //temporal — sustituir por Animation Events
-    [Header("Temporal — hit sin Animation Events")]
-    [SerializeField] private bool _temporalManualHitWindow = true;
-    [SerializeField] private float _temporalHitDelay = 0.12f;
-    [SerializeField] private float _temporalHitActiveDuration = 0.25f;
-
-    private int _currentComboIndex = 0;
-    private float _lastAttackTime = 0f;
+    
+    private int _comboIndex = 0;
     private bool _isAttacking = false;
-    private bool _canCombo = true;
-    private Coroutine _temporalAttackHitRoutine;
+    private float _lastAttackTime;
+    private float _resetTime = 1.0f;
 
-    private static readonly int Hash_AttackType = Animator.StringToHash("AttackType");
-    private static readonly int Hash_ComboIndex = Animator.StringToHash("ComboIndex");
-    private static readonly int Hash_Attack = Animator.StringToHash("Attack");
-    private static readonly int Hash_GrabType = Animator.StringToHash("GrabType");
-    private static readonly int Hash_Grab = Animator.StringToHash("Grab");
-    private static readonly int Hash_Block = Animator.StringToHash("Block");
-    private static readonly int Hash_BlockEnd = Animator.StringToHash("BlockEnd");
-    private static readonly int Hash_Hit = Animator.StringToHash("Hit");
-
-    private void Awake()
+    public void PerformLightAttack()
     {
-        if (_animator == null) _animator = GetComponent<Animator>();
-        if (_hitCollider == null) _hitCollider = GetComponentInChildren<PlayerHitCollider>();
-        if (_playerMove == null) _playerMove = GetComponent<PlayerMove>();
+        if (_isAttacking || PlayerActions.blocking) return;
+
+        _isAttacking = true;
+        _lastAttackTime = Time.time;
+
+        _animator.SetInteger("ComboIndex", _comboIndex);
+        _animator.SetTrigger("Attack");
     }
 
     private void Update()
     {
-        HandleComboReset();
-    }
-    
-    public void PerformLightAttack()
-    {
-        if (_isAttacking || !_canCombo) return;
-
-        
-        if (_currentComboIndex == 0 || Time.time - _lastAttackTime > _comboResetTime)
-        {
-            
-            _currentComboIndex = 0;
-            ExecuteAttack(0); 
-        }
-        else if (_currentComboIndex == 1)
-        {
-            
-            _currentComboIndex = 1;
-            ExecuteAttack(0);
-        }
-        else if (_currentComboIndex == 2)
-        {
-            
-            _currentComboIndex = 2;
-            ExecuteAttack(0);
-        }
-        else if (_currentComboIndex > 2)
-        {
-            
-            _currentComboIndex = 0;
-            ExecuteAttack(0);
-        }
+        if (!_isAttacking && Time.time - _lastAttackTime > _resetTime)
+            _comboIndex = 0;
     }
 
-    
-    public void PerformHeavyAttack()
-    {
-        if (_isAttacking || !_canCombo) return;
-
-        
-        if (_currentComboIndex == 0 || Time.time - _lastAttackTime > _comboResetTime)
-        {            
-            _currentComboIndex = 3; 
-            ExecuteAttack(1); 
-        }
-        else if (_currentComboIndex == 3)
-        {            
-            _currentComboIndex = 4;
-            ExecuteAttack(1);
-        }
-        else if (_currentComboIndex == 4)
-        {            
-            _currentComboIndex = 5;
-            ExecuteAttack(1);
-        }
-        else if (_currentComboIndex > 5)
-        {           
-            _currentComboIndex = 3;
-            ExecuteAttack(1);
-        }
-    }
-
-    private void ExecuteAttack(int attackType)
-    {
-        _isAttacking = true;
-        _lastAttackTime = Time.time;
-        _canCombo = false;
-
-        if (_animator != null)
-        {
-            _animator.SetInteger(Hash_AttackType, attackType);
-            _animator.SetInteger(Hash_ComboIndex, _currentComboIndex);
-            _animator.SetTrigger(Hash_Attack);
-        }
-
-        if (attackType == 0)
-        {
-            _hitCollider.SetDamage(_lightAttackDamage);
-        }
-        else
-        {
-            _hitCollider.SetDamage(_heavyAttackDamage);
-        }
-
-        //temporal — ventana de hit manual 
-        if (_temporalManualHitWindow)
-        {
-            if (_temporalAttackHitRoutine != null)
-                StopCoroutine(_temporalAttackHitRoutine);
-            _temporalAttackHitRoutine = StartCoroutine(TemporalAttackHitWindow(attackType));
-        }
-    }
-
-    //temporal
-    private IEnumerator TemporalAttackHitWindow(int attackType)
-    {
-        yield return new WaitForSeconds(_temporalHitDelay);
-        OnAttackHit(attackType);
-        yield return new WaitForSeconds(_temporalHitActiveDuration);
-        _temporalAttackHitRoutine = null;
-        ApplyAttackEndCore();
-    }
-
-    public void OnAttackEnd()
-    {
-        //temporal — 
-        if (_temporalAttackHitRoutine != null)
-        {
-            StopCoroutine(_temporalAttackHitRoutine);
-            _temporalAttackHitRoutine = null;
-        }
-
-        ApplyAttackEndCore();
-    }
-
-    private void ApplyAttackEndCore()
+    // EVENTOS DE ANIMACIÓN
+    public void AE_EnableHitbox() => _hitCollider.OnAttackStart();
+    public void AE_DisableHitbox() => _hitCollider.OnAttackEnd();
+    public void AE_AttackEnd()
     {
         _isAttacking = false;
-        _canCombo = true;
-        _currentComboIndex++;
-        _hitCollider.OnAttackEnd();
+        _comboIndex = (_comboIndex + 1) % 3; 
     }
 
-    public void OnAttackHit(int damageType = 0)
-    {
-        _hitCollider.OnAttackStart(damageType);
-    }
-    
-    private void HandleComboReset()
-    {
-        if (!_isAttacking && _currentComboIndex > 0)
-        {
-            if (Time.time - _lastAttackTime > _comboResetTime)
-            {
-                _currentComboIndex = 0;
-                Debug.Log("[Combat] Combo reset");
-            }
-        }
-    }
+    public void SetBlockingState(bool state) => _animator.SetBool("Blocking", state);
+    public void PlayBlockHit() => _animator.SetTrigger("BlockHit");
+    public void PlayTakeHit() => _animator.SetTrigger("Hit");
+    public void PlayDodge() => _animator.SetTrigger("Dodge");
 
-    
-    public void PerformGrab(int grabType = 0)
-    {
-        if (_isAttacking) return;
-
-        
-        _animator.SetInteger(Hash_GrabType, grabType);
-        _animator.SetTrigger(Hash_Grab);
-        _hitCollider.SetDamage(_grabDamage);
-
-        Debug.Log($"[Combat] Grab attempt: Type={grabType}");
-    }
-
-   
-    public void StartBlock()
-    {
-        _animator.SetBool(Hash_Block, true);
-        PlayerMove.blocking = true;
-    }
-
-    
-    public void EndBlock()
-    {
-        _animator.SetBool(Hash_Block, false);
-        _animator.SetTrigger(Hash_BlockEnd);
-        PlayerMove.blocking = false;
-    }
-
-    
-    public void OnPlayerHit()
-    {
-        //temporal
-        if (_temporalAttackHitRoutine != null)
-        {
-            StopCoroutine(_temporalAttackHitRoutine);
-            _temporalAttackHitRoutine = null;
-        }
-
-        _hitCollider.OnAttackEnd();
-        _isAttacking = false;
-        _canCombo = true;
-        _currentComboIndex = 0;
-
-        if (_animator != null)
-            _animator.SetTrigger(Hash_Hit);
-    }
-
-    
-    public void PerformDash()
-    {
-        if (_isAttacking || _animator == null) return;
-        
-        _animator.SetTrigger(Animator.StringToHash("Dash"));
-    }
-
-    
-    public bool IsAttacking => _isAttacking;
-    public int CurrentComboIndex => _currentComboIndex;
-
-    
-    public void SetLightAttackDamage(int damage) => _lightAttackDamage = damage;
-    public void SetHeavyAttackDamage(int damage) => _heavyAttackDamage = damage;
-    public void SetComboResetTime(float time) => _comboResetTime = time;
+    public void SetLightAttackDamage(int dmg) => _hitCollider.SetDamage(dmg);
 }
