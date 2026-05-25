@@ -118,8 +118,8 @@ MonoBehaviour:
   wave: 0
   wavesWaiting: 0
   amountToSpawn: 0
-  timerInWave: 25
-  maxTimerInWave: 25
+  timerInWave: 15
+  maxTimerInWave: 15
   timerOutWave: 5
   maxTimerOutWave: 5
   timerLevel: 0

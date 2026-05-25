@@ -11,6 +11,7 @@ public class Waves : MonoBehaviour
     [SerializeField] private List<GameObject> enemiesGroup4;
     [SerializeField] private List<GameObject> enemiesGroup5;
     [SerializeField] private int wave;
+    [SerializeField] private int wavesInWave;
     [SerializeField] private int wavesWaiting;
     [SerializeField] private int amountToSpawn;
     [SerializeField] float timerInWave;
@@ -29,7 +30,8 @@ public class Waves : MonoBehaviour
     void Start()
     {
         spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
-        wave = 0;
+        wave = 1;
+        wavesInWave = Random.Range(3, 6);
         indexSpawn = Random.Range(0, spawnPoints.Length);
         inWave = false;
         startSpawn = false;
@@ -43,6 +45,10 @@ public class Waves : MonoBehaviour
         CloseSpawn();
         TimerToSpawn();
     }
+    void StarSpawnTrue()
+    {
+        startSpawn = true;
+    }
     void TimerToSpawn()
     {
         timerLevel += Time.fixedDeltaTime;
@@ -55,8 +61,8 @@ public class Waves : MonoBehaviour
                 if(EnemyCombatGroup.Instance.GetCurrentMembers().Count < 5 && !waveWaiting)
                 {
                     ChoseGruopToSpawn();
-                    startSpawn = true;
-                    wave++;
+                    StarSpawnTrue();
+                    ChangeWave();
                     timerInWave = maxTimer;
                     inWave = true;
                 }
@@ -65,8 +71,8 @@ public class Waves : MonoBehaviour
                     wavesWaiting--;
                     ChangeWavesWating();
                     ChoseGruopToSpawn();
-                    startSpawn = true;
-                    wave++;
+                    StarSpawnTrue();
+                    ChangeWave();
                     timerInWave = maxTimer;
                     inWave = true;
                 }
@@ -94,8 +100,8 @@ public class Waves : MonoBehaviour
                 if (timerOutWave <= 0)
                 {
                     ChoseGruopToSpawn();
-                    startSpawn = true;
-                    wave++;
+                    StarSpawnTrue();
+                    ChangeWave();
                     timerOutWave = maxTimer;
                     inWave = true;
                 }
@@ -108,8 +114,8 @@ public class Waves : MonoBehaviour
                     wavesWaiting--;
                     ChangeWavesWating();
                     ChoseGruopToSpawn();
-                    startSpawn = true;
-                    wave++;
+                    StarSpawnTrue();
+                    ChangeWave();
                     firstWaveWaiting = false;
                     timerWaveWaiting = 0;
                     inWave = true;
@@ -127,13 +133,22 @@ public class Waves : MonoBehaviour
         }
         else waveWaiting = true;
     }
+    void ChangeWave()
+    {
+        wavesInWave--;
+        if(wavesInWave <= 0)
+        {
+            wave++;
+            wavesInWave = Random.Range(3, 6);
+        }
+    }
     int group;
     void ChoseGruopToSpawn()
     {        
         if (timerLevel < 15) group = Random.Range(1, 2);
         else if(timerLevel < 30) group = Random.Range(1, 3);
-        else if(timerLevel < 60) group = Random.Range(1, 4);
-        else if(timerLevel < 90) group = Random.Range(1, 5);
+        else if(timerLevel < 60) group = Random.Range(2, 4);
+        else if(timerLevel < 90) group = Random.Range(3, 5);
         else group = Random.Range(1, 6);
         switch (group)
         {
