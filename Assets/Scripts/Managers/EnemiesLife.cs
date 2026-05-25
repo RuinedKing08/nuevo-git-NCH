@@ -14,15 +14,14 @@ public class EnemiesLife : MonoBehaviour
     {
         if (other.CompareTag("DamageToEnemies"))
         {
-            if (!_damageEnter)
-            {
+           
                 if (_enemyController != null)
                 {
                     Vector3 hitDir = (_enemyController.transform.position - other.transform.position).normalized;
-                    _enemyController.TakeDamage(30, hitDir);
+                    _enemyController.TakeDamage(10, hitDir);
                 }
                 _damageEnter = true;
-            }
+            
         }   
     }
 

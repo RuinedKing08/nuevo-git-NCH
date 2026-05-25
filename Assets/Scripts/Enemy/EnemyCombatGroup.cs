@@ -6,145 +6,74 @@ using System;
 
 public class EnemyCombatGroup : MonoBehaviour
 {
-    [SerializeField]List<EnemyController> _members       = new();
-    [SerializeField]List<EnemyController> _currentAttackers = new();
-
-    private int _finishedAttackersCount = 0;
+    public static EnemyCombatGroup Instance { get; private set; }
+    [SerializeField] private List<EnemyController> _members = new();
+    [SerializeField] private List<EnemyController> _currentAttackers = new();
     private bool _roundInProgress = false;
-    const int MaxAttackers = 3;
-    public static EnemyCombatGroup Instance;
+    private int _finishedCount = 0;
     public event ChangeCurrentMembers OnChangeCurrentMembers;
     public delegate void ChangeCurrentMembers();
-    private void Awake()
-    {
-        Instance = this;
-    }
-    public void AddEnemy(EnemyController e)
-    {
-        if (!_members.Contains(e))
-        {
-            _members.Add(e);
-            InvokeChangeCurrentMembers();
-        }
-    }
 
-    public void RemoveEnemy(EnemyController e)
-    {
-        _members.Remove(e);
-        _currentAttackers.Remove(e);
-        InvokeChangeCurrentMembers();
-    }
-    public void ReportAttackFinished(EnemyController e)
-    {
-        if (_currentAttackers.Contains(e))
-        {
-            _finishedAttackersCount++;
-        }
-    }
-    public List<EnemyController> GetCurrentMembers() { return _members; }
-    public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
-    public void NotifyExchangeReady(EnemyController e)
-    {
-        if (!_roundInProgress && _currentAttackers.Count == 0)
-        {
-            StartCoroutine(BeginAttackRound());
-        }
-    }
-    public float GetTargetAngleForMember(EnemyController member)
+    private void Awake() { Instance = this; }
+
+    public void AddEnemy(EnemyController e) { if (!_members.Contains(e)) _members.Add(e); }
+    public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); }
+
+    public Vector3 GetOrbitPosition(EnemyController member, Vector3 playerPos)
     {
         int index = _members.IndexOf(member);
-        if (index == -1) return 0;
+        if (index == -1) return playerPos;
+
         
-        float angleStep = 360f / _members.Count;
-        return index * angleStep;
+        float baseAngle = index * (360f / Mathf.Max(1, _members.Count));
+        float rotationDir = (member.IndividualSeed > 500) ? 1 : -1;
+        float individualRotation = Time.time * (15f + (member.IndividualSeed % 10f)) * rotationDir;
+        
+        float finalAngle = baseAngle + individualRotation;
+
+        
+        float radiusNoise = Mathf.PerlinNoise(Time.time * 0.2f, member.IndividualSeed + 100f);
+        float dynamicRadius = Mathf.Lerp(4.5f, 7.5f, radiusNoise);
+
+        Vector3 offset = new Vector3(Mathf.Cos(finalAngle * Mathf.Deg2Rad), 0, Mathf.Sin(finalAngle * Mathf.Deg2Rad)) * dynamicRadius;
+        return playerPos + offset;
     }
 
-    IEnumerator BeginAttackRound()
+    public void NotifyExchangeReady(EnemyController e)
+    {
+        if (!_roundInProgress) StartCoroutine(BeginAttackRound());
+    }
+
+    public void ReportAttackFinished(EnemyController e) => _finishedCount++;
+
+    private IEnumerator BeginAttackRound()
     {
         _roundInProgress = true;
-        _finishedAttackersCount = 0;
-        
-       
-        bool anyPlayerNearby = _members.Any(m => m.Detection != null && (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea));
-        //Debug.Log($"BeginAttackRound: members={_members.Count}, anyPlayerNearby={anyPlayerNearby}");
-        if (!anyPlayerNearby || _members.Count == 0)
+        _finishedCount = 0;
+
+        // Buscar quienes pueden atacar
+        var candidates = _members.Where(m => m.StateMachine.CurrentState == m.CombatState).ToList();
+        if (candidates.Count == 0) { _roundInProgress = false; yield break; }
+
+        _currentAttackers = candidates.Take(2).ToList(); // Máximo 2 atacantes a la vez
+
+        foreach (var m in _members)
         {
-            _roundInProgress = false;
-            yield break;
+            if (m.StateMachine.CurrentState != m.CombatState) continue;
+            if (_currentAttackers.Contains(m)) m.CombatState.IdleSubState.AssignAttack();
+            else m.CombatState.IdleSubState.AssignDefend();
         }
 
-        
-        float maxAttackDistance = 10f; 
-        var candidates = _members
-            .Where(m => m.StateMachine.CurrentState == m.CombatState &&
-                        m.CombatState.IsInIdleSubState() &&
-                        (m.Detection.PlayerInInterestArea || m.Detection.PlayerInDangerArea || Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition) <= maxAttackDistance))
-            .ToList();
+        yield return new WaitForSeconds(5f); // Cada ronda dura 5 segundos
 
-        
-        if (candidates.Count == 0)
-        {
-           // Debug.Log("BeginAttackRound: no candidates found (none in idle or in range). Members:");
-            foreach (var m in _members)
-            {
-                var dist = Vector3.Distance(m.transform.position, m.Detection.LastKnownPlayerPosition);
-                //Debug.Log($" - {m.name}: state={m.StateMachine.CurrentState?.GetType().Name}, sub={m.CombatState.GetSubStateName()}, distToPlayer={dist}, inInterest={m.Detection.PlayerInInterestArea}, inDanger={m.Detection.PlayerInDangerArea}");
-            }
-            _roundInProgress = false;
-            yield break; 
-        }
+        foreach (var m in _members) 
+            if(m.StateMachine.CurrentState == m.CombatState) m.CombatState.DefendSubState.ForceToExchange();
 
-        
-        int attackerCount = Mathf.Min(MaxAttackers, candidates.Count);
-        _currentAttackers.Clear();
-
-        for (int i = 0; i < attackerCount; i++)
-        {
-            int idx = UnityEngine.Random.Range(0, candidates.Count);
-            _currentAttackers.Add(candidates[idx]);
-            candidates.RemoveAt(idx);
-        }
-        //Debug.Log($"BeginAttackRound: selected attackers: {string.Join(", ", _currentAttackers.Select(a=>a.name))}");
-
-        
-        var defenders = _members
-            .Where(m => m.StateMachine.CurrentState == m.CombatState && !_currentAttackers.Contains(m))
-            .ToList();
-        //Debug.Log($"EnemyCombatGroup: assigning { _currentAttackers.Count } attackers and { defenders.Count } defenders");
-        foreach (var d in defenders)
-        {
-            //Debug.Log($"EnemyCombatGroup: AssignDefend -> {d.name}");
-            d.CombatState.IdleSubState.AssignDefend();
-        }
-        foreach (var a in _currentAttackers)
-        {
-            //Debug.Log($"EnemyCombatGroup: AssignAttack -> {a.name}");
-            a.CombatState.IdleSubState.AssignAttack();
-        }
-
-        
-        int targetFinishes = Mathf.Clamp(attackerCount - 1, 1, 2); 
-        if (attackerCount == 3) targetFinishes = 2; 
-
-        float timeout = 5f; 
-        float timer = 0f;
-
-        while (_finishedAttackersCount < targetFinishes && timer < timeout)
-        {
-            timer += Time.deltaTime;
-            yield return null; 
-        }
-        
-        foreach (var d in defenders)
-        {
-            
-            if(d != null && d.CombatState != null)
-                d.CombatState.DefendSubState.ForceToExchange();
-        }
-        
         _currentAttackers.Clear();
         _roundInProgress = false;
     }
+    public List<EnemyController> GetCurrentMembers() { return _members; }
+    public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
 }
 //═════════════════════════════════════════════════════════════════════════
 

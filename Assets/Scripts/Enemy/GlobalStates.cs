@@ -1,214 +1,77 @@
 using UnityEngine;
 using System.Collections;
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  PATROL STATE  (Prioridad 1)
-// ═══════════════════════════════════════════════════════════════════════════
+
+public class AlertState : IEnemyState
+{
+   readonly EnemyController _e;
+    readonly EnemyStateMachine _sm;
+
+    public AlertState(EnemyController e, EnemyStateMachine sm) { _e = e; _sm = sm; }
+
+    public void EnterState() => _e.Animator.SetBool(EnemyController.Hash_IsAlert, true);
+
+    public void UpdateState()
+    {
+        if (_e.Detection.PlayerInDangerArea) { _sm.ChangeState(_e.CombatState); return; }
+
+        _e.Stats.NavAgent.SetDestination(_e.Detection.LastKnownPlayerPosition);
+
+        if (_e.Stats.NavAgent.velocity.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(_e.Stats.NavAgent.velocity.normalized);
+            _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    }
+        
+
+    public void FixedUpdateState() { }
+    public void ExitState() { }
+}
+
 public class PatrolState : IEnemyState
 {
     readonly EnemyController _e;
     readonly EnemyStateMachine _sm;
 
-    int  _loopsNearRestingEnemy;
-    bool _switchedWithResting;
-
     public PatrolState(EnemyController e, EnemyStateMachine sm) { _e = e; _sm = sm; }
 
-    public void EnterState()
-    {
-        _loopsNearRestingEnemy = 0;
-        _e.Animator.SetBool(EnemyController.Hash_InCombat, false);
-        _e.Animator.SetBool(EnemyController.Hash_IsAlert,  false);
-        
-    }
+    public void EnterState() { }
 
     public void UpdateState()
     {
-        
-        if (_e.Detection.PlayerInInterestArea)
-        {
-            _sm.ChangeState(_e.AlertState);
-            Debug.Log("Creo que vi algo");
-            return;
-        }
+        if (_e.Detection.PlayerInInterestArea) { _sm.ChangeState(_e.AlertState); return; }
 
-        
-        EnemyController nearbyResting = _e.Detection.GetNearbyRestingEnemy();
-        if (nearbyResting != null)
-        {
-            _loopsNearRestingEnemy++;
-            if (_loopsNearRestingEnemy >= 3)
-            {
-                SwapWithRestingEnemy(nearbyResting);
-                return;
-            }
-        }
-        else
-        {
-            _loopsNearRestingEnemy = 0;
-        }
-
-        
         _e.Stats.PatrolPath.Tick(_e);
-        Debug.Log("Patrullando");
 
-        float speed = _e.Stats.PatrolPath.CurrentSpeed;
-        _e.Animator.SetFloat(EnemyController.Hash_Speed, speed, 0.1f, Time.deltaTime);
+        if (_e.Stats.NavAgent.velocity.sqrMagnitude > 0.1f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(_e.Stats.NavAgent.velocity.normalized);
+            _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, targetRot, Time.deltaTime * 5f);
+        }
     }
 
     public void FixedUpdateState() { }
-
     public void ExitState() { }
-
-    void SwapWithRestingEnemy(EnemyController restingEnemy)
-    {
-        restingEnemy.StateMachine.ChangeState(restingEnemy.PatrolState);
-        _sm.ChangeState(_e.RestState);
-    }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-//  REST STATE  (Prioridad 0)
-// ═══════════════════════════════════════════════════════════════════════════
 public class RestState : IEnemyState
 {
-    readonly EnemyController   _e;
+    readonly EnemyController _e;
     readonly EnemyStateMachine _sm;
 
     public RestState(EnemyController e, EnemyStateMachine sm) { _e = e; _sm = sm; }
 
-    public void EnterState()
+    public void EnterState() 
     {
-        _e.Animator.SetFloat(EnemyController.Hash_Speed, 0f);
-        _e.Animator.SetBool(EnemyController.Hash_IsAlert, false);
+        
     }
 
     public void UpdateState()
     {
-        if (_e.Detection.PlayerInInterestArea)
-            _sm.ChangeState(_e.AlertState);
+        if (_e.Detection.PlayerInInterestArea) _sm.ChangeState(_e.AlertState);
     }
 
     public void FixedUpdateState() { }
     public void ExitState() { }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-//  ALERT STATE  (Prioridad 5)
-// ═══════════════════════════════════════════════════════════════════════════
-public class AlertState : IEnemyState
-{
-    readonly EnemyController   _e;
-    readonly EnemyStateMachine _sm;
-
-    Vector3 _lastKnownPlayerPos;
-    float   _timePlayerVisible;
-    bool    _returningToOrigin;
-    Vector3 _originPosition;
-
-    const float TimeToEnterCombat = 5f;
-
-    public AlertState(EnemyController e, EnemyStateMachine sm) { _e = e; _sm = sm; }
-
-    public void EnterState()
-    {
-        _returningToOrigin  = false;
-        _timePlayerVisible  = 0f;
-        _originPosition     = _e.Stats.InitialPosition;
-        _lastKnownPlayerPos = _e.Detection.LastKnownPlayerPosition;
-
-        _e.Animator.SetBool(EnemyController.Hash_IsAlert, true);
-        
-        _e.Detection.AlertNearbyEnemies();
-    }
-
-    public void UpdateState()
-    {      
-        if (_e.Detection.PlayerInDangerArea)
-        {
-            EnterCombat();
-            return;
-        }
-
-        if (!_returningToOrigin)
-        {
-            
-            if (_e.Detection.PlayerInInterestArea)
-            {
-                _timePlayerVisible += Time.deltaTime;
-                _lastKnownPlayerPos = _e.Detection.LastKnownPlayerPosition;
-
-                if (_timePlayerVisible >= TimeToEnterCombat)
-                {
-                    EnterCombat();
-                    return;
-                }
-            }
-            else
-            {
-                
-                MoveTowards(_lastKnownPlayerPos);
-
-                if (ReachedDestination(_lastKnownPlayerPos))
-                    StartReturnToOrigin();
-            }
-        }
-        else
-        {
-            
-            if (_e.Detection.PlayerInInterestArea)
-            {
-                _returningToOrigin = false;
-                _timePlayerVisible = 0f;
-                return;
-            }
-
-            MoveTowards(_originPosition);
-
-            if (ReachedDestination(_originPosition))
-                _sm.ChangeState(_e.PatrolState);   
-        }
-
-        float speed = (_returningToOrigin || !_e.Detection.PlayerInInterestArea) ? 1f : 1.5f;
-        _e.Animator.SetFloat(EnemyController.Hash_Speed, speed, 0.1f, Time.deltaTime);
-    }
-
-    public void FixedUpdateState() { }
-
-    public void ExitState()
-    {
-        _e.Animator.SetBool(EnemyController.Hash_IsAlert, false);
-    }
-
-    void EnterCombat()
-    {
-        _e.Detection.PropagateEnterCombat();
-        _sm.ChangeState(_e.CombatState);
-        //Debug.Log("Esta ahi");
-    }
-
-    void MoveTowards(Vector3 target)
-    {
-        if (_e.Stats.NavAgent == null || !_e.Stats.NavAgent.isOnNavMesh)
-            return;
-
-        float distanceToTarget = Vector3.Distance(_e.transform.position, target);
-        if (distanceToTarget <= _e.Stats.NavAgent.stoppingDistance + 0.1f) 
-        {
-            _e.Stats.NavAgent.isStopped = true;
-            return;
-        }
-
-        _e.Stats.NavAgent.isStopped = false;
-        _e.Stats.NavAgent.SetDestination(target);
-    }
-
-    bool ReachedDestination(Vector3 target)
-    {
-        float dist = Vector3.Distance(_e.transform.position, target);
-        return dist <= _e.Stats.NavAgent.stoppingDistance + 0.5f;
-    }
-    
-
-    void StartReturnToOrigin() => _returningToOrigin = true;
 }

@@ -22,6 +22,7 @@ public class ChangeCombo : MonoBehaviour
         comboTMP = comboGameObject.GetComponent<TMP_Text>();
         resetCombo = true;
         resetIcon = false;
+        TimerText();
         Combo(resetCombo);
         comboTMP.text = "x" + combo;
     }

@@ -4,138 +4,65 @@ using System.Collections;
 using Unity.Cinemachine;
 public class PlayerActions : MonoBehaviour
 {
-    [Header("Input Values")]
-    [HideInInspector] public float moveXfloat;
-    [HideInInspector] public float moveZfloat;
-    [Header("Rotation Variables")]
-    [SerializeField] float rotateSpeed;
-    [SerializeField] LayerMask layer;
-    [Header("Block Variables")]
-    [SerializeField] bool startBlocking;
+    [Header("Referencias")]
+    [SerializeField] private PlayerCombatSystem _combatSystem;
+    [SerializeField] private Camera _mainCamera;
+
+    [Header("Configuración de Rotación")]
+    [SerializeField] private float rotateSpeed = 10f;
+    
     public static bool blocking;
-    [SerializeField] float timerBlocking;
-    public enum EvadeState { up,down,left,right}
-    [Header("Evade Variables")]
-    public static EvadeState evadeState;
-    public static bool canEvading;
-    public static bool evading;
-    [SerializeField] float timerEvading;
+    public static bool isDodging; 
+
     void Start()
     {
-        evadeState = EvadeState.up;
-        canEvading = true;
-        InputsParent.Instance.BlockInput().performed += Block;
-        InputsParent.Instance.BlockInput().canceled += UnBlock;
-        //InputsParent.Instance.SideStepInput().started += Evade;
+        _mainCamera = Camera.main;
+
+        
+        InputsParent.Instance.BlockInput().performed += ctx => StartBlock();
+        InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
+        InputsParent.Instance.SideStepInput().performed += ctx => Dodge();
     }
 
     void Update()
     {
-        GetInput();
-    }
-    private void FixedUpdate()
-    {
-        LookAtMouse();
-        TimerStartBlocking();
-        TimerStartEvading();
-        Evade();
+        LookWithCamera();
     }
 
-    void LookAtMouse()
+    void LookWithCamera()
     {
-        if (startBlocking) return;
-        Camera mainCam = Camera.main;
-        if (mainCam == null) return;
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layer))
+        if (ArrowController.isCursorUnlocked || blocking || _mainCamera == null) return;
+
+        Vector3 camForward = _mainCamera.transform.forward;
+        camForward.y = 0;
+
+        if (camForward.sqrMagnitude > 0.01f)
         {
-            Vector3 lookDirection = hit.point - transform.position;
-            lookDirection.y = 0;
-            if (lookDirection.magnitude > 0.1f)
-            {
-                Quaternion targetRot = Quaternion.LookRotation(lookDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotateSpeed * Time.fixedDeltaTime);
-            }
+            Quaternion targetRotation = Quaternion.LookRotation(camForward);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
         }
     }
 
-    void Block(InputAction.CallbackContext context)
+    void StartBlock()
     {
-        if (evading) return;
         blocking = true;
-        startBlocking = true;
-        timerBlocking = 0;
+        _combatSystem.SetBlockingState(true);
     }
 
-    void UnBlock(InputAction.CallbackContext context)
+    void EndBlock()
     {
         blocking = false;
-        startBlocking = false;
+        _combatSystem.SetBlockingState(false);
     }
 
-    void TimerStartBlocking()
+    void Dodge()
     {
-        if (startBlocking)
-        {
-            timerBlocking += Time.fixedDeltaTime;
-            if (timerBlocking >= 1)
-            {
-                startBlocking = false;
-            }
-        }
-        
-    }
-    void TimerStartEvading()
-    {
-        if (!canEvading)
-        {
-            timerEvading += Time.fixedDeltaTime;
-            if (timerEvading >= 0.5f)
-            {
-                evading = false;
-            }
-            if (timerEvading >= 1)
-            {
-                canEvading = true;
-            }
-        }
-        
+        if (isDodging) return; 
+        _combatSystem.PlayDodge();
     }
 
-    void Evade()
-    {
-        if (blocking) return;
-        if (!canEvading) return;
-        Vector3 direction = new Vector3(moveXfloat, 0, moveZfloat).normalized;
-        if (direction.magnitude >= 0.1f)
-        {
-            evading = true;
-            timerEvading = 0;
-            switch (direction.x, direction.y, direction.z)
-            {
-                case (1, 0, 0):
-                    evadeState = EvadeState.right;
-                    break;
-                case (-1, 0, 0):
-                    evadeState = EvadeState.left;
-                    break;
-                case (0, 0, 1):
-                    evadeState = EvadeState.up;
-                    break;
-                case (0, 0, -1):
-                    evadeState = EvadeState.down;
-                    break;
-                default:
-                    evadeState = EvadeState.up;
-                    break;
-            }
-            canEvading = false;
-        }        
-    }
-    private void GetInput()
-    {
-        moveXfloat = InputsParent.Instance.MoveXInput().ReadValue<float>();
-        moveZfloat = InputsParent.Instance.MoveZInput().ReadValue<float>();
-    }
+    public void AE_StartDodge() => isDodging = true;
+    public void AE_EndDodge() => isDodging = false;
+
+    
 }
