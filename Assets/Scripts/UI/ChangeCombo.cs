@@ -1,15 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Playables;
 public class ChangeCombo : MonoBehaviour
 {
     public static ChangeCombo Instance;
     [SerializeField] int combo;
+    PlayableDirector playable;
     bool resetCombo, resetIcon;
     GameObject comboGameObject;
     Image playerIcon;
     TMP_Text comboTMP;
-    float timer;
+    bool firstStart;
     float timerIcon;
     private void Awake()
     {
@@ -17,6 +19,7 @@ public class ChangeCombo : MonoBehaviour
     }
     void Start()
     {
+        playable = GetComponent<PlayableDirector>();
         comboGameObject = transform.Find("ComboTMP").gameObject;
         playerIcon = transform.Find("PlayerFace").GetComponent<Image>();
         comboTMP = comboGameObject.GetComponent<TMP_Text>();
@@ -38,7 +41,8 @@ public class ChangeCombo : MonoBehaviour
         if (this.resetCombo)
         {
             combo = 0;
-            resetIcon = this.resetCombo;
+            if (!firstStart) resetIcon = false;
+            else resetIcon = this.resetCombo;
             ChangeComboTMP();
         }
         else
@@ -51,22 +55,17 @@ public class ChangeCombo : MonoBehaviour
     {
         comboGameObject.SetActive(true);
         comboTMP.text = "x" + combo;
+        playable.Play();
     }
     void TimerText()
     {
         if (!resetCombo)
         {
-            timer += Time.deltaTime;
-            if (timer >= 2)
-            {
-                comboGameObject.SetActive(false);
-                timer = 0;
-            }
+            playerIcon.color = Color.white;
         }
         else
         {
             comboGameObject.SetActive(false);
-            timer = 0;
             if (resetIcon)
             {
                 timerIcon += Time.deltaTime;

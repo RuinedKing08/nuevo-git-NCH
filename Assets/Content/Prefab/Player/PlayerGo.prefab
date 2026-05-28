@@ -52,7 +52,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.6529007, y: 2.0778048, z: 1.3199005}
   m_Center: {x: -0.38523486, y: 0.53890187, z: -0.052223198}
@@ -96,10 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHitCollider
   _attackCollider: {fileID: 9116787738533100980}
-  _lightDamage: 10
-  _heavyDamage: 20
-  _probeOverlapsOnAttackStart: 1
-  _overlapProbeMax: 16
 --- !u!1 &2855879145386831754
 GameObject:
   m_ObjectHideFlags: 0
@@ -225,10 +221,10 @@ GameObject:
   - component: {fileID: 5742621982690534199}
   - component: {fileID: 4509092031731623630}
   - component: {fileID: 5348921843886745016}
-  - component: {fileID: 7357183514607760246}
   - component: {fileID: 2540410287005200011}
   - component: {fileID: 8529380792555856155}
   - component: {fileID: 4068905512572359836}
+  - component: {fileID: 7535461696029327562}
   m_Layer: 6
   m_Name: PlayerGo
   m_TagString: Player
@@ -324,7 +320,6 @@ MonoBehaviour:
   moveZ: {fileID: 2963529052396742954, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   interaction: {fileID: -4783851633675043245, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lightAttack: {fileID: -719493453844578930, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  heavyAttack: {fileID: 8594842635905794816, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   throwI: {fileID: -360913258185141060, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   lockOn: {fileID: -8758271524718880939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sideStep: {fileID: -2092556331638605850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
@@ -341,43 +336,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d9db1dbf02ccd4895ad127f5e69bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
-  _combatSystem: {fileID: 8529380792555856155}
-  lightAttackfloat: 0
-  heavyAttackfloat: 0
-  attackShadow: {fileID: 2855879145386831754}
---- !u!114 &7357183514607760246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3287532526747045482}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0e53213890e568469015ab57a24b070, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  moveType: 0
-  moveXfloat: 0
-  moveZfloat: 0
-  _animator: {fileID: 0}
-  _speedParameterName: Speed
-  moveSpeed: 6
-  rotateSpeed: 10
-  cam: {fileID: 0}
-  sideStepForce: 20
-  sideStepDistanceToWall: 3
-  sideStepDuration: 0.16
-  layers:
-    serializedVersion: 2
-    m_Bits: 31
-  timerSideStep: 0
-  maxTimerSideStep: 0.5
-  targetGroup: {fileID: 0}
-  lockOnRadius: 20
-  lockOnLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &2540410287005200011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -392,7 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
   health: 100
   maxHealth: 100
-  _debugDamage: 1
+  lifeBar: {fileID: 0}
 --- !u!114 &8529380792555856155
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,14 +365,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatSystem
   _animator: {fileID: 1720391023666379556}
   _hitCollider: {fileID: 5788329589677025430}
-  _playerMove: {fileID: 7357183514607760246}
-  _lightAttackDamage: 10
-  _heavyAttackDamage: 20
-  _grabDamage: 15
-  _comboResetTime: 1
-  _temporalManualHitWindow: 1
-  _temporalHitDelay: 0.12
-  _temporalHitActiveDuration: 0.25
 --- !u!114 &4068905512572359836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -427,15 +377,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bf6de42735645e42bc06f6aedd41082, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerActions
-  moveXfloat: 0
-  moveZfloat: 0
+  _combatSystem: {fileID: 0}
+  _mainCamera: {fileID: 0}
   rotateSpeed: 5
-  layer:
-    serializedVersion: 2
-    m_Bits: 512
-  startBlocking: 0
-  timerBlocking: 0
-  timerEvading: 0
+--- !u!114 &7535461696029327562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3287532526747045482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db254106327cad46b5dc74f305d65ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitBlur
+  blurOverlay: {fileID: 0}
+  fadeInTime: 0.05
+  fadeOutTime: 0.2
+  maxAlpha: 0.45
+  cameraTransform: {fileID: 0}
 --- !u!1 &4370221431996188853
 GameObject:
   m_ObjectHideFlags: 0

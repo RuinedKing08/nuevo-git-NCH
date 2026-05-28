@@ -58,11 +58,16 @@ public class AttackColliderHandler : MonoBehaviour
             dirToEnemy.y = 0;
             float dot = Vector3.Dot(other.transform.forward, dirToEnemy);
 
-            if (dot > 0.45f) 
+            if (dot > 0.5f) 
             {
-                _hitTargets.Add(other);
+                //_hitTargets.Add(other);
                 if (!pushBackActivated) StartCoroutine(PushBackEnemy());
                 return;
+            }
+            else
+            {
+                _hitTargets.Add(other);
+                player.TakeDamage(_damageAmount);
             }
         }
         
@@ -74,19 +79,35 @@ public class AttackColliderHandler : MonoBehaviour
     {
         pushBackActivated = true;
         NavMeshAgent agent = _enemyController.Stats.NavAgent;
-        if (agent != null && agent.isOnNavMesh)
+        agent.isStopped = true;
+        agent.ResetPath();
+        agent.updatePosition = false;
+        agent.updateRotation = false;
+        float pushForce = 15f;
+        float pushDuration = 0.25f;
+        Vector3 pushDirection = -transform.forward;
+        pushDirection.y = 0;
+        pushDirection.Normalize();
+        float timer = 0;
+        while (timer < pushDuration)
         {
-            agent.isStopped = true;
-            float t = 0.2f;
-            Vector3 pushDir = -_enemyController.transform.forward;
-            while(t > 0) { 
-                _enemyController.transform.position += pushDir * 5f * Time.deltaTime; 
-                t -= Time.deltaTime; 
-                yield return null; 
-            }
-            yield return new WaitForSeconds(0.4f);
-            if(agent.isOnNavMesh) agent.isStopped = false;
+            transform.position += pushDirection * pushForce * Time.deltaTime;
+            agent.nextPosition = transform.position;
+            timer += Time.deltaTime;
+            yield return null;
         }
+        NavMeshHit hit;
+        Vector3 finalPosition = transform.position;
+        if (NavMesh.SamplePosition(transform.position, out hit, 2, NavMesh.AllAreas))
+        {
+            finalPosition = hit.position;
+
+        }
+        transform.position = finalPosition;
+        agent.Warp(finalPosition);
+        agent.updatePosition = true;
+        agent.updateRotation = true;
+        agent.isStopped = false;
         pushBackActivated = false;
     }
 

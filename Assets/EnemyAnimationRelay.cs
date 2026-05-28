@@ -3,6 +3,7 @@ using UnityEngine;
 public class EnemyAnimationRelay : MonoBehaviour
 {
     private EnemyController _controller;
+    [SerializeField] ParticleSystem leftHandAnticipacion;
 
     void Start()
     {
@@ -34,5 +35,10 @@ public class EnemyAnimationRelay : MonoBehaviour
         {
             _controller.CombatGroup.ReportAttackFinished(_controller);
         }
+    }
+
+    public void StartAnticipationParticle()
+    {
+        leftHandAnticipacion.Play();
     }
 }
