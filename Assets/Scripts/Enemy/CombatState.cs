@@ -101,37 +101,40 @@ public class AttackSubState : IEnemyState
         float dist = Vector3.Distance(_e.transform.position, playerPos);
         
         
-        float targetAttackDist = 3.0f; 
+        float targetAttackDist = 2.7f; 
 
        
          if (dist > targetAttackDist && !_hasAttacked)
         {            
             _e.Stats.NavAgent.SetDestination(playerPos);
             _e.Stats.NavAgent.isStopped = false;
+            _e.Stats.NavAgent.acceleration = 20f; 
+            _e.Stats.NavAgent.speed = 8f; 
         }
         else 
         {            
+            if (!_hasAttacked)
+            {            
+                _e.Stats.NavAgent.velocity = Vector3.zero;
+                _e.Stats.NavAgent.isStopped = true;
+                
             
-            _e.Stats.NavAgent.velocity = Vector3.zero;
-            _e.Stats.NavAgent.isStopped = true;
-            
-           
-            Vector3 lookDir = playerPos - _e.transform.position;
-            lookDir.y = 0;
-            if(lookDir.sqrMagnitude > 0.01f) 
-                _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 15f);
+                Vector3 lookDir = playerPos - _e.transform.position;
+                lookDir.y = 0;
+                if(lookDir.sqrMagnitude > 0.01f) 
+                    _e.transform.rotation = Quaternion.LookRotation(lookDir);
 
-            
-            if (!_hasAttacked && _e.Stats.Specialty != null)
-            {
-                Debug.Log($"[OK] {_e.name} en rango ({dist:F2}). Ejecutando ataque.");
-                _e.Stats.Specialty.TickAttack(_e, _timer);
-                _hasAttacked = true;
+                
+                if (_e.Stats.Specialty != null)
+                {
+                    _e.Stats.Specialty.TickAttack(_e, _timer);
+                    _hasAttacked = true;
+                }
             }
         }
         
         
-        if (_timer >= 3.0f) 
+        if (_timer >= 2.4f) 
         {
             _e.CombatGroup?.ReportAttackFinished(_e);
             _subSM.ChangeState(_combat.IdleSubState);

@@ -58,20 +58,19 @@ public class EnemyCombatGroup : MonoBehaviour
         _roundInProgress = true;
         _finishedCount = 0;
 
-        // Buscar quienes pueden atacar
         var candidates = _members.Where(m => m.StateMachine.CurrentState == m.CombatState).ToList();
         if (candidates.Count == 0) { _roundInProgress = false; yield break; }
 
-        _currentAttackers = candidates.Take(2).ToList(); // Máximo 2 atacantes a la vez
+        _currentAttackers = candidates.Take(3).ToList(); 
 
         foreach (var m in _members)
         {
             if (m.StateMachine.CurrentState != m.CombatState) continue;
             if (_currentAttackers.Contains(m)) m.CombatState.IdleSubState.AssignAttack();
-            else m.CombatState.IdleSubState.AssignDefend();
+            else /*m.CombatState.IdleSubState.AssignDefend()*/;
         }
 
-        yield return new WaitForSeconds(5f); // Cada ronda dura 5 segundos
+        yield return new WaitForSeconds(4f); 
 
         foreach (var m in _members) 
             if(m.StateMachine.CurrentState == m.CombatState) m.CombatState.DefendSubState.ForceToExchange();

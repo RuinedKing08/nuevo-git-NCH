@@ -40,7 +40,7 @@ public class EnemyStats : MonoBehaviour
 
         if (NavAgent != null)
         {
-            NavAgent.autoBraking = true;
+            NavAgent.autoBraking = false;
             NavAgent.stoppingDistance = FollowStopDistance;
         }
     }

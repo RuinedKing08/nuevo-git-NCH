@@ -63,9 +63,9 @@ public class EnemyController : MonoBehaviour
         }
         if (Stats.NavAgent != null)
         {            
-            Stats.NavAgent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+            Stats.NavAgent.obstacleAvoidanceType = UnityEngine.AI.ObstacleAvoidanceType.MedQualityObstacleAvoidance;
             
-            Stats.NavAgent.radius = 0.5f; 
+            Stats.NavAgent.radius = 0.35f; 
         }
     }
 

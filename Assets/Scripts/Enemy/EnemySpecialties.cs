@@ -49,7 +49,7 @@ public class BareKnuckleSpecialty : IEnemySpecialty
     {
         _chosenAttack = UnityEngine.Random.Range(0, 2); 
         _attackFired = false;        
-        _prepDuration = UnityEngine.Random.Range(0.4f, 0.8f); 
+        _prepDuration = UnityEngine.Random.Range(0.2f, 0.4f); 
     }
 
     public void TickAttack(EnemyController e, float elapsed)
