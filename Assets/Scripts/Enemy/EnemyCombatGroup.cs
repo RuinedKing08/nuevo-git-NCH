@@ -16,8 +16,15 @@ public class EnemyCombatGroup : MonoBehaviour
 
     private void Awake() { Instance = this; }
 
-    public void AddEnemy(EnemyController e) { if (!_members.Contains(e)) _members.Add(e); }
-    public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); }
+    public void AddEnemy(EnemyController e)
+    {
+        if (!_members.Contains(e))
+        {
+            _members.Add(e);
+            InvokeChangeCurrentMembers();
+        }
+    }
+    public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); InvokeChangeCurrentMembers();}
 
     public Vector3 GetOrbitPosition(EnemyController member, Vector3 playerPos)
     {
@@ -73,6 +80,7 @@ public class EnemyCombatGroup : MonoBehaviour
         _roundInProgress = false;
     }
     public List<EnemyController> GetCurrentMembers() { return _members; }
+    public List<EnemyController> GetCurrentAttackers() { return _currentAttackers; }
     public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
 }
 //═════════════════════════════════════════════════════════════════════════

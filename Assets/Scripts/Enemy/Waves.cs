@@ -153,27 +153,27 @@ public class Waves : MonoBehaviour
         switch (group)
         {
             case 1:
-                enemiesToSpawn = enemiesGroup1;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup1);
                 timeBetweenSpawn = 0.9f;
                 break;
             case 2:
-                enemiesToSpawn = enemiesGroup2;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup2);
                 timeBetweenSpawn = 0.49f;
                 break;
             case 3:
-                enemiesToSpawn = enemiesGroup3;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup3);
                 timeBetweenSpawn = 0.33f;
                 break;
             case 4:
-                enemiesToSpawn = enemiesGroup4;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup4);
                 timeBetweenSpawn = 0.24f;
                 break;
             case 5:
-                enemiesToSpawn = enemiesGroup5;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup5);
                 timeBetweenSpawn = 0.19f;
                 break;
             default:
-                enemiesToSpawn = enemiesGroup1;
+                enemiesToSpawn = new List<GameObject>(enemiesGroup1);
                 timeBetweenSpawn = 0.9f;
                 break;
         }
