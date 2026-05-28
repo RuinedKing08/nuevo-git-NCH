@@ -26,6 +26,7 @@ public class EnemyController : MonoBehaviour
     public static readonly int Hash_MoveX = Animator.StringToHash("MoveX");
     public static readonly int Hash_MoveY = Animator.StringToHash("MoveY");
     public static readonly int Hash_Attack = Animator.StringToHash("Attack");
+    public static readonly int Hash_DeadBool = Animator.StringToHash("Dead");
 
     public float IndividualSeed { get; private set; }
 
@@ -100,9 +101,12 @@ public class EnemyController : MonoBehaviour
 
     void Die()
     {
+        
         Animator.SetTrigger(Hash_IsDead);
+        Animator.SetBool(Hash_DeadBool, true);
         if (Stats.NavAgent != null) Stats.NavAgent.enabled = false;
         Destroy(gameObject, 2.5f);
+       
     }
      public void Combo()
     {
