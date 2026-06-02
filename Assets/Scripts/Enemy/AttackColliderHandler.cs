@@ -56,8 +56,10 @@ public class AttackColliderHandler : MonoBehaviour
         {
             Vector3 dirToEnemy = (transform.position - other.transform.position).normalized;
             dirToEnemy.y = 0;
-            float dot = Vector3.Dot(other.transform.forward, dirToEnemy);
-
+            Vector3 otherForward = other.transform.forward;
+            otherForward.y = 0;
+            float dot = Vector3.Dot(otherForward, dirToEnemy.normalized);
+            
             if (dot > 0.5f) 
             {
                 //_hitTargets.Add(other);
@@ -68,7 +70,12 @@ public class AttackColliderHandler : MonoBehaviour
             {
                 _hitTargets.Add(other);
                 player.TakeDamage(_damageAmount);
-            }
+                Debug.Log(player);
+                Debug.Log(_damageAmount);
+                Debug.Log(player.CurrentHealth);
+                Debug.Log("PlayerRecibeDañoBloqueoFallido!");
+                Debug.Log("Dot = " + dot);
+            }            
         }
         
         _hitTargets.Add(other);

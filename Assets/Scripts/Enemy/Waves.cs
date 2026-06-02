@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 public class Waves : MonoBehaviour
@@ -19,6 +20,7 @@ public class Waves : MonoBehaviour
     [SerializeField] float timerOutWave;
     [SerializeField] float maxTimerOutWave;
     [SerializeField] float timerLevel;
+    TMP_Text waveTMP, enemiesLeftTMP;
     float timerSpawn;
     float timerWaveWaiting;
     float maxTimer;
@@ -27,16 +29,22 @@ public class Waves : MonoBehaviour
     bool inWave, spawnEnemy, waveWaiting, firstWaveWaiting, startSpawn;
     int indexEnemies;
     public int indexSpawn;
+    int group, enemiesLeftCount;
+    int index1, index2, index3, index4, index5, indexTotal;
     void Start()
     {
         spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
-        wave = 1;
-        wavesInWave = Random.Range(3, 6);
+        waveTMP = GameObject.Find("Canvas").transform.Find("WaveTMP").GetComponent<TMP_Text>();
+        enemiesLeftTMP = GameObject.Find("Canvas").transform.Find("EnemiesLeftTMP").GetComponent<TMP_Text>();
+        wave = 0;
+        ChangeWave();
         indexSpawn = Random.Range(0, spawnPoints.Length);
         inWave = false;
         startSpawn = false;
         firstWaveWaiting = true;
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
+        EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeEnemiesLeftTMP;
+        EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeWave;
         Coroutine();
     }
 
@@ -44,6 +52,12 @@ public class Waves : MonoBehaviour
     {
         CloseSpawn();
         TimerToSpawn();
+    }
+    void ChangeEnemiesLeftTMP()
+    {
+        indexTotal--;
+        if (indexTotal <= 0) indexTotal = 0;
+        enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
     }
     void StarSpawnTrue()
     {
@@ -62,7 +76,6 @@ public class Waves : MonoBehaviour
                 {
                     ChoseGruopToSpawn();
                     StarSpawnTrue();
-                    ChangeWave();
                     timerInWave = maxTimer;
                     inWave = true;
                 }
@@ -72,7 +85,6 @@ public class Waves : MonoBehaviour
                     ChangeWavesWating();
                     ChoseGruopToSpawn();
                     StarSpawnTrue();
-                    ChangeWave();
                     timerInWave = maxTimer;
                     inWave = true;
                 }
@@ -101,7 +113,6 @@ public class Waves : MonoBehaviour
                 {
                     ChoseGruopToSpawn();
                     StarSpawnTrue();
-                    ChangeWave();
                     timerOutWave = maxTimer;
                     inWave = true;
                 }
@@ -115,7 +126,6 @@ public class Waves : MonoBehaviour
                     ChangeWavesWating();
                     ChoseGruopToSpawn();
                     StarSpawnTrue();
-                    ChangeWave();
                     firstWaveWaiting = false;
                     timerWaveWaiting = 0;
                     inWave = true;
@@ -135,21 +145,113 @@ public class Waves : MonoBehaviour
     }
     void ChangeWave()
     {
+        enemiesLeftCount++;
+        switch (wavesInWave)
+        {
+            case 1:
+                if (enemiesLeftCount >= index1) enemiesLeftCount = 0;
+                else return;
+                break;
+            case 2:
+                if (enemiesLeftCount >= index2) enemiesLeftCount = 0;
+                else return;
+                break;
+            case 3:
+                if (enemiesLeftCount >= index3) enemiesLeftCount = 0;
+                else return;
+                break;
+            case 4:
+                if (enemiesLeftCount >= index4) enemiesLeftCount = 0;
+                else return;
+                break;
+            case 5:
+                if (enemiesLeftCount >= index5) enemiesLeftCount = 0;
+                else return;
+                break;
+            default:
+                if (enemiesLeftCount >= index1) enemiesLeftCount = 0;
+                else return;
+                break;
+        }
         wavesInWave--;
-        if(wavesInWave <= 0)
+        if (wavesInWave <= 0)
         {
             wave++;
+            waveTMP.text = ($"Oleada {wave}");
             wavesInWave = Random.Range(3, 6);
+            AmountOfGroupsToSpawn(wavesInWave);
+            enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         }
     }
-    int group;
+    void AmountOfGroupsToSpawn(int wavesInWave)
+    {
+        switch (wavesInWave)
+        {
+            case 3:
+                index1 = AmountToSpawnInGroup();
+                index2 = AmountToSpawnInGroup();
+                index3 = AmountToSpawnInGroup();
+                index4 = 0;
+                index5 = 0;
+                break;
+            case 4:
+                index1 = AmountToSpawnInGroup();
+                index2 = AmountToSpawnInGroup();
+                index3 = AmountToSpawnInGroup();
+                index4 = AmountToSpawnInGroup();
+                index5 = 0;
+                break;
+            case 5:
+                index1 = AmountToSpawnInGroup();
+                index2 = AmountToSpawnInGroup();
+                index3 = AmountToSpawnInGroup();
+                index4 = AmountToSpawnInGroup();
+                index5 = AmountToSpawnInGroup();
+                break;
+            default:
+                index1 = AmountToSpawnInGroup();
+                index2 = AmountToSpawnInGroup();
+                index3 = AmountToSpawnInGroup();
+                index4 = 0;
+                index5 = 0;
+                break;
+        }
+        indexTotal = index1 + index2 + index3 + index4 + index5;
+    }
+    int AmountToSpawnInGroup()
+    {
+        int amount;
+        if (timerLevel < 15) amount = Random.Range(1, 2);
+        else if (timerLevel < 30) amount = Random.Range(1, 3);
+        else if (timerLevel < 60) amount = Random.Range(2, 4);
+        else if (timerLevel < 90) amount = Random.Range(3, 5);
+        else amount = Random.Range(1, 6);
+        return amount;
+    }
+    
     void ChoseGruopToSpawn()
-    {        
-        if (timerLevel < 15) group = Random.Range(1, 2);
-        else if(timerLevel < 30) group = Random.Range(1, 3);
-        else if(timerLevel < 60) group = Random.Range(2, 4);
-        else if(timerLevel < 90) group = Random.Range(3, 5);
-        else group = Random.Range(1, 6);
+    {
+        switch (wavesInWave)
+        {
+            case 1:
+                group = index1;
+                break;
+            case 2:
+                group = index2;
+                break;
+            case 3:
+                group = index3;
+                break;
+            case 4:
+                group = index4;
+                break;
+            case 5:
+                group = index5;
+                break;
+            default:
+                group = index1;
+                break;
+        }
         switch (group)
         {
             case 1:

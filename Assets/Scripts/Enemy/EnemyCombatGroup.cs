@@ -13,6 +13,8 @@ public class EnemyCombatGroup : MonoBehaviour
     private int _finishedCount = 0;
     public event ChangeCurrentMembers OnChangeCurrentMembers;
     public delegate void ChangeCurrentMembers();
+    public event DecreaseCurrentMembers OnDecreaseCurrentMembers;
+    public delegate void DecreaseCurrentMembers();
 
     private void Awake() { Instance = this; }
 
@@ -24,7 +26,7 @@ public class EnemyCombatGroup : MonoBehaviour
             InvokeChangeCurrentMembers();
         }
     }
-    public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); InvokeChangeCurrentMembers();}
+    public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); InvokeChangeCurrentMembers(); InvokeDecreaseCurrentMembers(); }
 
     public Vector3 GetOrbitPosition(EnemyController member, Vector3 playerPos)
     {
@@ -82,6 +84,7 @@ public class EnemyCombatGroup : MonoBehaviour
     public List<EnemyController> GetCurrentMembers() { return _members; }
     public List<EnemyController> GetCurrentAttackers() { return _currentAttackers; }
     public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
+    public void InvokeDecreaseCurrentMembers() { OnDecreaseCurrentMembers?.Invoke(); }
 }
 //═════════════════════════════════════════════════════════════════════════
 
