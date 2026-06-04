@@ -14,7 +14,8 @@ public class EnemyController : MonoBehaviour
     public EnemyStats Stats;
     public EnemyDetectionArea Detection;
     public EnemyCombatGroup CombatGroup;
-
+    public event Dead OnDead;
+    public delegate void Dead();
     // Hashes
     public static readonly int Hash_Speed = Animator.StringToHash("Speed");
     public static readonly int Hash_IsAlert = Animator.StringToHash("IsAlert");
@@ -67,6 +68,7 @@ public class EnemyController : MonoBehaviour
             
             Stats.NavAgent.radius = 0.5f; 
         }
+        OnDead += Die;
     }
 
     void Update()
@@ -94,14 +96,16 @@ public class EnemyController : MonoBehaviour
     {
         Stats.TakeDamage(amount);
         Animator.SetTrigger(Hash_IsHit);
-        if (Stats.IsDead) Die();
-        Combo();
+        if (Stats.IsDead) OnDead?.Invoke();        
     }
 
     void Die()
     {
         Animator.SetTrigger(Hash_IsDead);
         if (Stats.NavAgent != null) Stats.NavAgent.enabled = false;
+        Currency.Instance.ChangeMoney(0.15f, 100);
+        Debug.Log("EnemyDie");
+        Combo();
         Destroy(gameObject, 2.5f);
     }
      public void Combo()

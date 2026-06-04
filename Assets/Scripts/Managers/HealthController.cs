@@ -14,7 +14,7 @@ public abstract class HealthController : MonoBehaviour
         GetDamage(damage);
     }
     protected abstract void SetLife();
-    protected abstract void GetLife(int heal);
-    protected abstract void GetMaxLife(int extraHealth);
+    public abstract void GetLife(float heal);
+    public abstract void GetMaxLife(float extraHealth);
     protected abstract void GetDamage(int damage);
 }

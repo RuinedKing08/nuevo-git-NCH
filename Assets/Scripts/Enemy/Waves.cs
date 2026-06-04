@@ -32,6 +32,13 @@ public class Waves : MonoBehaviour
     public int indexSpawn;
     int group, enemiesLeftCount;
     int index1, index2, index3, index4, index5, indexTotal;
+    public static Waves Instance;
+    public event ChangeWaves OnChangeWave;
+    public delegate void ChangeWaves();
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
@@ -55,6 +62,8 @@ public class Waves : MonoBehaviour
         CloseSpawn();
         TimerToSpawn();
     }
+    public void InvokeChangeWave() { OnChangeWave?.Invoke(); }
+    public int GetWave() { return wave; }
     void ChangeEnemiesLeftTMP()
     {
         indexTotal--;
@@ -65,9 +74,23 @@ public class Waves : MonoBehaviour
     {
         startSpawn = true;
     }
+    bool cM = false;
     void TimerToSpawn()
     {
         timerLevel += Time.fixedDeltaTime;
+        float tL = Mathf.Round(timerLevel);
+        tL = Mathf.Clamp(tL, 1, timerLevel + 1);
+        
+        if (tL % 30 == 0)
+        {
+            cM = true;
+        }
+
+        if (cM)
+        {
+            Currency.Instance.ChangeMoney(2f / 50, 600 / 50);
+            cM = false;
+        }
         if (inWave)
         {
             maxTimer = maxTimerInWave;
@@ -178,6 +201,7 @@ public class Waves : MonoBehaviour
         wavesInWave--;
         if (wavesInWave <= 0)
         {
+            InvokeChangeWave();
             wave++;
             waveTMP.text = ($"Oleada {wave}");
             waveAnim.Play("WaveTitle");

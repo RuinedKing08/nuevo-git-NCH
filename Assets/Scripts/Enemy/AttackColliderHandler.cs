@@ -48,8 +48,8 @@ public class AttackColliderHandler : MonoBehaviour
         var player = other.GetComponentInParent<PlayerHealth>();
         if (player == null) return;
 
-        
-        if (PlayerActions.isDodging) return;
+
+        if (PlayerActions.isDodging) { Currency.Instance.ChangeMoney(0.10f, 50); return; }
 
         
         if (PlayerActions.blocking)
@@ -63,6 +63,7 @@ public class AttackColliderHandler : MonoBehaviour
             if (dot > 0.5f) 
             {
                 //_hitTargets.Add(other);
+                Currency.Instance.ChangeMoney(0.05f, 25);
                 if (!pushBackActivated) StartCoroutine(PushBackEnemy());
                 return;
             }
@@ -70,11 +71,6 @@ public class AttackColliderHandler : MonoBehaviour
             {
                 _hitTargets.Add(other);
                 player.TakeDamage(_damageAmount);
-                Debug.Log(player);
-                Debug.Log(_damageAmount);
-                Debug.Log(player.CurrentHealth);
-                Debug.Log("PlayerRecibeDañoBloqueoFallido!");
-                Debug.Log("Dot = " + dot);
             }            
         }
         

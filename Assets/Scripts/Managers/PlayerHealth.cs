@@ -29,13 +29,13 @@ public class PlayerHealth : HealthController
         SetHealthHUD();
     }
 
-    protected override void GetLife(int heal)
+    public override void GetLife(float heal)
     {
         health += heal;
         SetHealthHUD();
         if (health > maxHealth) health = maxHealth;
     }
-     protected override void GetMaxLife(int extraHealth)
+     public override void GetMaxLife(float extraHealth)
     {
         maxHealth += extraHealth;
         SetHealthHUD();
@@ -49,7 +49,6 @@ public class PlayerHealth : HealthController
        if (PlayerActions.blocking)
         {
             _combatSystem.PlayBlockHit();
-            return;
         }
 
         health = Mathf.Max(0, health - damage);
