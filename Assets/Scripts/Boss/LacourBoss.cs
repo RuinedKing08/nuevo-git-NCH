@@ -1,108 +1,40 @@
-/*using UnityEngine;
+using UnityEngine;
 
 public class LacourBoss : BossController
 {
-}
+    [Header("Lacour Specific")]
+    [SerializeField] private float attackCooldown = 2f;
+    private float _attackTimer = 0f;
 
-public class BossPhaseOne : BossPhase
-{
-    private float attackTimer;
-    private const float FastThrustInterval = 1.2f;
-    private const float StrongThrustInterval = 3f;
-    private bool useStrongThrust;
-
-    public BossPhaseOne(BossController boss) : base(boss)
+    private void Start()
     {
+        
     }
 
-    public override void Enter()
+    private void Update()
     {
-        attackTimer = 0f;
-        useStrongThrust = false;
-        Boss.SetVulnerable(false);
-        Boss.HasWeaponStuckInWall = false;
+        base.Update();
+        
+        
+        UpdateAttackCooldown();
     }
 
-    public override void Update()
+    private void UpdateAttackCooldown()
     {
-        attackTimer += Time.deltaTime;
-        if (attackTimer >= StrongThrustInterval)
+        if (_attackTimer > 0)
         {
-            attackTimer = 0f;
-            useStrongThrust = !useStrongThrust;
-            if (useStrongThrust)
-            {
-                Boss.DamagePlayer(25);
-                Boss.HasWeaponStuckInWall = true;
-                Boss.SetVulnerable(true);
-            }
-            else
-            {
-                Boss.DamagePlayer(25);
-            }
+            _attackTimer -= Time.deltaTime;
         }
     }
 
-    public override void Exit()
+    
+    public void ExecuteFollowUpAttack()
     {
-        Boss.SetVulnerable(false);
-        Boss.HasWeaponStuckInWall = false;
-    }
-
-    public override void OnHit(int damage)
-    {
-        if (Boss.IsVulnerable)
+        if (_attackTimer <= 0)
         {
-            Boss.ApplyDamage(damage);
-            Boss.SetVulnerable(false);
-            Boss.HasWeaponStuckInWall = false;
+            //Debug.Log($"[BOSS] {name} ejecutando ataque de seguimiento");  
+            _attackTimer = attackCooldown;
         }
     }
 }
 
-public class BossPhaseTwo : BossPhase
-{
-    private float attackTimer;
-    private const float CommonAttackInterval = 1f;
-    private const float SpecialAttackInterval = 6f;
-    private bool specialReady;
-
-    public BossPhaseTwo(BossController boss) : base(boss)
-    {
-    }
-
-    public override void Enter()
-    {
-        attackTimer = 0f;
-        specialReady = true;
-        Boss.SetVulnerable(true);
-    }
-
-    public override void Update()
-    {
-        attackTimer += Time.deltaTime;
-        if (attackTimer >= SpecialAttackInterval && specialReady)
-        {
-            attackTimer = 0f;
-            specialReady = false;
-            Boss.TriggerSpecialAttack();
-            return;
-        }
-        if (attackTimer >= CommonAttackInterval)
-        {
-            attackTimer = 0f;
-            Boss.DamagePlayer(15);
-        }
-    }
-
-    public override void Exit()
-    {
-    }
-
-    public override void OnHit(int damage)
-    {
-        Boss.ApplyDamage(damage);
-    }
-}
-
-*/
