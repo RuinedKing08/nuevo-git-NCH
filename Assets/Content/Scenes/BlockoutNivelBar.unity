@@ -19365,6 +19365,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1265528852666796712, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 2139165121}
     - target: {fileID: 1349811937083303942, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -19568,6 +19572,10 @@ PrefabInstance:
     - target: {fileID: 7119057267610363093, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7232481200456861653, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
+      propertyPath: m_Color.a
+      value: 0.99215686
       objectReference: {fileID: 0}
     - target: {fileID: 7417823408194146749, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -57767,6 +57775,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c09b3040ffcf1e640b2e6c4d94b3dc1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCombatSystem
+--- !u!114 &2139165121 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2540410287005200011, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
+  m_PrefabInstance: {fileID: 1316646314}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d79590ed272d5494eb1e41e4493cf620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
 --- !u!1001 &2141195542
 PrefabInstance:
   m_ObjectHideFlags: 0
