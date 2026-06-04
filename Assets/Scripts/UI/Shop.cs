@@ -5,11 +5,10 @@ public class Shop : MonoBehaviour
     Currency currency;
     [SerializeField] GameObject shop;
     [SerializeField] TMP_Text moneyTMP;
-    PlayerHealth player;
+    [SerializeField] PlayerHealth player;
     void Start()
     {
         currency = Currency.Instance;
-        player = PlayerHealth.Instance;
         shop.SetActive(false);
         Waves.Instance.OnChangeWave += OpenShop;
         Time.timeScale = 1f;
@@ -57,7 +56,7 @@ public class Shop : MonoBehaviour
     }
     void OpenShop()
     {
-        if (Waves.Instance.GetWave() % 2 == 0 && Waves.Instance.GetWave()!= 0)
+        if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave()!= 0)
         {
             Time.timeScale = 0f;
             ChangeMoneyTMP();
