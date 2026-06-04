@@ -21,6 +21,7 @@ public class Waves : MonoBehaviour
     [SerializeField] float maxTimerOutWave;
     [SerializeField] float timerLevel;
     TMP_Text waveTMP, enemiesLeftTMP;
+    Animator waveAnim;
     float timerSpawn;
     float timerWaveWaiting;
     float maxTimer;
@@ -36,6 +37,7 @@ public class Waves : MonoBehaviour
         spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
         waveTMP = GameObject.Find("Canvas").transform.Find("WaveTMP").GetComponent<TMP_Text>();
         enemiesLeftTMP = GameObject.Find("Canvas").transform.Find("EnemiesLeftTMP").GetComponent<TMP_Text>();
+        waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
         wave = 0;
         ChangeWave();
         indexSpawn = Random.Range(0, spawnPoints.Length);
@@ -178,6 +180,7 @@ public class Waves : MonoBehaviour
         {
             wave++;
             waveTMP.text = ($"Oleada {wave}");
+            waveAnim.Play("WaveTitle");
             wavesInWave = Random.Range(3, 6);
             AmountOfGroupsToSpawn(wavesInWave);
             enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
