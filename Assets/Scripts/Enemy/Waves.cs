@@ -181,7 +181,7 @@ public class Waves : MonoBehaviour
             wave++;
             waveTMP.text = ($"Oleada {wave}");
             waveAnim.Play("WaveTitle");
-            wavesInWave = Random.Range(3, 6);
+            wavesInWave = Random.Range(2, 5);
             AmountOfGroupsToSpawn(wavesInWave);
             enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         }
