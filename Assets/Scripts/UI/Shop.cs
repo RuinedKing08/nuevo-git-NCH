@@ -56,12 +56,12 @@ public class Shop : MonoBehaviour
     }
     void OpenShop()
     {
-        if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave()!= 0)
+        /*if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave()!= 0)
         {
             Time.timeScale = 0f;
             ChangeMoneyTMP();
             shop.SetActive(true);
-        }
+        }*/
     }
     public void CloseShop()
     {

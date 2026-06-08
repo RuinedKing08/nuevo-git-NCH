@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89423b92fd114c14d9a9bd53baf4f666, type: 3}
+  m_Name: ScoreCard
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: _BasicProtectionCard
+  title: Martini
+  description: Multiplicador de puntaje +25%
+  type: 3
+  amount: 25
+  extraMaxLife: 0
+  prob: 20
+  canAcumulate: 1
+  canChangeMaxLife: 0
+  backgroundColor: {r: 0.9607843, g: 0.8254145, b: 0, a: 0.5529412}
+  artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
+  prefab: {fileID: 0}
+  textColor: {fileID: 11400000, guid: 69a525efa7e6472eab268f6ea605f06e, type: 2}
