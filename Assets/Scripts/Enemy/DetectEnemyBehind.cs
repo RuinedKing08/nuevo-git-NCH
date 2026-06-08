@@ -11,12 +11,13 @@ public class DetectEnemyBehind : MonoBehaviour
     bool startBehind, finishBehind;
     Image[] alertSymbols;
     EnemyController thisEnemy;
+     bool attackBehind;
     void Start()
     {
         alertSymbol = GameObject.Find("Canvas").transform.Find("AlertSymbol").gameObject;
         alertSymbols = alertSymbol.GetComponentsInChildren<Image>();
         player = GameObject.Find("PlayerGo").transform;
-        thisEnemy = GetComponent<EnemyController>();
+        thisEnemy = GetComponentInParent<EnemyController>();
         mainCam = Camera.main;
         EnemyBehindHUD.Instance.OnChangeEnemyBehindCount += ChangeAlertSymbol;
     }
@@ -25,39 +26,75 @@ public class DetectEnemyBehind : MonoBehaviour
     {
         ActivateAlertSymbol();
     }
-
+    public void ToEventStartAttack()
+    {
+        attackBehind = true;
+        UpdateAlertColor();
+    }
+    public void ToEventFinishtAttack()
+    {
+        attackBehind = false;
+        UpdateAlertColor();
+    }
     void ActivateAlertSymbol()
     {
         Vector3 viewportPos = mainCam.WorldToViewportPoint(transform.position);
         if (!startBehind)
         {
-            if (Vector3.Distance(transform.position, player.position) <= radius && viewportPos.z <= distanceToCamera)
+            if (Vector3.Distance(thisEnemy.transform.position, player.position) <= radius && viewportPos.z <= distanceToCamera)
             {
                 EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(1);
-                if (EnemyCombatGroup.Instance.GetCurrentAttackers().Contains(thisEnemy))
-                {
-                    for(int i = 0; i < alertSymbols.Length; i++)
-                    {
-                        alertSymbols[i].color = Color.red;
-                    }
-                }
-                else
-                {
-                    EvaluateOtherEnemies();
-                }
                 startBehind = true;
                 finishBehind = false;
+                UpdateAlertColor();
             }
         }
         else if (!finishBehind)
         {
-            if(viewportPos.z > 0)
+            if(viewportPos.z > 0.75f)
             {
                 EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(-1);
                 startBehind = false;
                 finishBehind = true;
-                //EvaluateOtherEnemies();
+                attackBehind = false;
+                EvaluateOtherEnemies();
             }
+        }
+    }
+    void UpdateAlertColor()
+    {       
+        bool enemyAttackingBehind = false;
+        var allEnemies = EnemyCombatGroup.Instance.GetCurrentMembers();
+        foreach (var enemy in allEnemies)
+        {
+            if (enemy.GetComponentInChildren<DetectEnemyBehind>().attackBehind && !enemy.GetComponentInChildren<DetectEnemyBehind>().finishBehind &&
+                enemy.GetComponentInChildren<DetectEnemyBehind>().startBehind)
+            {
+                enemyAttackingBehind = true;
+                break;
+            }
+        }
+        foreach (var enemy in allEnemies)
+        {
+            if(enemy.GetComponentInChildren<DetectEnemyBehind>().startBehind && !enemy.GetComponentInChildren<DetectEnemyBehind>().finishBehind)
+            {
+                if (enemyAttackingBehind)
+                {
+                    SetAlertColor(Color.red);
+                }
+                else
+                {
+                    SetAlertColor(Color.yellow);
+                }
+            }
+        }
+
+    }
+    void SetAlertColor(Color color)
+    {
+        for (int i = 0; i < alertSymbols.Length; i++)
+        {
+            alertSymbols[i].color = color;
         }
     }
     void ChangeAlertSymbol()
@@ -78,8 +115,8 @@ public class DetectEnemyBehind : MonoBehaviour
         foreach(var enemy in allEnemies)
         {
             if (enemy == thisEnemy) continue;
-            Vector3 viewportPos = mainCam.WorldToViewportPoint(transform.position);
-            if(Vector3.Distance(transform.position, player.position) <= radius && viewportPos.z <= distanceToCamera && currentAttackers.Contains(enemy))
+            Vector3 viewportPos = mainCam.WorldToViewportPoint(enemy.transform.position);
+            if(Vector3.Distance(transform.position, player.position) <= radius && viewportPos.z <= distanceToCamera && enemy.GetComponentInChildren<DetectEnemyBehind>().attackBehind)
             {
                 return true;
             }
@@ -88,18 +125,12 @@ public class DetectEnemyBehind : MonoBehaviour
     }
     void EvaluateOtherEnemies()
     {
-        if (ExistCurrentAttackersBehind())
-        {
-            for (int i = 0; i < alertSymbols.Length; i++)
+        var allEnemies = EnemyCombatGroup.Instance.GetCurrentMembers();
+        foreach (var enemy in allEnemies)
+        { 
+            if (enemy.GetComponentInChildren<DetectEnemyBehind>().attackBehind && !enemy.GetComponentInChildren<DetectEnemyBehind>().finishBehind)
             {
-                alertSymbols[i].color = Color.red;
-            }
-        }
-        else
-        {
-            for (int i = 0; i < alertSymbols.Length; i++)
-            {
-                alertSymbols[i].color = Color.yellow;
+                enemy.GetComponentInChildren<DetectEnemyBehind>().UpdateAlertColor();
             }
         }
     }

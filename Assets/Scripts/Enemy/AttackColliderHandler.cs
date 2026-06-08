@@ -48,19 +48,22 @@ public class AttackColliderHandler : MonoBehaviour
         var player = other.GetComponentInParent<PlayerHealth>();
         if (player == null) return;
 
-        
-        if (PlayerActions.isDodging) return;
+
+        if (PlayerActions.isDodging) { Currency.Instance.ChangeMoney(0.10f, 50); return; }
 
         
         if (PlayerActions.blocking)
         {
             Vector3 dirToEnemy = (transform.position - other.transform.position).normalized;
             dirToEnemy.y = 0;
-            float dot = Vector3.Dot(other.transform.forward, dirToEnemy);
-
+            Vector3 otherForward = other.transform.forward;
+            otherForward.y = 0;
+            float dot = Vector3.Dot(otherForward, dirToEnemy.normalized);
+            
             if (dot > 0.5f) 
             {
                 //_hitTargets.Add(other);
+                Currency.Instance.ChangeMoney(0.05f, 25);
                 if (!pushBackActivated) StartCoroutine(PushBackEnemy());
                 return;
             }
@@ -68,7 +71,7 @@ public class AttackColliderHandler : MonoBehaviour
             {
                 _hitTargets.Add(other);
                 player.TakeDamage(_damageAmount);
-            }
+            }            
         }
         
         _hitTargets.Add(other);

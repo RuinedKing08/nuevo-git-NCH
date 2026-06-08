@@ -33831,6 +33831,13 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
+  - time: 0.16666667
+    functionName: ToEventStartAttack
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
   - time: 0.9
     functionName: AE_EnemyAttackStart
     data: 
@@ -33840,6 +33847,13 @@ AnimationClip:
     messageOptions: 0
   - time: 1.0333333
     functionName: AE_EnemyAttackEnd
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 1.1333333
+    functionName: ToEventFinishtAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

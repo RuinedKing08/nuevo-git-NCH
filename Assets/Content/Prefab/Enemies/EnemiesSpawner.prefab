@@ -116,10 +116,11 @@ MonoBehaviour:
   - {fileID: 2077412923276562435, guid: 96e332280a525b949bbb8ef8ded828fc, type: 3}
   - {fileID: 2077412923276562435, guid: 96e332280a525b949bbb8ef8ded828fc, type: 3}
   wave: 0
+  wavesInWave: 0
   wavesWaiting: 0
   amountToSpawn: 0
-  timerInWave: 15
-  maxTimerInWave: 15
+  timerInWave: 12
+  maxTimerInWave: 12
   timerOutWave: 5
   maxTimerOutWave: 5
   timerLevel: 0
