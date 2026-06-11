@@ -64,7 +64,7 @@ public class BossController : MonoBehaviour
         _currentSpecialty = Stats.Specialty;
     }
 
-    private void Update()
+    public void Update()
     {
         
     }
