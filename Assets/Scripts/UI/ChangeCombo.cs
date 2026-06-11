@@ -9,7 +9,7 @@ public class ChangeCombo : MonoBehaviour
     PlayableDirector playable;
     bool resetCombo, resetIcon;
     GameObject comboGameObject;
-    Image playerIcon;
+    [SerializeField] Image playerIcon;
     TMP_Text comboTMP;
     bool firstStart;
     float timerIcon;
@@ -41,7 +41,11 @@ public class ChangeCombo : MonoBehaviour
         if (this.resetCombo)
         {
             combo = 0;
-            if (!firstStart) resetIcon = false;
+            if (!firstStart)
+            {
+                resetIcon = false;
+                firstStart = true;
+            }
             else resetIcon = this.resetCombo;
             ChangeComboTMP();
         }

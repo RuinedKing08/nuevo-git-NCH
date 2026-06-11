@@ -31,7 +31,7 @@ public class PlayerActions : MonoBehaviour
 
     void LookWithCamera()
     {
-        if (ArrowController.isCursorUnlocked || blocking || _mainCamera == null) return;
+        if (Cursor.lockState == CursorLockMode.None || blocking || _mainCamera == null) return;
 
         Vector3 camForward = _mainCamera.transform.forward;
         camForward.y = 0;

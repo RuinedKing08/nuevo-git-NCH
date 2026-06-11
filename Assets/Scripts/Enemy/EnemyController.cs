@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using TMPro;
 using System.Collections.Generic;
 
 public class EnemyController : MonoBehaviour
@@ -30,7 +31,7 @@ public class EnemyController : MonoBehaviour
     public static readonly int Hash_DeadBool = Animator.StringToHash("Dead");
 
     public float IndividualSeed { get; private set; }
-
+    [SerializeField] float score;
     private void Awake()
     {
 
@@ -106,7 +107,9 @@ public class EnemyController : MonoBehaviour
         Animator.SetTrigger(Hash_IsDead);
         Animator.SetBool(Hash_DeadBool, true);
         if (Stats.NavAgent != null) Stats.NavAgent.enabled = false;
-        Currency.Instance.ChangeMoney(0.15f, 100);
+        TMP_Text scoreView = transform.Find("Cyanide").Find("CanvasEnemy").Find("ScorePopUpTMP").GetComponent<TMP_Text>();
+        scoreView.text = $"{score * Currency.Instance.GetScoreMultiplier()}";
+        Currency.Instance.ChangeMoney(0.15f, score);
         Debug.Log("EnemyDie");
         Combo();
         Destroy(gameObject, 2.5f);

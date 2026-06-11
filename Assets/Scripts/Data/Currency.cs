@@ -1,33 +1,41 @@
 using UnityEngine;
-
+using TMPro;
 public class Currency : MonoBehaviour
 {
     private static float money;
     private static float finalScore;
+    private static float scoreMultiplier = 1;
     private float totalScore;
     public static Currency Instance { get; private set; }
+    TMP_Text scoreTMP;
     private void Awake()
     {
         Instance = this;
+        scoreTMP = transform.Find("ScoreTMP").GetComponent<TMP_Text>();
     }
     void Start()
     {
         Waves.Instance.OnChangeWave += ChangeFinalScore;
-    }
-
-    void Update()
-    {
-        
+        ChangeMoney(0, 0);
     }
 
     public float GetMoney()
     {
         return money;
     }
+    public float GetScoreMultiplier()
+    {
+        return scoreMultiplier;
+    }
+    public void ChangeScoreMultiplier(float multiplier)
+    {
+        scoreMultiplier += multiplier;
+    }
     public void ChangeMoney(float sum, float score)
     {
         money += sum;
-        totalScore += score;
+        totalScore += score * scoreMultiplier;
+        scoreTMP.text = $"Score: {totalScore}";
     }
     void ChangeFinalScore()
     {
