@@ -131,4 +131,20 @@ public class AttackColliderHandler : MonoBehaviour
     }
 
     public void SetDamage(int amt) => _damageAmount = amt;
+
+   
+    public int GetDamage() => _damageAmount;
+
+    
+    public void ModifyDamage(int amount)
+    {
+        _damageAmount += amount;
+        _damageAmount = Mathf.Max(0, _damageAmount);
+    }
+
+    
+    public void SetDamageMultiplier(float multiplier)
+    {
+        _damageAmount = Mathf.Max(1, Mathf.RoundToInt(_damageAmount * multiplier));
+    }
 }

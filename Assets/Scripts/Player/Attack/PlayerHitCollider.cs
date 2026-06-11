@@ -33,6 +33,20 @@ public class PlayerHitCollider : MonoBehaviour
 
     public void SetDamage(int damage) => _currentDamage = damage;
 
+    
+    public int GetDamage() => _currentDamage;
+    
+    public void ModifyDamage(int amount)
+    {
+        _currentDamage += amount;
+        _currentDamage = Mathf.Max(0, _currentDamage);
+    }
+   
+    public void SetDamageMultiplier(float multiplier)
+    {
+        _currentDamage = Mathf.Max(1, Mathf.RoundToInt(_currentDamage * multiplier));
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!_isAttackActive || _hitTargets.Contains(other)) return;

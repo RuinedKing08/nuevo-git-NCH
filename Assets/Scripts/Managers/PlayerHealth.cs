@@ -10,6 +10,7 @@ public class PlayerHealth : HealthController
     private PlayerCombatSystem _combatSystem;    
     [SerializeField] private Image lifeBar;
     private string thisScene;
+    private float _damageResistance = 0f; // 0 = 0%, 1 = 100%
     public float CurrentHealth => health;
     public float MaxHealth => maxHealth;
 
@@ -51,7 +52,11 @@ public class PlayerHealth : HealthController
             _combatSystem.PlayBlockHit();
         }
 
-        health = Mathf.Max(0, health - damage);
+        
+        float damageAfterResistance = damage * (1f - _damageResistance);
+        int finalDamage = Mathf.RoundToInt(damageAfterResistance);
+        
+        health = Mathf.Max(0, health - finalDamage);
         _combatSystem.PlayTakeHit();
         gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
@@ -81,5 +86,26 @@ public class PlayerHealth : HealthController
        
         SceneManager.LoadScene(thisScene);
         gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
+    }
+
+   
+    public void SetDamageResistance(float resistance)
+    {
+        _damageResistance = Mathf.Clamp01(resistance);
+    }
+
+    
+    public float GetDamageResistance() => _damageResistance;
+
+   
+    public void ModifyDamageResistance(float amount)
+    {
+        _damageResistance = Mathf.Clamp01(_damageResistance + amount);
+    }
+   
+    public int GetDamageAfterResistance(int damage)
+    {
+        float damageAfterResistance = damage * (1f - _damageResistance);
+        return Mathf.RoundToInt(damageAfterResistance);
     }
 }
