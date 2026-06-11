@@ -34,22 +34,33 @@ public class AttackColliderHandler : MonoBehaviour
         if (attackShadow != null) attackShadow.SetActive(false);
         if (_attackCollider != null) _attackCollider.enabled = false;
     }
-
     private void OnTriggerEnter(Collider other)
     {
         if (!_isAttackActive) return;
-        TryApplyHit(other);
+        TryApplyHit(other);        
     }
-
+    float a, b;
     private void TryApplyHit(Collider other)
     {
         if (other == null || _hitTargets.Contains(other)) return;
 
         var player = other.GetComponentInParent<PlayerHealth>();
         if (player == null) return;
-
-
-        if (PlayerActions.isDodging) { Currency.Instance.ChangeMoney(0.10f, 50); return; }
+        a++;
+        b++;
+        Debug.Log(a);
+        if(a >= 2)
+        {
+            a = 0;
+            return;
+        }
+        if(b >= 3)
+        {
+            a = 0;
+            b = 0;
+            return;
+        }
+        if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); return;}
 
         
         if (PlayerActions.blocking)
@@ -63,7 +74,9 @@ public class AttackColliderHandler : MonoBehaviour
             if (dot > 0.5f) 
             {
                 //_hitTargets.Add(other);
-                Currency.Instance.ChangeMoney(0.05f, 25);
+                float score = 25;
+                Currency.Instance.ChangeMoney(0.05f, score);
+                Score(score);
                 if (!pushBackActivated) StartCoroutine(PushBackEnemy());
                 return;
             }
@@ -77,7 +90,10 @@ public class AttackColliderHandler : MonoBehaviour
         _hitTargets.Add(other);
         player.TakeDamage(_damageAmount);
     }
-
+    void Score(float score)
+    {
+        ScorePopUp.Instance.CreateScorePopUp(score);
+    }
     IEnumerator PushBackEnemy()
     {
         pushBackActivated = true;
