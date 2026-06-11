@@ -2,13 +2,11 @@ using UnityEngine;
 using TMPro;
 public class Shop : MonoBehaviour
 {
-    Currency currency;
     [SerializeField] GameObject shop;
     [SerializeField] TMP_Text moneyTMP;
     [SerializeField] PlayerHealth player;
     void Start()
     {
-        currency = Currency.Instance;
         shop.SetActive(false);
         Waves.Instance.OnChangeWave += OpenShop;
         Time.timeScale = 1f;
@@ -20,36 +18,36 @@ public class Shop : MonoBehaviour
     }
     public void BuyBeer()
     {
-        if(currency.GetMoney() >= 4.20f)
+        if(Currency.Instance.GetMoney() >= 4.20f)
         {
-            currency.ChangeMoney(-4.20f, 0);
+            Currency.Instance.ChangeMoney(-4.20f, 0);
             ChangeMoneyTMP();
             player.GetLife(25 * player.MaxHealth / 100);
         }
     }
     public void BuyWine()
     {
-        if (currency.GetMoney() >= 7.00f)
+        if (Currency.Instance.GetMoney() >= 7.00f)
         {
-            currency.ChangeMoney(-7.00f, 0);
+            Currency.Instance.ChangeMoney(-7.00f, 0);
             ChangeMoneyTMP();
             player.GetLife(30 * player.MaxHealth / 100);
         }
     }
     public void BuyWhiskey()
     {
-        if (currency.GetMoney() >= 9.90f)
+        if (Currency.Instance.GetMoney() >= 9.90f)
         {
-            currency.ChangeMoney(-9.90f, 0);
+            Currency.Instance.ChangeMoney(-9.90f, 0);
             ChangeMoneyTMP();
             player.GetLife(30 * player.MaxHealth / 100);
         }
     }
     public void BuyMartini()
     {
-        if (currency.GetMoney() >= 12.50f)
+        if (Currency.Instance.GetMoney() >= 12.50f)
         {
-            currency.ChangeMoney(-12.50f, 0);
+            Currency.Instance.ChangeMoney(-12.50f, 0);
             ChangeMoneyTMP();
             player.GetLife(50 * player.MaxHealth / 100);
         }
@@ -70,6 +68,6 @@ public class Shop : MonoBehaviour
     }
     void ChangeMoneyTMP()
     {
-        moneyTMP.text = $"Dinero: {Mathf.Round(currency.GetMoney())}$";
+        moneyTMP.text = $"Dinero: {Mathf.Round(Currency.Instance.GetMoney())}$";
     }
 }

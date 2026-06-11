@@ -14,6 +14,5 @@ public class CardData : ScriptableObject
     public bool canChangeMaxLife;
     public Color backgroundColor;
     public Sprite artwork;
-    public GameObject prefab;
     public TMP_ColorGradient textColor;
 }

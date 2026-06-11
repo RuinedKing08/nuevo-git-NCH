@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89423b92fd114c14d9a9bd53baf4f666, type: 3}
-  m_Name: AttackingCard
+  m_Name: ProtectionCard 1
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  id: _BasicAttackingCard
-  title: Vino
-  description: Ataque +5
-  type: 1
-  amount: 5
-  extraMaxLife: 0
+  id: _BasicProtectionCard
+  title: Tequila
+  description: "Da\xF1o recibido -5%. Vida max +20 "
+  type: 2
+  amount: 2
+  extraMaxLife: 20
   prob: 20
   canAcumulate: 1
-  canChangeMaxLife: 0
-  backgroundColor: {r: 0.9607843, g: 0.07216436, b: 0, a: 0.5529412}
-  artwork: {fileID: 21300000, guid: 14d6b1de63179db42abef362c15da675, type: 3}
-  prefab: {fileID: 0}
-  textColor: {fileID: 11400000, guid: 96da2d46731f23f428cdb76d7e4efb02, type: 2}
+  canChangeMaxLife: 1
+  backgroundColor: {r: 0, g: 0.70175374, b: 0.9607843, a: 0.5529412}
+  artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
+  textColor: {fileID: 11400000, guid: 37e23f855c86f794186e4b1273f9b8eb, type: 2}

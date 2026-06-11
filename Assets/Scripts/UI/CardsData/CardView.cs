@@ -19,6 +19,8 @@ public class CardView : MonoBehaviour
     Color initialHighlightColor;
     [SerializeField] Color highlightColor;
     bool animateFrame;
+    public static bool clicked;
+    bool thisClicked;
     private void Awake()
     {
         player = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
@@ -52,8 +54,25 @@ public class CardView : MonoBehaviour
         title.colorGradientPreset = card.textColor;
         description.text = card.description;
         description.colorGradientPreset = card.textColor;
+        if(card.type == CardType.Healing) description.text = card.description + $" ({player.CurrentHealth} / {player.MaxHealth})";
+        if(card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
     }
-
+    public void Clicked()
+    {
+        if (clicked)
+        {
+            DeactiveAnimateFrame();
+            OnMouseEnter();
+        }
+        clicked = true;
+        for (int i = 0; i < cardViews.Length; i++)
+        {
+            cardViews[i].thisClicked = false;
+        }
+        thisClicked = true;
+        OnMouseExit();
+        CardConfirm.Instance.CanConfirm(this);
+    }
     public void Effects()
     {
         switch (card.type)
@@ -70,7 +89,7 @@ public class CardView : MonoBehaviour
             case CardType.Score:
                 Debug.Log($"Mejora de puntaje antes: {Currency.Instance.GetScoreMultiplier()}");
                 Currency.Instance.ChangeScoreMultiplier(card.amount / 100);
-                Debug.Log($"Mejora de puntaje ahora: {Currency.Instance.GetScoreMultiplier()}");
+                Debug.Log($"Mejora de puntaje ahora: {Currency.Instance.GetScoreMultiplier()}");                
                 break;
         }
         if (card.canChangeMaxLife)
@@ -84,6 +103,7 @@ public class CardView : MonoBehaviour
         {
             cardViews[i].animateFrame = false;
             cardViews[i].frame.fillAmount = 1;
+            cardViews[i].thisClicked = false;
         }
         Time.timeScale = 1;
         cardSelection.SetActive(false);
@@ -91,14 +111,26 @@ public class CardView : MonoBehaviour
     public void OnMouseEnter()
     {
         //Debug.Log("Mouse Encima");
+        if (clicked)
+        {
+            OnMouseExit();
+        }
         animateFrame = true;
     }
     public void OnMouseExit()
     {
-        frame.fillAmount = 1;
-        animateFrame = false;
-        highlight.color = initialHighlightColor;
-        highlight.gameObject.SetActive(false);
+        DeactiveAnimateFrame();        
+    }
+    void DeactiveAnimateFrame()
+    {
+        for (int i = 0; i < cardViews.Length; i++)
+        {
+            if (cardViews[i].thisClicked) continue;
+            cardViews[i].animateFrame = false;
+            cardViews[i].frame.fillAmount = 1;
+            cardViews[i].highlight.color = initialHighlightColor;
+            cardViews[i].highlight.gameObject.SetActive(false);
+        }
     }
     private void OnMouseDown()
     {

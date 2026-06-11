@@ -47,6 +47,7 @@ public class Waves : MonoBehaviour
         waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
         wave = 0;
         ChangeWave();
+        NewWave();
         indexSpawn = Random.Range(0, spawnPoints.Length);
         inWave = false;
         startSpawn = false;
@@ -54,6 +55,7 @@ public class Waves : MonoBehaviour
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
         EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeEnemiesLeftTMP;
         EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeWave;
+        CardConfirm.Instance.OnChangeWave += NewWave;
         Coroutine();
     }
 
@@ -202,13 +204,16 @@ public class Waves : MonoBehaviour
         if (wavesInWave <= 0)
         {
             InvokeChangeWave();
-            wave++;
-            waveTMP.text = ($"Oleada {wave}");
-            waveAnim.Play("WaveTitle");
-            wavesInWave = Random.Range(1, 2);
-            AmountOfGroupsToSpawn(wavesInWave);
-            enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         }
+    }
+    void NewWave()
+    {
+        wave++;
+        waveTMP.text = ($"Oleada {wave}");
+        waveAnim.Play("WaveTitle");
+        wavesInWave = Random.Range(1, 2);
+        AmountOfGroupsToSpawn(wavesInWave);
+        enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
     }
     void AmountOfGroupsToSpawn(int wavesInWave)
     {

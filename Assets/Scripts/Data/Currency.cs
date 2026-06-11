@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using TMPro;
 public class Currency : MonoBehaviour
 {
     private static float money;
@@ -7,18 +7,16 @@ public class Currency : MonoBehaviour
     private static float scoreMultiplier = 1;
     private float totalScore;
     public static Currency Instance { get; private set; }
+    TMP_Text scoreTMP;
     private void Awake()
     {
         Instance = this;
+        scoreTMP = transform.Find("ScoreTMP").GetComponent<TMP_Text>();
     }
     void Start()
     {
         Waves.Instance.OnChangeWave += ChangeFinalScore;
-    }
-
-    void Update()
-    {
-        
+        ChangeMoney(0, 0);
     }
 
     public float GetMoney()
@@ -37,6 +35,7 @@ public class Currency : MonoBehaviour
     {
         money += sum;
         totalScore += score * scoreMultiplier;
+        scoreTMP.text = $"Score: {totalScore}";
     }
     void ChangeFinalScore()
     {
