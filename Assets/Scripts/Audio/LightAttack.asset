@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46dc7c798c986de4e84c7fc0d95c05ad, type: 3}
   m_Name: LightAttack
   m_EditorClassIdentifier: Assembly-CSharp::AudioData
-  clip: {fileID: 0}
+  clip: {fileID: 8300000, guid: 52420710f7abe6044b90f05cc28ce3fa, type: 3}
   randomContainer: {fileID: 0}
   useRandomContainer: 0
   loop: 0
   is3D: 0
-  volume: 1
-  pitch: 1
+  volume: 0.679
+  pitch: 0.823
   randomizePitch: 0
   pitchRange: {x: 0.95, y: 1.05}
   randomizeVolume: 0
