@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89423b92fd114c14d9a9bd53baf4f666, type: 3}
-  m_Name: HealingCard 2
+  m_Name: RonHealingCard 3
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  id: _BasicHealingCard
-  title: Vino
-  description: Regeneras 15% de vida.  Vida max +10
+  id: _RonHealingCard
+  title: Ron
+  description: Regeneras +6% de vida por cada enemigo eliminado.
   type: 0
-  amount: 15
-  extraMaxLife: 10
-  prob: 20
-  canAcumulate: 0
-  canChangeMaxLife: 1
+  amount: 6
+  extraMaxLife: 0
+  level: 3
+  canAcumulate: 1
+  canChangeMaxLife: 0
   backgroundColor: {r: 0.34509805, g: 0.9607844, b: 0, a: 0.5529412}
   artwork: {fileID: 21300000, guid: b845fc7a8df2e6543a2ad3298505b464, type: 3}
   textColor: {fileID: 11400000, guid: 5cf8ae092ca54931b443bec5148f3c59, type: 2}

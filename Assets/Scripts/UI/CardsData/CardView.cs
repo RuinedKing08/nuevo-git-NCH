@@ -50,7 +50,7 @@ public class CardView : MonoBehaviour
         //if (CD != null) Debug.Log("yo card" + CD);
         frame.color = card.backgroundColor;
         sr.sprite = card.sprite;
-        title.text = card.title;
+        title.text = card.title + $" Nivel {card.level}";
         title.colorGradientPreset = card.textColor;
         description.text = card.description;
         description.colorGradientPreset = card.textColor;
@@ -99,14 +99,18 @@ public class CardView : MonoBehaviour
             player.GetLife(card.extraMaxLife);
             Debug.Log("vida max ahora: " + player.MaxHealth);
         }
+        DeactiveAll();
+        Time.timeScale = 1;
+        cardSelection.SetActive(false);
+    }
+    public void DeactiveAll()
+    {
         for (int i = 0; i < cardViews.Length; i++)
         {
             cardViews[i].animateFrame = false;
             cardViews[i].frame.fillAmount = 1;
             cardViews[i].thisClicked = false;
         }
-        Time.timeScale = 1;
-        cardSelection.SetActive(false);
     }
     public void OnMouseEnter()
     {

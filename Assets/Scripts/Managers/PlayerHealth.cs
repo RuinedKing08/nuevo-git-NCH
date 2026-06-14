@@ -60,8 +60,9 @@ public class PlayerHealth : HealthController
         _combatSystem.PlayTakeHit();
         gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
-        if (health <= 0) Die();
+        ScorePopUp.Instance.CreateLostLifePopUp(finalDamage);
         SetHealthHUD();
+        if (health <= 0) Die();
 
     }
 

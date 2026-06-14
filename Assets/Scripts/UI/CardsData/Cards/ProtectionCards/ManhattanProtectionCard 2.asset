@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89423b92fd114c14d9a9bd53baf4f666, type: 3}
-  m_Name: ScoreCard 1
+  m_Name: ManhattanProtectionCard 2
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  id: _BasicProtectionCard
-  title: Martini
-  description: Multiplicador de puntaje +1
-  type: 3
-  amount: 100
+  id: _ManhattanProtectionCard
+  title: Manhattan
+  description: "Anulas el da\xF1o recibido y tras ser golpeado el efecto desaparece
+    tras 10 segundos."
+  type: 2
+  amount: 10
   extraMaxLife: 0
-  prob: 20
-  canAcumulate: 1
+  level: 2
+  canAcumulate: 0
   canChangeMaxLife: 0
-  backgroundColor: {r: 0.9607843, g: 0.8254145, b: 0, a: 0.5529412}
+  backgroundColor: {r: 0, g: 0.70175374, b: 0.9607843, a: 0.5529412}
   artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
-  prefab: {fileID: 0}
-  textColor: {fileID: 11400000, guid: 69a525efa7e6472eab268f6ea605f06e, type: 2}
+  textColor: {fileID: 11400000, guid: 37e23f855c86f794186e4b1273f9b8eb, type: 2}

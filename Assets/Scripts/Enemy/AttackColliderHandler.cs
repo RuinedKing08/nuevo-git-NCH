@@ -39,7 +39,7 @@ public class AttackColliderHandler : MonoBehaviour
         if (!_isAttackActive) return;
         TryApplyHit(other);        
     }
-    float a, b;
+    float a, b, c;
     private void TryApplyHit(Collider other)
     {
         if (other == null || _hitTargets.Contains(other)) return;
@@ -48,6 +48,7 @@ public class AttackColliderHandler : MonoBehaviour
         if (player == null) return;
         a++;
         b++;
+        c++;
         Debug.Log(a);
         if(a >= 2)
         {
@@ -58,6 +59,13 @@ public class AttackColliderHandler : MonoBehaviour
         {
             a = 0;
             b = 0;
+            return;
+        }
+        if(c >= 4)
+        {
+            a = 0;
+            b = 0;
+            c = 0;
             return;
         }
         if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); return;}
