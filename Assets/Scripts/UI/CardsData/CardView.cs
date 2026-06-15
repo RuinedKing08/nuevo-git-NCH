@@ -36,6 +36,7 @@ public class CardView : MonoBehaviour
     {
         initialHighlightColor = highlight.color;
         highlight.gameObject.SetActive(false);
+        clicked = false;
     }
     private void Update()
     {

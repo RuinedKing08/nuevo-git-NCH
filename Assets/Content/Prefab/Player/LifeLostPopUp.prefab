@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 4169867919776110294}
   - component: {fileID: 2577269756932243314}
   m_Layer: 5
-  m_Name: ScorePopUpTMP
+  m_Name: PopUpTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

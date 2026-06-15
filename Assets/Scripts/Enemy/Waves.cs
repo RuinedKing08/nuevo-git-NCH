@@ -28,6 +28,7 @@ public class Waves : MonoBehaviour
     float timeBetweenSpawn;
     Coroutine coroutine;
     bool inWave, spawnEnemy, waveWaiting, firstWaveWaiting, startSpawn;
+    bool newWave;
     int indexEnemies;
     public int indexSpawn;
     int group, enemiesLeftCount;
@@ -203,6 +204,7 @@ public class Waves : MonoBehaviour
         wavesInWave--;
         if (wavesInWave <= 0)
         {
+            ChangeBoolNewWave(true);
             InvokeChangeWave();
         }
     }
@@ -215,6 +217,15 @@ public class Waves : MonoBehaviour
         wavesInWave = Random.Range(1, 2);
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
+        ChangeBoolNewWave(false);
+    }
+    void ChangeBoolNewWave(bool newWave)
+    {
+        this.newWave = newWave;
+    }
+    public bool GetNewWaveBool()
+    {
+        return newWave;
     }
     void AmountOfGroupsToSpawn(int wavesInWave)
     {

@@ -2,10 +2,11 @@ using UnityEngine;
 using TMPro;
 public class ScorePopUp : MonoBehaviour
 {
-    [SerializeField] GameObject prefabScorePopUp, prefabLifeLostPopUp;
-    [SerializeField] GameObject scorePopUpArea, lifeLostPopUpArea;
+    [SerializeField] GameObject prefabScorePopUp, prefabLifeLostPopUp, prefabExpPopUp;
+    [SerializeField] GameObject scorePopUpArea, lifeLostPopUpArea, expPopUpArea;
     TMP_Text popUpTMP;
     RectTransform lifeLostSpawnZone;
+    RectTransform expSpawnZone;
     public static ScorePopUp Instance;
     Collider scoreSpawnZone;
     void Awake()
@@ -13,19 +14,26 @@ public class ScorePopUp : MonoBehaviour
         Instance = this;
         scoreSpawnZone = scorePopUpArea.GetComponent<Collider>();
         lifeLostSpawnZone = lifeLostPopUpArea.GetComponent<RectTransform>();
+        expSpawnZone = expPopUpArea.GetComponent<RectTransform>();
     }
     public void CreateScorePopUp(float score)
     {
         Vector3 randomPoint = GetRandomPointInCollider(scoreSpawnZone);
-        popUpTMP = Instantiate(prefabScorePopUp, randomPoint, scorePopUpArea.transform.rotation , scorePopUpArea.transform).transform.Find("ScorePopUpTMP").GetComponent<TMP_Text>();
+        popUpTMP = Instantiate(prefabScorePopUp, randomPoint, scorePopUpArea.transform.rotation , scorePopUpArea.transform).transform.Find("PopUpTMP").GetComponent<TMP_Text>();
         popUpTMP.text = $"{score * Currency.Instance.GetScoreMultiplier()}";
 
     }
     public void CreateLostLifePopUp(float lifeLost)
     {
         Vector3 randomPoint = GetRandomPointInUI(lifeLostSpawnZone);
-        popUpTMP = Instantiate(prefabLifeLostPopUp, randomPoint, lifeLostPopUpArea.transform.rotation, lifeLostPopUpArea.transform).transform.Find("ScorePopUpTMP").GetComponent<TMP_Text>();
+        popUpTMP = Instantiate(prefabLifeLostPopUp, randomPoint, lifeLostPopUpArea.transform.rotation, lifeLostPopUpArea.transform).transform.Find("PopUpTMP").GetComponent<TMP_Text>();
         popUpTMP.text = $"-{lifeLost}";
+    }
+    public void CreateExpPopUp(float exp)
+    {
+        Vector3 randomPoint = GetRandomPointInUI(expSpawnZone);
+        popUpTMP = Instantiate(prefabExpPopUp, randomPoint, expPopUpArea.transform.rotation, expPopUpArea.transform).transform.Find("PopUpTMP").GetComponent<TMP_Text>();
+        popUpTMP.text = $"+{exp}";
     }
     Vector3 GetRandomPointInCollider(Collider targetCollider)
     {

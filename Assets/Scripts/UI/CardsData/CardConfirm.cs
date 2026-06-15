@@ -35,8 +35,27 @@ public class CardConfirm : MonoBehaviour
         thisButton.interactable = false;
         rerollButton.interactable = true;
         Time.timeScale = 1;
-        InvokeChangeWave();
+        CloseUpgrades();
 
+    }
+    void CloseUpgrades()
+    {
+        if (Exp.Instance.GetExtraUpdrageBool())
+        {
+            if (Waves.Instance.GetNewWaveBool())
+            {
+                InvokeChangeCards();
+                Exp.Instance.ChangeBoolExtraUpgrade(false);
+            }
+            else
+            {
+                Exp.Instance.ChangeBoolExtraUpgrade(false);
+            }
+        }
+        else
+        {
+            InvokeChangeWave();
+        }
     }
     public void Reroll()
     {

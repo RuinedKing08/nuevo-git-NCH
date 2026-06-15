@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ public class ChangeCards : MonoBehaviour
     GameObject cardSelection;
     [SerializeField] List<CardView> cardViews;
     [SerializeField] List<CardList> cards;
-
+    
     void Start()
     {
         Waves.Instance.OnChangeWave += OpenCardSelection;
         CardConfirm.Instance.OnChangeCards += OpenCardSelection;
+        Exp.Instance.OnFullExp += OpenCardSelection;
         cardSelection = transform.Find("CardsSelection").gameObject;
         cardSelection.SetActive(false);
     }
-
     public void OpenCardSelection()
     {
         if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave() != 0)

@@ -183,8 +183,9 @@ public class EnemyController : MonoBehaviour
         Currency.Instance.ChangeMoney(0.15f, score);
         Debug.Log("EnemyDie");
         Combo();
-        
-        
+        ChangeExp(20);
+
+
         SetRagdoll(true);
         
         
@@ -260,6 +261,10 @@ public class EnemyController : MonoBehaviour
      public void Combo()
     {
         ChangeCombo.Instance.Combo(false);
+    }
+    public void ChangeExp(float exp)
+    {
+        Exp.Instance.ChangeExp(exp);
     }
 
     public void EnableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackStart(); }
