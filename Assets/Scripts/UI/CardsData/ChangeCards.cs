@@ -9,13 +9,18 @@ public class ChangeCards : MonoBehaviour
     GameObject cardSelection;
     [SerializeField] List<CardView> cardViews;
     [SerializeField] List<CardList> cards;
-    
+
+    private void Awake()
+    {
+        cardSelection = transform.Find("CardsSelection").gameObject;
+        cardSelection.SetActive(true);
+
+    }
     void Start()
     {
         Waves.Instance.OnChangeWave += OpenCardSelection;
         CardConfirm.Instance.OnChangeCards += OpenCardSelection;
         Exp.Instance.OnFullExp += OpenCardSelection;
-        cardSelection = transform.Find("CardsSelection").gameObject;
         cardSelection.SetActive(false);
     }
     public void OpenCardSelection()
