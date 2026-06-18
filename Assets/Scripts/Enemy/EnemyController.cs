@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private Collider mainCollider;
     [SerializeField] private Rigidbody mainRigidbody;
     [SerializeField] private GameObject scorePopUp;
-    [SerializeField] private float ragdollPushForce = 20f;
+    [SerializeField] private float ragdollPushForce = 30f;
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     
