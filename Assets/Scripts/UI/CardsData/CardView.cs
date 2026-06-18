@@ -75,12 +75,25 @@ public class CardView : MonoBehaviour
                 {
                     description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
                 }
+                if (card.title == "Cerveza")
+                {
+                    description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+                }
+                if (card.title == "Vino")
+                {
+                    description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+                }
+                if (card.title == "Tequila")
+                {
+                    description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
+                }
+                if (card.title == "Martini")
+                {
+                    description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
+                }
                 return;
             }
         }
-            if (card.type == CardType.Healing) description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
-            if (card.type == CardType.Protection) description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
-            if (card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
             
     }
     public Card GetCard()

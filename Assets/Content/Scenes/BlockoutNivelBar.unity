@@ -3896,7 +3896,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 54460866}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
         m_MethodName: ChangeResolution
         m_Mode: 1
@@ -10124,7 +10124,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 54460866}
         m_TargetAssemblyTypeName: OptionsMenu, Assembly-CSharp
         m_MethodName: ActivateFullScreen
         m_Mode: 0
