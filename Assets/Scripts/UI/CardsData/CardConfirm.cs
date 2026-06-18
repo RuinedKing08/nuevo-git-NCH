@@ -85,9 +85,9 @@ public class CardConfirm : MonoBehaviour
         {
             CV.DeactiveAll();
             thisButton.interactable = false;
-            ChangeRerollTMP(0);
             CardView.clicked = false;
         }
+        ChangeRerollTMP(0);
         InvokeChangeCards();
     }
     void ChangeRerollTMP(int uses)

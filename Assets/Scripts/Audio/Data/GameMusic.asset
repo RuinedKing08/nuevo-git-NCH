@@ -15,7 +15,7 @@ MonoBehaviour:
   clip: {fileID: 8300000, guid: 3f7775f1622a5dd4b863f18e5e3f55d5, type: 3}
   randomContainer: {fileID: 0}
   useRandomContainer: 0
-  loop: 0
+  loop: 1
   is3D: 0
   volume: 1
   pitch: 1

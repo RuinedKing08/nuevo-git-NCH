@@ -91,7 +91,6 @@ public class CardView : MonoBehaviour
                 {
                     description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
                 }
-                return;
             }
         }
             

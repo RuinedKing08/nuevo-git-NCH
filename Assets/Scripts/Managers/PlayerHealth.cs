@@ -118,7 +118,7 @@ public class PlayerHealth : HealthController
     {
         lifeBar.fillAmount = health / maxHealth;
     }
-    void RevivalBuff()
+    bool RevivalBuff()
     {
         if (UniqueUpgrades.brandyBuff)
         {
@@ -138,12 +138,15 @@ public class PlayerHealth : HealthController
                     break;
             }
             UniqueUpgrades.brandyBuff = false;
-            return;
+            return true;
         }
+        else return false;
     }
     void Die()
     {
-        RevivalBuff();
+        if (RevivalBuff()) return;
+        ChangeCards.cardsOpened = false;
+        Exp.Instance.ChangeExp(-100);
         SceneManager.LoadScene(thisScene);
         gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
     }

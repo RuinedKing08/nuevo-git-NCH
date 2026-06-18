@@ -14,7 +14,7 @@ public class ChangeCards : MonoBehaviour
     {
         cardSelection = transform.Find("CardsSelection").gameObject;
         cardSelection.SetActive(true);
-
+        cardsOpened = false;
     }
     void Start()
     {

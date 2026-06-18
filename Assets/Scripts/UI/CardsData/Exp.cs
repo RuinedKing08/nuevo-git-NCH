@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 public class Exp : MonoBehaviour
@@ -21,6 +22,10 @@ public class Exp : MonoBehaviour
     public void ChangeExp(float exp)
     {
         Exp.exp += exp;
+        if(Exp.exp < 0)
+        {
+            Exp.exp = 0;
+        }
         ScorePopUp.Instance.CreateExpPopUp(exp);
         if(Exp.exp >= 100)
         {

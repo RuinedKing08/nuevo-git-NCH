@@ -11,7 +11,6 @@ public class PauseMenu : MonoBehaviour
     bool options, pause;
 
     [SerializeField] AudioData GameMusic;
-    
 
     private void Awake()
     {
@@ -32,7 +31,6 @@ public class PauseMenu : MonoBehaviour
     void Pause(InputAction.CallbackContext context)
     {
         if (pause) return;
-
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
         pause = true;
