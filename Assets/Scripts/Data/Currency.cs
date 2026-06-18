@@ -17,6 +17,7 @@ public class Currency : MonoBehaviour
     {
         Waves.Instance.OnChangeWave += ChangeFinalScore;
         ChangeMoney(0, 0);
+        ChangeScoreMultiplier(-scoreMultiplier + 1);
     }
 
     public float GetMoney()

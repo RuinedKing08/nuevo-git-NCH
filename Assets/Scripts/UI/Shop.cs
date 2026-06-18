@@ -9,7 +9,7 @@ public class Shop : MonoBehaviour
     {
         shop.SetActive(false);
         Waves.Instance.OnChangeWave += OpenShop;
-        Time.timeScale = 1f;
+        //Time.timeScale = 1f;
     }
 
     void Update()

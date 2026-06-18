@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 89423b92fd114c14d9a9bd53baf4f666, type: 3}
-  m_Name: ProtectionCard 1
+  m_Name: TequilaProtectionCard 1
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  id: _BasicProtectionCard
+  id: _TequilaProtectionCard
   title: Tequila
-  description: "Da\xF1o recibido -5%. Vida max +20 "
+  description: "Da\xF1o recibido -5%. "
   type: 2
-  amount: 2
-  extraMaxLife: 20
-  prob: 20
+  amount: 0.05
+  extraMaxLife: 0
+  level: 1
   canAcumulate: 1
-  canChangeMaxLife: 1
+  canChangeMaxLife: 0
   backgroundColor: {r: 0, g: 0.70175374, b: 0.9607843, a: 0.5529412}
   artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
   textColor: {fileID: 11400000, guid: 37e23f855c86f794186e4b1273f9b8eb, type: 2}

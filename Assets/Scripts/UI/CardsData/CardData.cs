@@ -5,11 +5,11 @@ public class CardData : ScriptableObject
 {
     public string id;
     public string title;
-    public string description;
+    [TextArea(4, 6)] public string description;
     public CardType type;
     public float amount;
     public float extraMaxLife;
-    public float prob;
+    public float level;
     public bool canAcumulate;
     public bool canChangeMaxLife;
     public Color backgroundColor;

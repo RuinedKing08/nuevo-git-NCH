@@ -48,9 +48,9 @@ Animator:
   m_GameObject: {fileID: 1417354191533868981}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b48b249171495c8468857f6e08eb7c97, type: 2}
+  m_Controller: {fileID: 9100000, guid: 64a33440f0ca4c3468c86dd8c7878299, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -85,7 +85,7 @@ GameObject:
   - component: {fileID: 4169867919776110294}
   - component: {fileID: 2577269756932243314}
   m_Layer: 5
-  m_Name: ScorePopUpTMP
+  m_Name: PopUpTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
