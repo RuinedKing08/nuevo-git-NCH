@@ -18,9 +18,9 @@ MonoBehaviour:
   loop: 0
   is3D: 0
   volume: 1
-  pitch: 1.087
+  pitch: 0.76
   randomizePitch: 0
   pitchRange: {x: 0.95, y: 1.05}
   randomizeVolume: 0
   volumeRange: {x: 0.9, y: 1}
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -4599032152430521466, guid: b1ee1c1accbdf914184b643212c6a836, type: 2}
