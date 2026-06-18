@@ -3622,6 +3622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardConfirm
   rerollButton: {fileID: 546811471}
+  drinkAudio: {fileID: 0}
 --- !u!114 &380751491
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -5053,6 +5053,10 @@ MonoBehaviour:
   Detection: {fileID: 0}
   CombatGroup: {fileID: 0}
   score: 100
+  mainCollider: {fileID: 0}
+  mainRigidbody: {fileID: 0}
+  scorePopUp: {fileID: 3277187188970015433}
+  ragdollPushForce: 20
 --- !u!136 &8108068666376557602
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5102,7 +5106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackColliderHandler
   _attackCollider: {fileID: 6835295658854515086}
   _damageAmount: 10
-  attackShadow: {fileID: 5992038832679817686}
+  _enemyController: {fileID: 0}
 --- !u!1 &2343098734523658469
 GameObject:
   m_ObjectHideFlags: 0
