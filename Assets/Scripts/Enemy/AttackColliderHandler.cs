@@ -61,13 +61,6 @@ public class AttackColliderHandler : MonoBehaviour
             b = 0;
             return;
         }
-        if(c >= 4)
-        {
-            a = 0;
-            b = 0;
-            c = 0;
-            return;
-        }
         if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); return;}
 
         
@@ -92,6 +85,7 @@ public class AttackColliderHandler : MonoBehaviour
             {
                 _hitTargets.Add(other);
                 player.TakeDamage(_damageAmount);
+                return;
             }            
         }
         

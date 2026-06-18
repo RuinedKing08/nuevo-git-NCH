@@ -36,6 +36,7 @@ public class EnemyController : MonoBehaviour
     // Ragdoll components
     [SerializeField] private Collider mainCollider;
     [SerializeField] private Rigidbody mainRigidbody;
+    [SerializeField] private GameObject scorePopUp;
     [SerializeField] private float ragdollPushForce = 20f;
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
@@ -162,6 +163,7 @@ public class EnemyController : MonoBehaviour
         // Desactivar NavAgent cuando ragdoll está activo
         if (Stats.NavAgent != null)
             Stats.NavAgent.enabled = !active;
+        scorePopUp.SetActive(active);
     }
     
     public void PushRagdoll(Vector3 direction, float force)
