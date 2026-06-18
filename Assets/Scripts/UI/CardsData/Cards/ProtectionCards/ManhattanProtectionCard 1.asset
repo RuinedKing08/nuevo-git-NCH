@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _ManhattanProtectionCard
   title: Manhattan
-  description: "Anulas el da\xF1o recibido y tras ser golpeado el efecto desaparece
-    tras 5 segundos."
+  description: "Anulas el da\xF1o recibido de 2 golpes m\xE1s."
   type: 2
-  amount: 5
+  amount: 2
   extraMaxLife: 0
   level: 1
   canAcumulate: 0

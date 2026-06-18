@@ -35,6 +35,19 @@ public class CardConfirm : MonoBehaviour
     }
     public void Confirm()
     {
+        foreach(string title in UniqueUpgrades.Instance.GetTitles())
+        {
+            if (title == CV.GetCard().title)
+            {
+                UniqueUpgrades.Instance.UUpgrades(CV.GetCard());
+                CV.CloseAll();
+                thisButton.interactable = false;
+                rerollButton.interactable = true;
+                Time.timeScale = 1;
+                CloseUpgrades();
+                return;
+            }
+        }
         CV.Effects();
         thisButton.interactable = false;
         rerollButton.interactable = true;
