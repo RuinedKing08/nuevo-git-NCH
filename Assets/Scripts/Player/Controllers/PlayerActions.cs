@@ -14,14 +14,18 @@ public class PlayerActions : MonoBehaviour
     public static bool blocking;
     public static bool isDodging; 
 
+    [SerializeField] float radius;
     void Start()
     {
         _mainCamera = Camera.main;
 
-        
+        UniqueUpgrades.margaritaBuff = true;
+        UniqueUpgrades.margaritaAmount = 2;
+
         InputsParent.Instance.BlockInput().performed += ctx => StartBlock();
         InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
         InputsParent.Instance.SideStepInput().performed += ctx => Dodge();
+        InputsParent.Instance.LockOnInput().performed += ctx => UltraPush();
     }
 
     void Update()
@@ -61,9 +65,32 @@ public class PlayerActions : MonoBehaviour
         _combatSystem.PlayDodge();
         AudioManager.Instance.Play(_combatSystem.DodgeSound, transform.position);
     }
-
+    void UltraPush()
+    {
+        if (!UniqueUpgrades.margaritaBuff) return;
+        
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
+        foreach(Collider hit in hitColliders)
+        {
+            AttackColliderHandler enemy = hit.GetComponent<AttackColliderHandler>();
+            if(enemy != null)
+            {
+                StartCoroutine(enemy.PushBackEnemy());
+                UniqueUpgrades.margaritaAmount--;
+                if (UniqueUpgrades.margaritaAmount <= 0)
+                {
+                    UniqueUpgrades.margaritaAmount = 0;
+                    UniqueUpgrades.margaritaBuff = false;
+                }
+            }
+        }
+    }
     public void AE_StartDodge() => isDodging = true;
     public void AE_EndDodge() => isDodging = false;
 
-    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, radius);
+    }
 }

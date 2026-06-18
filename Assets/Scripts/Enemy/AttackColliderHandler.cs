@@ -67,6 +67,7 @@ public class AttackColliderHandler : MonoBehaviour
             UniqueUpgrades.manhattanAmount--;
             if(UniqueUpgrades.manhattanAmount <= 0)
             {
+                UniqueUpgrades.manhattanAmount = 0;
                 UniqueUpgrades.manhattanBuff = false;
             }
             return;
@@ -106,7 +107,7 @@ public class AttackColliderHandler : MonoBehaviour
     {
         ScorePopUp.Instance.CreateScorePopUp(score);
     }
-    IEnumerator PushBackEnemy()
+    public IEnumerator PushBackEnemy()
     {
         pushBackActivated = true;
         NavMeshAgent agent = _enemyController.Stats.NavAgent;

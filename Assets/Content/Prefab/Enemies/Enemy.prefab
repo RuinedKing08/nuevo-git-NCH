@@ -5753,10 +5753,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 2.9987001
+  m_Radius: 1.0322084
   m_Height: 5.9974003
   m_Direction: 1
-  m_Center: {x: 0.019643784, y: -0.086149216, z: 2.3466063}
+  m_Center: {x: 0.019643784, y: -0.086149216, z: 0.38011456}
 --- !u!1001 &5534306153052315341
 PrefabInstance:
   m_ObjectHideFlags: 0
