@@ -156,7 +156,7 @@ public class EnemyController : MonoBehaviour
         Debug.Log("EnemyDie");
         Combo();
         ChangeExp(20);
-
+        KillToHeal();
         Destroy(gameObject, 3f);
     }
     
@@ -209,7 +209,24 @@ public class EnemyController : MonoBehaviour
     {
         Exp.Instance.ChangeExp(exp);
     }
-
+    public void KillToHeal()
+    {
+        if (UniqueUpgrades.ronBuff)
+        {
+            switch (UniqueUpgrades.ronLevel)
+            {
+                case 1:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+                case 2:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+                case 3:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+            }
+        }
+    }
     public void EnableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackStart(); }
     public void DisableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackEnd(); }
     

@@ -10,8 +10,10 @@ public class PlayerHitCollider : MonoBehaviour
 
     public PlayerCombatSystem _combatsys;
 
+    public static PlayerHitCollider Instance;
     private void Awake()
     {
+        Instance = this;
         if (_attackCollider == null) _attackCollider = GetComponent<Collider>();
         if (_attackCollider != null)
         {

@@ -55,8 +55,33 @@ public class CardView : MonoBehaviour
         title.colorGradientPreset = card.textColor;
         description.text = card.description;
         description.colorGradientPreset = card.textColor;
-        if(card.type == CardType.Healing) description.text = card.description + $" ({player.CurrentHealth} / {player.MaxHealth})";
-        if(card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
+        foreach (string title in UniqueUpgrades.Instance.GetTitles())
+        {
+            if (title == card.title)
+            {
+                if (card.title == "Manhattan")
+                {
+                    description.text = card.description + $" ({UniqueUpgrades.manhattanAmount})";
+                }
+                if (card.title == "Ron")
+                {
+                    description.text = card.description + $" ({UniqueUpgrades.ronAmount}%)";
+                }
+                if (card.title == "Brandy")
+                {
+                    description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
+                }
+                    return;
+            }
+            if (card.type == CardType.Healing) description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+            if (card.type == CardType.Protection) description.text = card.description + $" ({player.GetDamageResistance() * 100}%)";
+            if (card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
+        }
+            
+    }
+    public Card GetCard()
+    {
+        return card;
     }
     public void Clicked()
     {
@@ -86,6 +111,7 @@ public class CardView : MonoBehaviour
                 break;
             case CardType.Protection:
                 Debug.Log("Mejora de protección");
+                player.SetDamageResistance(card.amount);
                 break;
             case CardType.Score:
                 Debug.Log($"Mejora de puntaje antes: {Currency.Instance.GetScoreMultiplier()}");
@@ -100,6 +126,10 @@ public class CardView : MonoBehaviour
             player.GetLife(card.extraMaxLife);
             Debug.Log("vida max ahora: " + player.MaxHealth);
         }
+        CloseAll();
+    }
+    public void CloseAll()
+    {
         DeactiveAll();
         Time.timeScale = 1;
         cardSelection.SetActive(false);

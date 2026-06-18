@@ -74,10 +74,40 @@ public class PlayerHealth : HealthController
    public void TakeDamage(int damage)
     {       
         ApplyDamage(damage);
+        LostDamageBuff();
         ResetCombo();
         AudioManager.Instance.Play(_combatSystem.DamageSound, transform.position);
     }
-
+    void LostDamageBuff()
+    {
+        if (UniqueUpgrades.ginBuff)
+        {
+            switch (UniqueUpgrades.ginLevel)
+            {
+                case 1:
+                    if(health <= 90 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.ginBuff = false;
+                        UniqueUpgrades.Instance.ChangeDamage();
+                    }
+                    break;
+                case 2:
+                    if (health <= 70 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.ginBuff = false;
+                        UniqueUpgrades.Instance.ChangeDamage();
+                    }
+                    break;
+                case 3:
+                    if (health <= 50 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.ginBuff = false;
+                        UniqueUpgrades.Instance.ChangeDamage();
+                    }
+                    break;
+            }
+        }
+    }
     public void ResetCombo()
     {
         ChangeCombo.Instance.Combo(true);
@@ -88,9 +118,32 @@ public class PlayerHealth : HealthController
     {
         lifeBar.fillAmount = health / maxHealth;
     }
+    void RevivalBuff()
+    {
+        if (UniqueUpgrades.brandyBuff)
+        {
+            switch (UniqueUpgrades.brandyLevel)
+            {
+                case 1:
+                    GetLife(UniqueUpgrades.brandyAmount * maxHealth / 100);
+                    UniqueUpgrades.brandyAmount -= UniqueUpgrades.brandyAmount;
+                    break;
+                case 2:
+                    GetLife(UniqueUpgrades.brandyAmount * maxHealth / 100);
+                    UniqueUpgrades.brandyAmount -= UniqueUpgrades.brandyAmount;
+                    break;
+                case 3:
+                    GetLife(UniqueUpgrades.brandyAmount * maxHealth / 100);
+                    UniqueUpgrades.brandyAmount -= UniqueUpgrades.brandyAmount;
+                    break;
+            }
+            UniqueUpgrades.brandyBuff = false;
+            return;
+        }
+    }
     void Die()
     {
-       
+        RevivalBuff();
         SceneManager.LoadScene(thisScene);
         gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
     }

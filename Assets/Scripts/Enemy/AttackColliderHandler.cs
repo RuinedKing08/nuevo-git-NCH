@@ -42,6 +42,7 @@ public class AttackColliderHandler : MonoBehaviour
     float a, b, c;
     private void TryApplyHit(Collider other)
     {
+        
         if (other == null || _hitTargets.Contains(other)) return;
 
         var player = other.GetComponentInParent<PlayerHealth>();
@@ -59,6 +60,15 @@ public class AttackColliderHandler : MonoBehaviour
         {
             a = 0;
             b = 0;
+            return;
+        }
+        if (UniqueUpgrades.manhattanBuff)
+        {
+            UniqueUpgrades.manhattanAmount--;
+            if(UniqueUpgrades.manhattanAmount <= 0)
+            {
+                UniqueUpgrades.manhattanBuff = false;
+            }
             return;
         }
         if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); return;}
