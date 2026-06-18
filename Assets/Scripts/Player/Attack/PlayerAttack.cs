@@ -2,8 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
-{
-    public AudioData lightAttackAudio;
+{    
     private PlayerCombatSystem _combatSystem;
 
     private void Awake()
@@ -15,8 +14,7 @@ public class PlayerAttack : MonoBehaviour
     {        
         if (InputsParent.Instance.LightAttackInput().triggered)
         {
-            _combatSystem.PerformLightAttack();
-            //AudioManager.Instance.Play(lightAttackAudio);
+            _combatSystem.PerformLightAttack();           
             
         }
     }

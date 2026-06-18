@@ -59,6 +59,7 @@ public class PlayerActions : MonoBehaviour
     {
         if (isDodging) return; 
         _combatSystem.PlayDodge();
+        AudioManager.Instance.Play(_combatSystem.DodgeSound, transform.position);
     }
 
     public void AE_StartDodge() => isDodging = true;

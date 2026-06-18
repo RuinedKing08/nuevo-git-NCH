@@ -10,9 +10,13 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] TMP_Text optionsTMP;
     bool options, pause;
 
+    [SerializeField] AudioData GameMusic;
+    
+
     private void Awake()
     {
         Time.timeScale = 0;
+        AudioManager.Instance.PlayLooped(GameMusic);
     }
     void Start()
     {
@@ -63,6 +67,7 @@ public class PauseMenu : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene("StartMenu");
+        AudioManager.Instance.StopAll();
     }
 
 }

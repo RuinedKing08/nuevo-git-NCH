@@ -35,9 +35,10 @@ public class CardConfirm : MonoBehaviour
     }
     public void Confirm()
     {
+        AudioManager.Instance.Play(drinkAudio);
         CV.Effects();
         thisButton.interactable = false;
-        rerollButton.interactable = true;
+        rerollButton.interactable = true;        
         Time.timeScale = 1;
         CloseUpgrades();
 
@@ -62,7 +63,7 @@ public class CardConfirm : MonoBehaviour
         }
         ChangeRerollTMP(1);
         ChangeCards.cardsOpened = false;
-        //AudioManager.Instance.Play(drinkAudio);
+        
     }
     public void Reroll()
     {

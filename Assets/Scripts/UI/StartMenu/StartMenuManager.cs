@@ -5,8 +5,14 @@ public class StartMenuManager : MonoBehaviour
     [SerializeField] GameObject startMenuPanel;
     [SerializeField] GameObject optionsPanel;
     [SerializeField] string sceneToLoad;
+    [SerializeField] AudioData MenuMusic;
+     private void Awake()
+    {
+        AudioManager.Instance.PlayLooped(MenuMusic);
+    }
     private void Start()
     {
+
         startMenuPanel = transform.Find("StartMenuPanel").gameObject;
         optionsPanel = transform.Find("OptionsPanel").gameObject;
         startMenuPanel.SetActive(true);
@@ -16,7 +22,7 @@ public class StartMenuManager : MonoBehaviour
     public void PlayButton()
     {
         SceneManager.LoadScene(sceneToLoad);
-      
+        AudioManager.Instance.StopLoopedSound();      
     }
 
     

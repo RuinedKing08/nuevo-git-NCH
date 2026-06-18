@@ -8,6 +8,8 @@ public class PlayerHitCollider : MonoBehaviour
     private bool _isAttackActive = false;
     private int _currentDamage;
 
+    public PlayerCombatSystem _combatsys;
+
     private void Awake()
     {
         if (_attackCollider == null) _attackCollider = GetComponent<Collider>();
@@ -15,7 +17,7 @@ public class PlayerHitCollider : MonoBehaviour
         {
             _attackCollider.isTrigger = true;
             _attackCollider.enabled = false;
-        }
+        }        
     }
 
     public void OnAttackStart(int type = 0)
@@ -23,6 +25,7 @@ public class PlayerHitCollider : MonoBehaviour
         _isAttackActive = true;
         _hitTargets.Clear();
         if (_attackCollider != null) _attackCollider.enabled = true;
+        AudioManager.Instance.Play(_combatsys.AirSound, transform.position);
     }
 
     public void OnAttackEnd()
@@ -56,6 +59,7 @@ public class PlayerHitCollider : MonoBehaviour
         {
             _hitTargets.Add(other);
             Vector3 hitDir = (other.transform.position - transform.position).normalized;
+            AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
             enemy.TakeDamage(_currentDamage, hitDir);
         }
     }

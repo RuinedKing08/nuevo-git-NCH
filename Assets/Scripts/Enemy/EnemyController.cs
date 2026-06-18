@@ -41,6 +41,10 @@ public class EnemyController : MonoBehaviour
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     
+    
+    private AudioSource movementSoundSource;
+    private bool wasMoving = false;
+    
     private void Awake()
     {
 
@@ -94,7 +98,23 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         StateMachine.CurrentState.UpdateState();
-        UpdateAnimationParameters(); 
+        UpdateAnimationParameters();
+        
+        
+        bool isMoving = Stats.NavAgent.velocity.magnitude >= 0.01f;
+        
+        if (isMoving && !wasMoving)
+        {
+            
+            movementSoundSource = AudioManager.Instance.Play(Stats.MovementSound,transform.position);
+        }
+        else if (!isMoving && wasMoving)
+        {
+            
+            AudioManager.Instance.Stop(movementSoundSource);
+        }
+        
+        wasMoving = isMoving;
     }
     void UpdateAnimationParameters()
     {
@@ -116,13 +136,14 @@ public class EnemyController : MonoBehaviour
     {
         if (ragdoll) return;
         Stats.TakeDamage(amount);
-        Animator.SetTrigger(Hash_IsHit);
+        Animator.SetTrigger(Hash_IsHit);        
         if (Stats.IsDead)
         {
             OnDead?.Invoke();
             // Activar ragdoll y aplicar fuerza cuando muere
             SetRagdoll(true);
             PushRagdoll(hitDir, ragdollPushForce);
+            AudioManager.Instance.Play(Stats.HitSound);
         }
     }
 
@@ -219,5 +240,7 @@ public class EnemyController : MonoBehaviour
     {
         DisableAttackColliders();
     }
+
+    
 
 }

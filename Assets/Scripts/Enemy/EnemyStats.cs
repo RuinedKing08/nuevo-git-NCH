@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
 public class EnemyStats : MonoBehaviour
 {
@@ -12,6 +10,11 @@ public class EnemyStats : MonoBehaviour
 
     [Header("State")]
     public bool StartsResting = false;
+
+    [Header("Audios")]
+    public AudioData HitSound;
+    public AudioData MovementSound;
+    public AudioData DamageSound;
 
     [Header("Navigation")]
     public NavMeshAgent NavAgent;
@@ -29,6 +32,8 @@ public class EnemyStats : MonoBehaviour
     public int Damage = 10;
     public bool WasKilledByFinisher;
     public bool IsBlocking;
+
+    
 
     void Awake()
     {

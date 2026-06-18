@@ -75,6 +75,7 @@ public class PlayerHealth : HealthController
     {       
         ApplyDamage(damage);
         ResetCombo();
+        AudioManager.Instance.Play(_combatSystem.DamageSound, transform.position);
     }
 
     public void ResetCombo()

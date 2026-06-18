@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46dc7c798c986de4e84c7fc0d95c05ad, type: 3}
   m_Name: LightAttack
   m_EditorClassIdentifier: Assembly-CSharp::AudioData
-  clip: {fileID: 8300000, guid: 52420710f7abe6044b90f05cc28ce3fa, type: 3}
+  clip: {fileID: 8300000, guid: b31578500eb8ec84b82d190807b790c5, type: 3}
   randomContainer: {fileID: 0}
   useRandomContainer: 0
   loop: 0

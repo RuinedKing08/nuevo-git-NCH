@@ -41,4 +41,12 @@ public class EnemyAnimationRelay : MonoBehaviour
     {
         leftHandAnticipacion.Play();
     }
+
+    public void AE_EnemyHitSound()
+    {
+        if (_controller != null)
+        {
+            AudioManager.Instance.Play(_controller.Stats.HitSound);
+        }
+    }
 }

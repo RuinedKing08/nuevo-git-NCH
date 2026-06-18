@@ -5,6 +5,11 @@ public class PlayerCombatSystem : MonoBehaviour
 {
    [SerializeField] private Animator _animator;
    [SerializeField] private PlayerHitCollider _hitCollider;
+
+    public AudioData HitSound;
+    public AudioData AirSound;    
+    public AudioData DodgeSound;
+    public AudioData DamageSound;
     
     private int _comboIndex = 0;
     private bool _isAttacking = false;

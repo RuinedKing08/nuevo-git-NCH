@@ -88,7 +88,7 @@ public class AttackColliderHandler : MonoBehaviour
                 return;
             }            
         }
-        
+        AudioManager.Instance.Play(_enemyController.Stats.DamageSound, transform.position);
         _hitTargets.Add(other);
         player.TakeDamage(_damageAmount);
     }
