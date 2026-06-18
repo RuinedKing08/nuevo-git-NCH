@@ -71,6 +71,10 @@ public class CardView : MonoBehaviour
                 {
                     description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
                 }
+                if (card.title == "Margarita")
+                {
+                    description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
+                }
                     return;
             }
             if (card.type == CardType.Healing) description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
