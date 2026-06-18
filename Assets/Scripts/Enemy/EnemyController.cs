@@ -32,7 +32,7 @@ public class EnemyController : MonoBehaviour
 
     public float IndividualSeed { get; private set; }
     [SerializeField] float score;
-    
+    bool ragdoll;
     // Ragdoll components
     [SerializeField] private Collider mainCollider;
     [SerializeField] private Rigidbody mainRigidbody;
@@ -114,6 +114,7 @@ public class EnemyController : MonoBehaviour
 
     public void TakeDamage(int amount, Vector3 hitDir)
     {
+        if (ragdoll) return;
         Stats.TakeDamage(amount);
         Animator.SetTrigger(Hash_IsHit);
         if (Stats.IsDead)
@@ -141,7 +142,7 @@ public class EnemyController : MonoBehaviour
     public void SetRagdoll(bool active)
     {
         Animator.enabled = !active;
-
+        ragdoll = active;
         if (mainCollider != null)
             mainCollider.enabled = !active;
 

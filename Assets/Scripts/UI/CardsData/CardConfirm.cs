@@ -12,6 +12,7 @@ public class CardConfirm : MonoBehaviour
     public event ChangeCard OnChangeCards;
     public delegate void ChangeCard();
     CardView CV;
+    public AudioData drinkAudio;
     private void Awake()
     {
         Instance = this;
@@ -61,6 +62,7 @@ public class CardConfirm : MonoBehaviour
         }
         ChangeRerollTMP(1);
         ChangeCards.cardsOpened = false;
+        //AudioManager.Instance.Play(drinkAudio);
     }
     public void Reroll()
     {
