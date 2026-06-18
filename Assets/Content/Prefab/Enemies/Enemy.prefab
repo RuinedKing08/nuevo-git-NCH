@@ -5053,16 +5053,6 @@ MonoBehaviour:
   Detection: {fileID: 0}
   CombatGroup: {fileID: 0}
   score: 100
-  _mainCollider: {fileID: 8108068666376557602}
-  _mainRigidbody: {fileID: 5939199026072875073}
-  _ragdollAvatar: {fileID: 9000000, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}
-  _excludeFromRagdoll:
-  - {fileID: 1948074203968355541}
-  - {fileID: 5976986548783317310}
-  _ragdollRigidbodies: []
-  _ragdollColliders: []
-  _isRagdollActive: 0
-  _ragdollPushForce: 20
 --- !u!136 &8108068666376557602
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -6318,6 +6308,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6977896875540817995}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6938772977796055841}
     - targetCorrespondingSourceObject: {fileID: -2975192129221103262, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8156971931428060494}
@@ -6995,7 +6988,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4615248222141293468}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}
   m_Controller: {fileID: 9100000, guid: 9a352785aef15d74da2fdc555103e2c3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -7035,6 +7028,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DetectEnemyBehind
   radius: 6.5
   distanceToCamera: 0.9
+--- !u!114 &6938772977796055841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4615248222141293468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c90b76c2f7a2db4787e8edf0267b6a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RagdollTest
+  animator: {fileID: 704516337856554257}
+  mainCollider: {fileID: 8108068666376557602}
+  mainRigidbody: {fileID: 5939199026072875073}
 --- !u!4 &5424435542006462758 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dbdfba67422a6584a91111aa25a224a1, type: 3}

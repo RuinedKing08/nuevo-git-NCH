@@ -6,9 +6,9 @@ public class AttackColliderHandler : MonoBehaviour
 {
      [SerializeField] private Collider _attackCollider;
     [SerializeField] private int _damageAmount = 10;
-    [SerializeField] GameObject attackShadow;
+    //[SerializeField] GameObject attackShadow;
 
-    private EnemyController _enemyController;
+    [SerializeField]private EnemyController _enemyController;
     private HashSet<Collider> _hitTargets = new HashSet<Collider>();
     private bool _isAttackActive = false;
     private bool pushBackActivated;
@@ -24,14 +24,14 @@ public class AttackColliderHandler : MonoBehaviour
     {
         _isAttackActive = true;
         _hitTargets.Clear();
-        if (attackShadow != null) attackShadow.SetActive(true);
+        //if (attackShadow != null) attackShadow.SetActive(true);
         if (_attackCollider != null) _attackCollider.enabled = true;
     }
 
     public void OnAttackEnd()
     {
         _isAttackActive = false;
-        if (attackShadow != null) attackShadow.SetActive(false);
+        //if (attackShadow != null) attackShadow.SetActive(false);
         if (_attackCollider != null) _attackCollider.enabled = false;
     }
     private void OnTriggerEnter(Collider other)

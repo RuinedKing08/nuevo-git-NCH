@@ -34,15 +34,11 @@ public class EnemyController : MonoBehaviour
     [SerializeField] float score;
     
     // Ragdoll components
-    [SerializeField] private Collider _mainCollider;
-    [SerializeField] private Rigidbody _mainRigidbody;
-    [SerializeField] private Avatar _ragdollAvatar; 
-    private Avatar _originalAvatar; 
-    [SerializeField] private Transform[] _excludeFromRagdoll; 
-    [SerializeField] private Rigidbody[] _ragdollRigidbodies;
-    [SerializeField] private Collider[] _ragdollColliders;
-    [SerializeField] private bool _isRagdollActive = false;
-    [SerializeField] private float _ragdollPushForce = 20f;
+    [SerializeField] private Collider mainCollider;
+    [SerializeField] private Rigidbody mainRigidbody;
+    [SerializeField] private float ragdollPushForce = 20f;
+    private Rigidbody[] ragdollRigidbodies;
+    private Collider[] ragdollColliders;
     
     private void Awake()
     {
@@ -63,6 +59,13 @@ public class EnemyController : MonoBehaviour
         {
             Stats.NavAgent.updateRotation = false; 
         }
+        
+        // Inicializar ragdoll
+        mainCollider = GetComponent<Collider>();
+        mainRigidbody = GetComponent<Rigidbody>();
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        ragdollColliders = GetComponentsInChildren<Collider>();
+        SetRagdoll(false);
 
         IndividualSeed = UnityEngine.Random.Range(0f, 1000f);
     }
@@ -83,55 +86,9 @@ public class EnemyController : MonoBehaviour
             Stats.NavAgent.radius = 0.35f; 
         }
         
-        // Inicializar ragdoll
-        InitializeRagdoll();
         OnDead += Die;
     }
-    
-    private void InitializeRagdoll()
-    {
-        _mainCollider = GetComponent<Collider>();
-        _mainRigidbody = GetComponent<Rigidbody>();
-        
-        
-        List<Rigidbody> rbList = new List<Rigidbody>();
-        List<Collider> colList = new List<Collider>();
-        
-        foreach (Rigidbody rb in GetComponentsInChildren<Rigidbody>())
-        {
-            if (!IsExcluded(rb.transform))
-                rbList.Add(rb);
-        }
-        
-        foreach (Collider col in GetComponentsInChildren<Collider>())
-        {
-            if (!IsExcluded(col.transform))
-                colList.Add(col);
-        }
-        
-        _ragdollRigidbodies = rbList.ToArray();
-        _ragdollColliders = colList.ToArray();
-        
-        // Guardar el avatar original
-        if (Animator != null)
-            _originalAvatar = Animator.avatar;
-        
-        
-        SetRagdoll(false);
-    }
-    
-    private bool IsExcluded(Transform bone)
-    {
-        if (_excludeFromRagdoll == null || _excludeFromRagdoll.Length == 0)
-            return false;
-        
-        foreach (Transform excluded in _excludeFromRagdoll)
-        {
-            if (bone == excluded)
-                return true;
-        }
-        return false;
-    }
+
 
     void Update()
     {
@@ -161,22 +118,14 @@ public class EnemyController : MonoBehaviour
         if (Stats.IsDead)
         {
             OnDead?.Invoke();
-            // Aplicar empuje al ragdoll después de la muerte
-            StartCoroutine(PushRagdollAfterDeath(hitDir));
+            // Activar ragdoll y aplicar fuerza cuando muere
+            SetRagdoll(true);
+            PushRagdoll(hitDir, ragdollPushForce);
         }
-    }
-    
-    private IEnumerator PushRagdollAfterDeath(Vector3 hitDir)
-    {
-        yield return null;
-        if (_isRagdollActive)
-            PushRagdoll(hitDir);
     }
 
     void Die()
     {
-        if (_isRagdollActive) return; // Prevenir múltiples activaciones
-        
         // Mostrar puntuación y dinero
         TMP_Text scoreView = transform.Find("Cyanide").Find("CanvasEnemy").Find("ScorePopUpTMP").GetComponent<TMP_Text>();
         scoreView.text = $"{score * Currency.Instance.GetScoreMultiplier()}";
@@ -185,78 +134,48 @@ public class EnemyController : MonoBehaviour
         Combo();
         ChangeExp(20);
 
-
-        SetRagdoll(true);
-        
-        
         Destroy(gameObject, 3f);
     }
     
-    
-    public void PushRagdoll(Vector3 direction, float force = -1)
-    {
-        if (!_isRagdollActive) return;
-        
-        float pushForce = force > 0 ? force : _ragdollPushForce;
-        direction.Normalize();
-        
-        // Aplicar fuerza a todos los rigidbodies del ragdoll
-        foreach (Rigidbody rb in _ragdollRigidbodies)
-        {
-            if (rb == _mainRigidbody) continue;
-            rb.linearVelocity = direction * pushForce;
-        }
-    }
-    
-    public void SetRagdollPushForce(float force)
-    {
-        _ragdollPushForce = Mathf.Max(0, force);
-    }
-    
-    
     public void SetRagdoll(bool active)
     {
-        if (active == _isRagdollActive) return;
-        _isRagdollActive = active;
-        
-        
-        if (Animator != null)
+        Animator.enabled = !active;
+
+        if (mainCollider != null)
+            mainCollider.enabled = !active;
+
+        if (mainRigidbody != null)
+            mainRigidbody.isKinematic = active;
+
+        foreach (Rigidbody rb in ragdollRigidbodies)
         {
-            Animator.enabled = !active;
-            
-          
-            if (active && _ragdollAvatar != null)
-                Animator.avatar = _ragdollAvatar;
-            else if (!active && _originalAvatar != null)
-                Animator.avatar = _originalAvatar;
-        }
-        
-        
-        if (_mainCollider != null)
-            _mainCollider.enabled = !active;
-        
-        
-        if (_mainRigidbody != null)
-            _mainRigidbody.isKinematic = active;
-        
-        
-        foreach (Rigidbody rb in _ragdollRigidbodies)
-        {
-            if (rb == _mainRigidbody) continue;
+            if (rb == mainRigidbody) continue;
             rb.isKinematic = !active;
         }
-        
-        
-        foreach (Collider col in _ragdollColliders)
+
+        foreach (Collider col in ragdollColliders)
         {
-            if (col == _mainCollider) continue;
+            if (col == mainCollider) continue;
             col.enabled = active;
         }
         
-        
-        if (Stats.NavAgent != null && active)
-            Stats.NavAgent.enabled = false;
+        // Desactivar NavAgent cuando ragdoll está activo
+        if (Stats.NavAgent != null)
+            Stats.NavAgent.enabled = !active;
     }
+    
+    public void PushRagdoll(Vector3 direction, float force)
+    {
+        direction.Normalize();
+        
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            if (rb == mainRigidbody) continue;
+            rb.linearVelocity = direction * force;
+        }
+    }
+    
+
     
      public void Combo()
     {
