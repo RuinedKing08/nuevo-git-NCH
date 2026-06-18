@@ -9,6 +9,7 @@ public class PlayerHealth : HealthController
     public static PlayerHealth Instance { get; private set; }
     private PlayerCombatSystem _combatSystem;    
     [SerializeField] private Image lifeBar;
+    [SerializeField] private CameraShake cameraShake;
     private string thisScene;
     private float _damageResistance = 0f; // 0 = 0%, 1 = 100%
     public float CurrentHealth => health;
@@ -60,6 +61,10 @@ public class PlayerHealth : HealthController
         _combatSystem.PlayTakeHit();
         gameObject.SendMessage("OnHit", SendMessageOptions.DontRequireReceiver);
 
+        
+        if (cameraShake != null)
+            cameraShake.Shake();
+
         ScorePopUp.Instance.CreateLostLifePopUp(finalDamage);
         SetHealthHUD();
         if (health <= 0) Die();
@@ -71,6 +76,7 @@ public class PlayerHealth : HealthController
         ApplyDamage(damage);
         LostDamageBuff();
         ResetCombo();
+        AudioManager.Instance.Play(_combatSystem.DamageSound, transform.position);
     }
     void LostDamageBuff()
     {

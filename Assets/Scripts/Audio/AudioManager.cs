@@ -8,6 +8,8 @@ public class AudioManager : MonoBehaviour
     [Header("Pool")]
     [SerializeField] private int initialPoolSize = 10;
     private List<AudioSource> sources = new List<AudioSource>();
+    
+    private AudioSource currentLoopedSound;
 
     private void Awake()
     {
@@ -54,13 +56,13 @@ public class AudioManager : MonoBehaviour
     }
 
     
-    public void Play(AudioData data)
+    public AudioSource Play(AudioData data)
     {
-        Play(data, Vector3.zero);
+        return Play(data, Vector3.zero);
     }
 
     
-    public void Play(AudioData data, Vector3 position)
+    public AudioSource Play(AudioData data, Vector3 position)
     {
         AudioSource source = GetAvailableSource();
         
@@ -106,6 +108,34 @@ public class AudioManager : MonoBehaviour
         }
 
         source.Play();
+        return source;
+    }
+
+    public AudioSource PlayLooped(AudioData data)
+    {
+        return PlayLooped(data, Vector3.zero);
+    }
+
+    public AudioSource PlayLooped(AudioData data, Vector3 position)
+    {
+        
+        if (currentLoopedSound != null && currentLoopedSound.isPlaying)
+            currentLoopedSound.Stop();
+
+        
+        currentLoopedSound = Play(data, position);
+        return currentLoopedSound;
+    }
+
+    public void StopLoopedSound()
+    {
+        if (currentLoopedSound != null)
+            currentLoopedSound.Stop();
+    }
+
+    public AudioSource GetCurrentLoopedSound()
+    {
+        return currentLoopedSound;
     }
 
     public void StopAll()
@@ -113,6 +143,37 @@ public class AudioManager : MonoBehaviour
         foreach (var source in sources)
         {
             source.Stop();
+        }
+    }
+
+    public void Stop(AudioSource source)
+    {
+        if (source != null && source.isPlaying)
+        {
+            source.Stop();
+        }
+    }
+
+    public void Stop(AudioData data)
+    {
+        if (data == null) return;
+
+        AudioClip clipToFind = null;
+
+        if (!data.useRandomContainer && data.clip != null)
+        {
+            clipToFind = data.clip;
+        }
+
+        if (clipToFind == null) return;
+
+        foreach (var source in sources)
+        {
+            if (source.clip == clipToFind && source.isPlaying)
+            {
+                source.Stop();
+                return;
+            }
         }
     }
 }

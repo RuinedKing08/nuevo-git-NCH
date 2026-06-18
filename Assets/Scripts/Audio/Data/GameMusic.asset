@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 46dc7c798c986de4e84c7fc0d95c05ad, type: 3}
-  m_Name: LightAttack
+  m_Name: GameMusic
   m_EditorClassIdentifier: Assembly-CSharp::AudioData
-  clip: {fileID: 8300000, guid: 52420710f7abe6044b90f05cc28ce3fa, type: 3}
+  clip: {fileID: 8300000, guid: 3f7775f1622a5dd4b863f18e5e3f55d5, type: 3}
   randomContainer: {fileID: 0}
   useRandomContainer: 0
   loop: 0
   is3D: 0
-  volume: 0.679
-  pitch: 0.823
+  volume: 1
+  pitch: 1
   randomizePitch: 0
   pitchRange: {x: 0.95, y: 1.05}
   randomizeVolume: 0
   volumeRange: {x: 0.9, y: 1}
-  mixerGroup: {fileID: 0}
+  mixerGroup: {fileID: -5037949963750141135, guid: b1ee1c1accbdf914184b643212c6a836, type: 2}

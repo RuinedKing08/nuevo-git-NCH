@@ -35,6 +35,7 @@ public class CardConfirm : MonoBehaviour
     }
     public void Confirm()
     {
+        AudioManager.Instance.Play(drinkAudio);
         foreach(string title in UniqueUpgrades.Instance.GetTitles())
         {
             if (title == CV.GetCard().title)
@@ -50,7 +51,7 @@ public class CardConfirm : MonoBehaviour
         }
         CV.Effects();
         thisButton.interactable = false;
-        rerollButton.interactable = true;
+        rerollButton.interactable = true;        
         Time.timeScale = 1;
         CloseUpgrades();
 
@@ -75,7 +76,7 @@ public class CardConfirm : MonoBehaviour
         }
         ChangeRerollTMP(1);
         ChangeCards.cardsOpened = false;
-        //AudioManager.Instance.Play(drinkAudio);
+        
     }
     public void Reroll()
     {

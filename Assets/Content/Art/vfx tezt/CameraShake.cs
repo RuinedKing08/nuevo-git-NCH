@@ -24,14 +24,7 @@ public class CameraShake : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.X))
-        {
-            Shake();
-        }
-
-    }
+    
 
     public void Shake()
     {
