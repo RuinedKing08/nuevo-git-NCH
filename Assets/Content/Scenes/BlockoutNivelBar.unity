@@ -4956,6 +4956,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5479160199113729113, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 587587706}
+    - targetCorrespondingSourceObject: {fileID: 5479160199113729113, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 587587707}
     - targetCorrespondingSourceObject: {fileID: 6111954336956861092, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 468592447}
@@ -6338,6 +6341,25 @@ MonoBehaviour:
   optionsPanel: {fileID: 54460864}
   optionsTMP: {fileID: 1556177896}
   GameMusic: {fileID: 11400000, guid: ada8c6f39317b6946af0db61b69d4d5a, type: 2}
+--- !u!114 &587587707
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468592445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba54fdb9b4398614fb06a9115b87681e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniqueUpgrades
+  titles:
+  - Brandy
+  - Ron
+  - Margarita
+  - Gin
+  - Whiskey
+  - Manhattan
 --- !u!1 &598283376
 GameObject:
   m_ObjectHideFlags: 0
