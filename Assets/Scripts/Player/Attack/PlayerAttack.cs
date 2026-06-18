@@ -17,6 +17,7 @@ public class PlayerAttack : MonoBehaviour
         {
             _combatSystem.PerformLightAttack();
             //AudioManager.Instance.Play(lightAttackAudio);
+            
         }
     }
 }

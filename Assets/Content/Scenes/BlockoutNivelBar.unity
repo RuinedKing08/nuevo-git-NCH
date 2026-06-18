@@ -3037,6 +3037,11 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
+--- !u!1 &284627523 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3287532526747045482, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
+  m_PrefabInstance: {fileID: 1316646314}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &311239069
 Mesh:
   m_ObjectHideFlags: 0
@@ -16294,6 +16299,10 @@ PrefabInstance:
       propertyPath: lifeBar
       value: 
       objectReference: {fileID: 1490917758}
+    - target: {fileID: 2540410287005200011, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
+      propertyPath: cameraShake
+      value: 
+      objectReference: {fileID: 2139165123}
     - target: {fileID: 2724064715519346917, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 69.74966
@@ -16820,6 +16829,9 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1259937516}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3287532526747045482, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2139165123}
     - targetCorrespondingSourceObject: {fileID: 5999110750763613976, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1933964102}
@@ -19289,6 +19301,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
   m_PrefabInstance: {fileID: 2082178436}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1661304729 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2269005368570548960, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
+  m_PrefabInstance: {fileID: 2082178436}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661304693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
 --- !u!1 &1664061610
 GameObject:
   m_ObjectHideFlags: 0
@@ -19437,6 +19460,10 @@ PrefabInstance:
     - target: {fileID: 4123232681726545647, guid: 6bba7b9e59dcaba47ae7297609eeebc0, type: 3}
       propertyPath: m_Name
       value: Global Volume
+      objectReference: {fileID: 0}
+    - target: {fileID: 4123232681726545647, guid: 6bba7b9e59dcaba47ae7297609eeebc0, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6489771151921872207, guid: 6bba7b9e59dcaba47ae7297609eeebc0, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24391,7 +24418,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8529380792555856155, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
   m_PrefabInstance: {fileID: 1316646314}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 284627523}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c09b3040ffcf1e640b2e6c4d94b3dc1e, type: 3}
@@ -24402,7 +24429,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2540410287005200011, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
   m_PrefabInstance: {fileID: 1316646314}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 284627523}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d79590ed272d5494eb1e41e4493cf620, type: 3}
@@ -24413,6 +24440,22 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4406878758003356550, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
   m_PrefabInstance: {fileID: 1316646314}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2139165123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 284627523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a51520724b3a67f45bdc089877d6e2f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraShake
+  cinemachineCamera: {fileID: 1661304729}
+  defaultAmplitude: 2
+  defaultFrequency: 8
+  defaultDuration: 0.15
 --- !u!1 &2142964331
 GameObject:
   m_ObjectHideFlags: 0
