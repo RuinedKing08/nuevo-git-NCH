@@ -75,12 +75,12 @@ public class CardView : MonoBehaviour
                 {
                     description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
                 }
-                    return;
+                return;
             }
-            if (card.type == CardType.Healing) description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
-            if (card.type == CardType.Protection) description.text = card.description + $" ({player.GetDamageResistance() * 100}%)";
-            if (card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
         }
+            if (card.type == CardType.Healing) description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+            if (card.type == CardType.Protection) description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
+            if (card.type == CardType.Score) description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
             
     }
     public Card GetCard()

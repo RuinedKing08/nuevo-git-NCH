@@ -4956,6 +4956,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5479160199113729113, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 587587706}
+    - targetCorrespondingSourceObject: {fileID: 5479160199113729113, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 587587709}
     - targetCorrespondingSourceObject: {fileID: 6111954336956861092, guid: ad5c79d2ef89e7646b6c8e32f755fde0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 468592447}
@@ -6289,7 +6292,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ad7cd9d5701663f449b22379e7a30198, type: 2}
   - {fileID: 11400000, guid: 1f8214f53c781e64bae084ee4099d927, type: 2}
   - {fileID: 11400000, guid: f00f8530f070356439614eaf6ce5b52a, type: 2}
-  - {fileID: 11400000, guid: dda8e21cbfdc18a4d9190ea3f2108a8f, type: 2}
   - {fileID: 11400000, guid: 543345fbc2f85a64580920dc3a547ddc, type: 2}
 --- !u!114 &587587695
 MonoBehaviour:
@@ -6338,6 +6340,25 @@ MonoBehaviour:
   optionsPanel: {fileID: 54460864}
   optionsTMP: {fileID: 1556177896}
   GameMusic: {fileID: 11400000, guid: ada8c6f39317b6946af0db61b69d4d5a, type: 2}
+--- !u!114 &587587709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 468592445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba54fdb9b4398614fb06a9115b87681e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UniqueUpgrades
+  titles:
+  - Brandy
+  - 'Ron '
+  - Margarita
+  - Gin
+  - Whiskey
+  - Manhattan
 --- !u!1 &598283376
 GameObject:
   m_ObjectHideFlags: 0
@@ -7914,7 +7935,7 @@ GameObject:
   - component: {fileID: 709426274}
   - component: {fileID: 709426273}
   m_Layer: 5
-  m_Name: MouseTMP
+  m_Name: EspacioTMP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7959,7 +7980,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Mouse = Rotar
+  m_text: 'Espacio = Ultra Push
+
+    (Usos Iniciales = 2)'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -13359,7 +13382,7 @@ GameObject:
   - component: {fileID: 1083142345}
   - component: {fileID: 1083142344}
   m_Layer: 5
-  m_Name: MouseFrame
+  m_Name: EspacioFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16404,6 +16427,10 @@ PrefabInstance:
     - target: {fileID: 3756811104629605408, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 165.13063
+      objectReference: {fileID: 0}
+    - target: {fileID: 4068905512572359836, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
+      propertyPath: radius
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 4068905512572359836, guid: 96a8935e82e394247a26f2c4b7db9a28, type: 3}
       propertyPath: _mainCamera

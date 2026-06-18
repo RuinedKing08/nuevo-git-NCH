@@ -161,6 +161,7 @@ public class PlayerHealth : HealthController
     public void ModifyDamageResistance(float amount)
     {
         _damageResistance = Mathf.Clamp01(_damageResistance + amount);
+        _damageResistance = Mathf.Clamp(_damageResistance, 0,0.5f);
     }
    
     public int GetDamageAfterResistance(int damage)

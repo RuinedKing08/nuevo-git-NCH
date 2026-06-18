@@ -214,7 +214,7 @@ public class Waves : MonoBehaviour
         wave++;
         waveTMP.text = ($"Oleada {wave}");
         waveAnim.Play("WaveTitle");
-        wavesInWave = Random.Range(1, 2);
+        wavesInWave = Random.Range(1, 4);
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
@@ -231,6 +231,13 @@ public class Waves : MonoBehaviour
     {
         switch (wavesInWave)
         {
+            case 2:
+                index1 = AmountToSpawnInGroup();
+                index2 = AmountToSpawnInGroup();
+                index3 = 0;
+                index4 = 0;
+                index5 = 0;
+                break;
             case 3:
                 index1 = AmountToSpawnInGroup();
                 index2 = AmountToSpawnInGroup();
