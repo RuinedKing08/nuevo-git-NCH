@@ -14,11 +14,14 @@ public class InputsParent : MonoBehaviour
     [SerializeField] private InputActionReference lockOn;
     [SerializeField] private InputActionReference sideStep;
     [SerializeField] private InputActionReference block;
-    private InputAction moveXAction, moveZAction, interactionAction, lightAttackAction, heavyAttackAction, throwAction, lockOnAction, sideStepAction, blockAction;
+    [SerializeField] private InputActionReference pause;
+    private InputAction moveXAction, moveZAction, interactionAction, lightAttackAction, heavyAttackAction, throwAction, lockOnAction, sideStepAction, blockAction, pauseAction;
     public static InputsParent Instance;
     private void Awake()
     {
         Instance = this;
+        playerInputMap = playerInputAsset.FindActionMap("PlayerAction");
+        OnEnable();
     }
     void Start()
     {
@@ -31,6 +34,7 @@ public class InputsParent : MonoBehaviour
         lockOnAction = lockOn.ToInputAction();
         sideStepAction = sideStep.ToInputAction();
         blockAction = block.ToInputAction();
+        pauseAction = pause.ToInputAction();
     }
 
     public InputAction MoveXInput() {return moveXAction; }
@@ -41,6 +45,7 @@ public class InputsParent : MonoBehaviour
     public InputAction LockOnInput() {return lockOnAction; }
     public InputAction SideStepInput() {return sideStepAction; }
     public InputAction BlockInput() {return blockAction; }
+    public InputAction PauseInput() {return pauseAction; }
     private void OnEnable()
     {
         moveXAction = moveX.ToInputAction();
@@ -67,6 +72,9 @@ public class InputsParent : MonoBehaviour
 
         blockAction = block.ToInputAction();
         blockAction.Enable();
+
+        pauseAction = pause.ToInputAction();
+        pauseAction.Enable();
     }
 
     private void OnDisable()
@@ -79,5 +87,10 @@ public class InputsParent : MonoBehaviour
         lockOnAction.Disable();
         sideStepAction.Disable();
         blockAction.Disable();
+        pauseAction.Disable();
+    }
+    private void OnDestroy()
+    {
+        OnDisable();
     }
 }

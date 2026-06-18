@@ -9,7 +9,7 @@ public class ChangeCards : MonoBehaviour
     GameObject cardSelection;
     [SerializeField] List<CardView> cardViews;
     [SerializeField] List<CardList> cards;
-
+    public static bool cardsOpened;
     private void Awake()
     {
         cardSelection = transform.Find("CardsSelection").gameObject;
@@ -27,6 +27,7 @@ public class ChangeCards : MonoBehaviour
     {
         if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave() != 0)
         {
+            cardsOpened = true;
             cardSelection.SetActive(true);
             CreateCards();
         }

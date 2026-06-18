@@ -210,7 +210,7 @@ public class Waves : MonoBehaviour
     }
     void NewWave()
     {
-        Time.timeScale = 1;
+        //Time.timeScale = 1;
         wave++;
         waveTMP.text = ($"Oleada {wave}");
         waveAnim.Play("WaveTitle");

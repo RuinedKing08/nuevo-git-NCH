@@ -1,19 +1,22 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class CardConfirm : MonoBehaviour
 {
     Button thisButton;
     [SerializeField] Button rerollButton;
+    TMP_Text rerollTMP;
     public static CardConfirm Instance;
     public event ChangeWaves OnChangeWave;
     public delegate void ChangeWaves();
-    public event ChangeCards OnChangeCards;
-    public delegate void ChangeCards();
+    public event ChangeCard OnChangeCards;
+    public delegate void ChangeCard();
     CardView CV;
     private void Awake()
     {
         Instance = this;
         thisButton = GetComponent<Button>();
+        rerollTMP = rerollButton.transform.Find("RerollTMP").GetComponent<TMP_Text>();
     }
     void Start()
     {
@@ -56,6 +59,8 @@ public class CardConfirm : MonoBehaviour
         {
             InvokeChangeWave();
         }
+        ChangeRerollTMP(1);
+        ChangeCards.cardsOpened = false;
     }
     public void Reroll()
     {
@@ -64,9 +69,14 @@ public class CardConfirm : MonoBehaviour
         {
             CV.DeactiveAll();
             thisButton.interactable = false;
+            ChangeRerollTMP(0);
             CardView.clicked = false;
         }
         InvokeChangeCards();
+    }
+    void ChangeRerollTMP(int uses)
+    {
+        rerollTMP.text = $"Rerolear {uses}/1";
     }
     public Button GetButton()
     {

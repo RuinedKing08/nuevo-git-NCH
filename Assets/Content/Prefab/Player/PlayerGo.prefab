@@ -324,6 +324,7 @@ MonoBehaviour:
   lockOn: {fileID: -8758271524718880939, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   sideStep: {fileID: -2092556331638605850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   block: {fileID: -7763182533195424918, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  pause: {fileID: 8732839759414702333, guid: 052faaac586de48259a63d0c4782560b, type: 3}
 --- !u!114 &5348921843886745016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,6 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d9db1dbf02ccd4895ad127f5e69bb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  lightAttackAudio: {fileID: 0}
 --- !u!114 &2540410287005200011
 MonoBehaviour:
   m_ObjectHideFlags: 0
