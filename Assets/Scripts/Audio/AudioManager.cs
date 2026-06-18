@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
@@ -9,7 +10,16 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private int initialPoolSize = 10;
     private List<AudioSource> sources = new List<AudioSource>();
     
+    [Header("Audio Mixer Groups")]
+    [SerializeField] private AudioMixerGroup masterGroup;
+    [SerializeField] private AudioMixerGroup sfxGroup;
+    [SerializeField] private AudioMixerGroup musicGroup;
+    
     private AudioSource currentLoopedSound;
+    
+    private float masterVolume = 1f;
+    private float sfxVolume = 1f;
+    private float musicVolume = 1f;
 
     private void Awake()
     {
@@ -175,5 +185,37 @@ public class AudioManager : MonoBehaviour
                 return;
             }
         }
+    }
+    
+    // ===== VOLUME CONTROL =====
+    public void SetMasterVolume(float volume)
+    {
+        masterVolume = Mathf.Clamp01(volume);
+        if (masterGroup != null)
+            masterGroup.audioMixer.SetFloat("Master", VolumeToDecibels(masterVolume));
+    }
+    
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+        if (sfxGroup != null)
+            sfxGroup.audioMixer.SetFloat("SFX", VolumeToDecibels(sfxVolume));
+    }
+    
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        if (musicGroup != null)
+            musicGroup.audioMixer.SetFloat("Music", VolumeToDecibels(musicVolume));
+    }
+    
+    public float GetMasterVolume() => masterVolume;
+    public float GetSFXVolume() => sfxVolume;
+    public float GetMusicVolume() => musicVolume;
+    
+    private float VolumeToDecibels(float volume)
+    {
+        if (volume <= 0f) return -80f;
+        return Mathf.Log10(volume) * 20f;
     }
 }
