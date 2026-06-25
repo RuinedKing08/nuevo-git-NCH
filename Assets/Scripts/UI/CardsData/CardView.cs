@@ -83,6 +83,9 @@ public class CardView : MonoBehaviour
             case "Martini":
                 description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
                 break;
+            case "Whiskey":
+                description.text = card.description;
+                break;
             case "Reroll":
                 description.text = card.description;
                 break;

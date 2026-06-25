@@ -107,6 +107,30 @@ public class PlayerHealth : HealthController
                     break;
             }
         }
+        if (UniqueUpgrades.whiskeyBuff)
+        {
+            switch (UniqueUpgrades.whiskeyLevel)
+            {
+                case 1:
+                    if(health <= 90 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.whiskeyBuff = false;
+                    }
+                    break;
+                case 2:
+                    if (health <= 70 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.whiskeyBuff = false;
+                    }
+                    break;
+                case 3:
+                    if (health <= 50 * maxHealth / 100)
+                    {
+                        UniqueUpgrades.whiskeyBuff = false;
+                    }
+                    break;
+            }
+        }
     }
     public void ResetCombo()
     {
