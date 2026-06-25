@@ -5,7 +5,7 @@ public class Exp : MonoBehaviour
 {
     Image expBar;
     static float exp;
-    bool extraUpgrade;
+    float extraUpgrade;
     public static Exp Instance;
     public event FullExp OnFullExp;
     public delegate void FullExp();
@@ -29,22 +29,23 @@ public class Exp : MonoBehaviour
         ScorePopUp.Instance.CreateExpPopUp(exp);
         if(Exp.exp >= 100)
         {
-            ChangeBoolExtraUpgrade(true);
             OpenExtraShop();
         }
         ChangeExpHUD();
     }
-    public void ChangeBoolExtraUpgrade(bool extraUpgrade)
+    public void ChangeFloatExtraUpgrade(float extraUpgrade)
     {
-        this.extraUpgrade = extraUpgrade;
+        this.extraUpgrade += extraUpgrade;
+        if (this.extraUpgrade <= 0) this.extraUpgrade = 0;
     }
-    public bool GetExtraUpdrageBool()
+    public float GetExtraUpdrageFloat()
     {
         return extraUpgrade;
     }
     void OpenExtraShop()
     {
-        InvokeFullExp();
+        ChangeFloatExtraUpgrade(1);
+        //InvokeFullExp();
         exp -= 100;
     }
     void ChangeExpHUD()

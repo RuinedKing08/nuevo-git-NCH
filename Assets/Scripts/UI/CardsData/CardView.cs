@@ -53,47 +53,40 @@ public class CardView : MonoBehaviour
         sr.sprite = card.sprite;
         title.text = card.title + $" Nivel {card.level}";
         title.colorGradientPreset = card.textColor;
-        description.text = card.description;
         description.colorGradientPreset = card.textColor;
-        foreach (string title in UniqueUpgrades.Instance.GetTitles())
+        switch (card.title)
         {
-            if (title == card.title)
-            {
-                if (card.title == "Manhattan")
-                {
-                    description.text = card.description + $" ({UniqueUpgrades.manhattanAmount})";
-                }
-                if (card.title == "Ron")
-                {
-                    description.text = card.description + $" ({UniqueUpgrades.ronAmount}%)";
-                }
-                if (card.title == "Brandy")
-                {
-                    description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
-                }
-                if (card.title == "Margarita")
-                {
-                    description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
-                }
-                if (card.title == "Cerveza")
-                {
-                    description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
-                }
-                if (card.title == "Vino")
-                {
-                    description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
-                }
-                if (card.title == "Tequila")
-                {
-                    description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
-                }
-                if (card.title == "Martini")
-                {
-                    description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
-                }
-            }
-        }
-            
+            case "Gin":
+                description.text = card.description;
+                break;
+            case "Manhattan":
+                description.text = card.description + $" ({UniqueUpgrades.manhattanAmount})";
+                break;
+            case "Ron":
+                description.text = card.description + $" ({UniqueUpgrades.ronAmount}%)";
+                break;
+            case "Brandy":
+                description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
+                break;
+            case "Margarita":
+                description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
+                break;
+            case "Cerveza":
+                description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+                break;
+            case "Vino":
+                description.text = card.description + $" ({Mathf.RoundToInt(player.CurrentHealth)} / {player.MaxHealth})";
+                break;
+            case "Tequila":
+                description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
+                break;
+            case "Martini":
+                description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
+                break;
+            case "Reroll":
+                description.text = card.description;
+                break;
+        }            
     }
     public Card GetCard()
     {
@@ -120,19 +113,23 @@ public class CardView : MonoBehaviour
         switch (card.type)
         {
             case CardType.Attack:
-                Debug.Log("Mejora de ataque +" +card.amount);
+                Debug.Log("Mejora de ataque +" + card.amount);
                 break;
             case CardType.Healing:
                 player.GetLife(card.amount * player.MaxHealth / 100);
                 break;
             case CardType.Protection:
                 Debug.Log("Mejora de protección");
-                player.SetDamageResistance(card.amount);
+                player.ModifyDamageResistance(card.amount);
                 break;
             case CardType.Score:
                 Debug.Log($"Mejora de puntaje antes: {Currency.Instance.GetScoreMultiplier()}");
                 Currency.Instance.ChangeScoreMultiplier(card.amount / 100);
-                Debug.Log($"Mejora de puntaje ahora: {Currency.Instance.GetScoreMultiplier()}");                
+                Debug.Log($"Mejora de puntaje ahora: {Currency.Instance.GetScoreMultiplier()}");
+                break;
+            case CardType.Extra:
+                CardConfirm.Instance.UseReroll();
+                return;
                 break;
         }
         if (card.canChangeMaxLife)

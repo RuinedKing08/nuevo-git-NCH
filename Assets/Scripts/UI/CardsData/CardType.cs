@@ -5,5 +5,6 @@ public enum CardType
     Healing,
     Attack,
     Protection,
-    Score
+    Score,
+    Extra
 }

@@ -47,17 +47,16 @@ public class Waves : MonoBehaviour
         enemiesLeftTMP = GameObject.Find("Canvas").transform.Find("EnemiesLeftTMP").GetComponent<TMP_Text>();
         waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
         wave = 0;
+        startSpawn = false;
+        Coroutine();
         ChangeWave();
         NewWave();
         indexSpawn = Random.Range(0, spawnPoints.Length);
         inWave = false;
-        startSpawn = false;
         firstWaveWaiting = true;
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
-        EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeEnemiesLeftTMP;
-        EnemyCombatGroup.Instance.OnDecreaseCurrentMembers += ChangeWave;
+        //EnemyController.OnDead += ChangeWave;
         CardConfirm.Instance.OnChangeWave += NewWave;
-        Coroutine();
     }
 
     void FixedUpdate()
@@ -94,7 +93,11 @@ public class Waves : MonoBehaviour
             Currency.Instance.ChangeMoney(2f / 50, 600 / 50);
             cM = false;
         }
-        if (inWave)
+        //InWave();
+    }
+    void InWave()
+    {
+        /*if (inWave)
         {
             maxTimer = maxTimerInWave;
             timerInWave -= Time.fixedDeltaTime;
@@ -160,7 +163,7 @@ public class Waves : MonoBehaviour
                 }
             }
             
-        }
+        }*/
     }
     void ChangeWavesWating()
     {
@@ -169,10 +172,11 @@ public class Waves : MonoBehaviour
             waveWaiting = false;
             wavesWaiting = 0;
         }
-        else waveWaiting = true;
+        //else waveWaiting = true;
     }
-    void ChangeWave()
+    public void ChangeWave()
     {
+        ChangeEnemiesLeftTMP();
         enemiesLeftCount++;
         switch (wavesInWave)
         {
@@ -202,6 +206,11 @@ public class Waves : MonoBehaviour
                 break;
         }
         wavesInWave--;
+        if (indexTotal > 0 && wavesInWave > 0)
+        {
+            ChoseGruopToSpawn();
+            StarSpawnTrue();
+        }
         if (wavesInWave <= 0)
         {
             ChangeBoolNewWave(true);
@@ -218,6 +227,8 @@ public class Waves : MonoBehaviour
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
+        ChoseGruopToSpawn();
+        StarSpawnTrue();
     }
     void ChangeBoolNewWave(bool newWave)
     {
@@ -276,7 +287,7 @@ public class Waves : MonoBehaviour
         else if (timerLevel < 30) amount = Random.Range(1, 3);
         else if (timerLevel < 60) amount = Random.Range(2, 4);
         else if (timerLevel < 90) amount = Random.Range(3, 5);
-        else amount = Random.Range(1, 6);
+        else amount = Random.Range(4, 6);
         return amount;
     }
     

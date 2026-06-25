@@ -157,6 +157,7 @@ public class EnemyController : MonoBehaviour
         Combo();
         ChangeExp(20);
         KillToHeal();
+        Waves.Instance.ChangeWave();
         Destroy(gameObject, 3f);
     }
     
