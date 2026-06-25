@@ -142,12 +142,6 @@ MonoBehaviour:
     - model: {fileID: 8926484042661614869}
       id: 0
       isStickyNote: 0
-    - model: {fileID: 0}
-      id: 0
-      isStickyNote: 0
-    - model: {fileID: 8926484042661614886}
-      id: 0
-      isStickyNote: 0
     - model: {fileID: 8926484042661614955}
       id: 0
       isStickyNote: 0
@@ -2326,7 +2320,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Color, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"r":0.46226418018341067,"g":0.0,"b":0.0,"a":1.0}'
+      m_SerializableObject: '{"r":0.4811320900917053,"g":0.0,"b":0.0,"a":1.0}'
     m_Space: -1
   m_Property:
     name: _BloodColor
@@ -5924,7 +5918,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 1
+      m_SerializableObject: 50
     m_Space: -1
   m_Property:
     name: A
@@ -5958,7 +5952,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 3
+      m_SerializableObject: 50
     m_Space: -1
   m_Property:
     name: B
