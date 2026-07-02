@@ -56,7 +56,7 @@ public class Waves : MonoBehaviour
         firstWaveWaiting = true;
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
         //EnemyController.OnDead += ChangeWave;
-        CardConfirm.Instance.OnChangeWave += NewWave;
+        ChangeCards.Instance.OnChangeWave += NewWave;
     }
 
     void FixedUpdate()

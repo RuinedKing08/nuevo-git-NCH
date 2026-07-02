@@ -36,7 +36,6 @@ public class CardConfirm : MonoBehaviour
     }
     public void Confirm()
     {
-        AudioManager.Instance.Play(drinkAudio);
         foreach(string title in UniqueUpgrades.Instance.GetTitles())
         {
             if (title == CV.GetCard().title)
@@ -61,6 +60,7 @@ public class CardConfirm : MonoBehaviour
         {
             CV.Effects();
         }
+        AudioManager.Instance.Play(drinkAudio);
         thisButton.interactable = false;    
         Time.timeScale = 1;
         CloseUpgrades();
@@ -82,11 +82,13 @@ public class CardConfirm : MonoBehaviour
         }
         else
         {
-            InvokeChangeWave();
+            //InvokeChangeWave();
             ChangeRerollTMP(1);
             rerollButton.interactable = true;
+            ChangeCards.Instance.cardsClosed = false;
+            ChangeCards.cardsOpened = false;
+            ChangeCards.cardsFinished = true;
         }
-        ChangeCards.cardsOpened = false;
         
     }
     public void Reroll()

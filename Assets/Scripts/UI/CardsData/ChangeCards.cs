@@ -10,9 +10,19 @@ public class ChangeCards : MonoBehaviour
     [SerializeField] List<CardView> cardViews;
     [SerializeField] List<CardList> cards;
     [SerializeField] TMP_Text extraUpgradesLeftTMP;
+    [SerializeField] GameObject startTimeTMP;
+    [SerializeField] TMP_Text timeTMP; 
+    public event ChangeWaves OnChangeWave;
+    public static ChangeCards Instance;
+    public delegate void ChangeWaves();
     public static bool cardsOpened;
+    public static bool cardsFinished;
+    public bool cardsClosed;
+    bool waveFinished;
+    [SerializeField] float timer;
     private void Awake()
     {
+        Instance = this;
         cardSelection = transform.Find("CardsSelection").gameObject;
         cardSelection.SetActive(true);
         cardsOpened = false;
@@ -20,17 +30,67 @@ public class ChangeCards : MonoBehaviour
     void Start()
     {
         Waves.Instance.OnChangeWave += OpenCardSelection;
-        CardConfirm.Instance.OnChangeCards += OpenCardSelection;
+        CardConfirm.Instance.OnChangeCards += CreateCards;
         //Exp.Instance.OnFullExp += OpenCardSelection;
         cardSelection.SetActive(false);
+        startTimeTMP.SetActive(false);
+        waveFinished = false;
+       InputsParent.Instance.InteractionInput().performed += ctx => OpenCardsHUD();
     }
     public void OpenCardSelection()
     {
         if (Waves.Instance.GetWave() % 1 == 0 && Waves.Instance.GetWave() != 0)
         {
-            cardsOpened = true;
-            cardSelection.SetActive(true);
-            CreateCards();
+            cardsFinished = false;
+            startTimeTMP.SetActive(true);
+            waveFinished = true;
+        }
+    }
+    public void InvokeChangeWave() { OnChangeWave?.Invoke(); }
+    private void Update()
+    {
+        TimeToNextWave();
+    }
+    void TimeToNextWave()
+    {
+        if (waveFinished)
+        {
+            timer -= Time.deltaTime;
+            timeTMP.text = $"{Mathf.RoundToInt(timer)}";
+        }
+        if(timer <= 0)
+        {
+            if (!cardsFinished) Exp.Instance.ChangeFloatExtraUpgrade(1);
+            InvokeChangeWave();
+            cardsOpened = false;
+            cardsClosed = false;
+            startTimeTMP.SetActive(false);
+            waveFinished = false;
+            timer = 10f;
+        }
+    }
+    void OpenCardsHUD()
+    {
+        if (!cardsFinished)
+        {
+            if (waveFinished && !cardsOpened)
+            {
+                cardsOpened = true;
+                CreateCards();
+            }
+            else if (cardsClosed)
+            {
+                cardsClosed = false;
+                Time.timeScale = 0f;
+                cardSelection.SetActive(true);
+            }
+            else if (cardsOpened && !cardsClosed)
+            {
+                cardsClosed = true;
+                Time.timeScale = 1f;
+                Debug.Log("cards se cierra");
+                cardSelection.SetActive(false);
+            }
         }
     }
     void CreateCards()
@@ -58,6 +118,7 @@ public class ChangeCards : MonoBehaviour
             
         }
         //Debug.Log("Bro");
+        cardSelection.SetActive(true);
         Time.timeScale = 0f;
         extraUpgradesLeftTMP.text = $"Mejoras extra restantes: {Exp.Instance.GetExtraUpdrageFloat()}";
     }

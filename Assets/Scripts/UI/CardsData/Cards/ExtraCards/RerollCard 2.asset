@@ -19,7 +19,7 @@ MonoBehaviour:
   type: 4
   amount: 0
   extraMaxLife: 0
-  level: 3
+  level: 1
   canAcumulate: 0
   canChangeMaxLife: 0
   backgroundColor: {r: 1, g: 0.11764707, b: 0.90588236, a: 0.54901963}
