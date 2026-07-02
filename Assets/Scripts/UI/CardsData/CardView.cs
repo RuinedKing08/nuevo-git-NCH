@@ -24,7 +24,7 @@ public class CardView : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindWithTag("Player").GetComponent<PlayerHealth>();
-        frame = GetComponent<Image>();
+        //frame = GetComponentInParent<Image>();
         sr = transform.Find("Artwork").GetComponent<Image>();
         title = transform.Find("Title").GetComponent<TMP_Text>();
         description = transform.Find("Description").GetComponent<TMP_Text>();

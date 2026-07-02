@@ -115,8 +115,8 @@ public class AttackColliderHandler : MonoBehaviour
         agent.ResetPath();
         agent.updatePosition = false;
         agent.updateRotation = false;
-        float pushForce = 15f;
-        float pushDuration = 0.25f;
+        float pushForce = 17f;
+        float pushDuration = 0.3f;
         Vector3 pushDirection = -transform.forward;
         pushDirection.y = 0;
         pushDirection.Normalize();
