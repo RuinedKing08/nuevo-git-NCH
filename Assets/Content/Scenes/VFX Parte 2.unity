@@ -1235,7 +1235,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 88876923}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.045319572, y: 0.01280626, z: 0.000581019, w: 0.9988903}
+  m_LocalRotation: {x: -0.045320183, y: 0.011706975, z: 0.0005311445, w: 0.9989038}
   m_LocalPosition: {x: 158.3154, y: 2.594751, z: -131.60352}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -6872,7 +6872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74fed86e8f2c9904e93b75618fecf75f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DodgeTest
-  activeTime: 1
+  activeTime: 0.5
   meshRefreshRate: 0.1
   pos1: {fileID: 583324874}
   mat: {fileID: 2100000, guid: 3953f72463f9e5b4e8a5def43d991b7a, type: 2}
@@ -24462,13 +24462,17 @@ PrefabInstance:
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2708598584241629781, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 2708598584738834256, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2708598584738834259, guid: 6398d43fe79ea0140913dc5530c646af, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 4
+      value: 80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -25869,7 +25873,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 88.9
+  m_fontSize: 98.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -25944,19 +25948,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9988903
+      value: 0.9989038
       objectReference: {fileID: 0}
     - target: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.045319572
+      value: -0.04532018
       objectReference: {fileID: 0}
     - target: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.012806259
+      value: 0.011706973
       objectReference: {fileID: 0}
     - target: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0005810189
+      value: 0.0005311443
       objectReference: {fileID: 0}
     - target: {fileID: 974907664607470727, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -26004,15 +26008,15 @@ PrefabInstance:
       objectReference: {fileID: 1302298463}
     - target: {fileID: 3346841094899278357, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.05701179
+      value: -0.051723
       objectReference: {fileID: 0}
     - target: {fileID: 3346841094899278357, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.39336503
+      value: -0.39337587
       objectReference: {fileID: 0}
     - target: {fileID: 3346841094899278357, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.3769917
+      value: 2.377111
       objectReference: {fileID: 0}
     - target: {fileID: 5303967117203520225, guid: ecc6bee539a6a714cbc4c08069ca403b, type: 3}
       propertyPath: m_Name
@@ -28164,7 +28168,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 0.65
+      scalar: 80
       minScalar: 1
       maxCurve:
         serializedVersion: 2
@@ -33010,8 +33014,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.4
-      minScalar: 0.1
+      scalar: 80
+      minScalar: 40
       maxCurve:
         serializedVersion: 2
         m_Curve:
