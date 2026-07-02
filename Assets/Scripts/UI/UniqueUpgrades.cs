@@ -71,10 +71,12 @@ public class UniqueUpgrades : MonoBehaviour
     {
         if (ginBuff)
         {
+            DJVFX.Instance.PlayDmg();
             PlayerHitCollider.Instance.ModifyDamage(Mathf.RoundToInt(ginAmount));
         }
         else
         {
+            DJVFX.Instance.StopDmg();
             PlayerHitCollider.Instance.ModifyDamage(-Mathf.RoundToInt(ginAmount));
         }
     }

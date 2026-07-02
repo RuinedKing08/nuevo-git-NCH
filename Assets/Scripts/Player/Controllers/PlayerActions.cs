@@ -75,6 +75,7 @@ public class PlayerActions : MonoBehaviour
             AttackColliderHandler enemy = hit.GetComponent<AttackColliderHandler>();
             if(enemy != null)
             {
+                DJVFX.Instance.PlayPush();
                 StartCoroutine(enemy.PushBackEnemy());
                 UniqueUpgrades.margaritaAmount--;
                 if (UniqueUpgrades.margaritaAmount <= 0)

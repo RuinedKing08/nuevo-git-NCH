@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using UnityEngine.InputSystem;
 public class DodgeTest : MonoBehaviour
 {
     public float activeTime = 2f;
@@ -17,16 +17,16 @@ public class DodgeTest : MonoBehaviour
     private void Start()
     {
         pos1 = GetComponent<Transform>();
+        InputsParent.Instance.SideStepInput().performed += ctx => Activate();
     }
-    void Update()
+    void Activate()
     {
-        if (Input.GetKeyDown(KeyCode.E) && !isTrailActive)
+        if (!isTrailActive && PlayerActions.isDodging)
         {
             isTrailActive = true;
             StartCoroutine(ActivateTrail(activeTime));
         }
     }
-
     IEnumerator ActivateTrail(float timeActive)
     {
         while (timeActive > 0)
