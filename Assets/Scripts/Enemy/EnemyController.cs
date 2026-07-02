@@ -40,6 +40,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float ragdollPushForce = 30f;
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
+    [SerializeField] private GameObject explotionParticles;
     
     
     private AudioSource movementSoundSource;
@@ -93,7 +94,7 @@ public class EnemyController : MonoBehaviour
         
         OnDead += Die;
     }
-
+    public void InvokeOnDead() { OnDead?.Invoke(); }
 
     void Update()
     {
@@ -139,14 +140,21 @@ public class EnemyController : MonoBehaviour
         Animator.SetTrigger(Hash_IsHit);        
         if (Stats.IsDead)
         {
-            OnDead?.Invoke();
+            InvokeOnDead();
+            ActivateExplotion();
             // Activar ragdoll y aplicar fuerza cuando muere
             SetRagdoll(true);
             PushRagdoll(hitDir, ragdollPushForce);
             AudioManager.Instance.Play(Stats.HitSound);
         }
     }
-
+    void ActivateExplotion()
+    {
+        if (UniqueUpgrades.whiskeyBuff)
+        {
+            explotionParticles.SetActive(true);
+        }
+    }
     void Die()
     {
         // Mostrar puntuación y dinero

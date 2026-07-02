@@ -61,15 +61,31 @@ public class ChangeCards : MonoBehaviour
         Time.timeScale = 0f;
         extraUpgradesLeftTMP.text = $"Mejoras extra restantes: {Exp.Instance.GetExtraUpdrageFloat()}";
     }
-    CardData ChoseRandomCard()
+    CardList RandomCard()
     {
         CardList CL = cards[Random.Range(0, cards.Count)];
+        return CL;
+    }
+    CardData ChoseRandomCard()
+    {
+        CardList CL = RandomCard();
         int prob = Random.Range(1, 101);
         int level = 3;
         if (prob > 40) level = 1;
         else if (prob > 15) level = 2;
-
         CardData randomCard = CL.cardsData.FirstOrDefault(card => card.level == level);
+        /*if(randomCard.type == CardType.Extra)
+        {
+            while(randomCard.level != 3)
+            {
+                CL = RandomCard();
+                prob = Random.Range(1, 101);
+                level = 3;
+                if (prob > 40) level = 1;
+                else if (prob > 15) level = 2;
+                randomCard = CL.cardsData.FirstOrDefault(card => card.level == level);
+            }
+        }*/
         if (CL.cardsData.Count > 0 && randomCard == null) { return CL.cardsData[0]; }
 
         return randomCard;
