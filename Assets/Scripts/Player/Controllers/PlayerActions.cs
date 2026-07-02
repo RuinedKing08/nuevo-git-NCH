@@ -20,10 +20,10 @@ public class PlayerActions : MonoBehaviour
         _mainCamera = Camera.main;
 
         UniqueUpgrades.margaritaBuff = true;
-        UniqueUpgrades.margaritaAmount = 2;
+        UniqueUpgrades.margaritaAmount += 2;
 
-        InputsParent.Instance.BlockInput().performed += ctx => StartBlock();
-        InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
+        //InputsParent.Instance.BlockInput().performed += ctx => StartBlock();
+        //InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
         InputsParent.Instance.SideStepInput().performed += ctx => Dodge();
         InputsParent.Instance.LockOnInput().performed += ctx => UltraPush();
     }

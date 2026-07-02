@@ -5,6 +5,7 @@ public class CardConfirm : MonoBehaviour
 {
     Button thisButton;
     [SerializeField] Button rerollButton;
+    [SerializeField] TMP_Text extraUpgradesLeftTMP;
     TMP_Text rerollTMP;
     public static CardConfirm Instance;
     public event ChangeWaves OnChangeWave;
@@ -35,7 +36,6 @@ public class CardConfirm : MonoBehaviour
     }
     public void Confirm()
     {
-        AudioManager.Instance.Play(drinkAudio);
         foreach(string title in UniqueUpgrades.Instance.GetTitles())
         {
             if (title == CV.GetCard().title)
@@ -43,56 +43,77 @@ public class CardConfirm : MonoBehaviour
                 UniqueUpgrades.Instance.UUpgrades(CV.GetCard());
                 CV.CloseAll();
                 thisButton.interactable = false;
-                rerollButton.interactable = true;
+                Debug.Log("UsingUU");
                 Time.timeScale = 1;
                 CloseUpgrades();
                 return;
             }
         }
-        CV.Effects();
-        thisButton.interactable = false;
-        rerollButton.interactable = true;        
+        Debug.Log("UsingEffect");
+        if(CV.GetCard().type == CardType.Extra)
+        {
+            Debug.Log("UsingExtraRerollIMDONE");
+            CV.Effects();
+            return;
+        }
+        else
+        {
+            CV.Effects();
+        }
+        AudioManager.Instance.Play(drinkAudio);
+        thisButton.interactable = false;    
         Time.timeScale = 1;
         CloseUpgrades();
-
+        ChangeExtraUpgadeTMP();
     }
     void CloseUpgrades()
     {
-        if (Exp.Instance.GetExtraUpdrageBool())
+        if (Exp.Instance.GetExtraUpdrageFloat() > 0)
         {
             if (Waves.Instance.GetNewWaveBool())
             {
                 InvokeChangeCards();
-                Exp.Instance.ChangeBoolExtraUpgrade(false);
+                Exp.Instance.ChangeFloatExtraUpgrade(-1);
             }
-            else
+            /*else
             {
-                Exp.Instance.ChangeBoolExtraUpgrade(false);
-            }
+                Exp.Instance.ChangeFloatExtraUpgrade(-1);
+            }*/
         }
         else
         {
-            InvokeChangeWave();
+            //InvokeChangeWave();
+            ChangeRerollTMP(1);
+            rerollButton.interactable = true;
+            ChangeCards.Instance.cardsClosed = false;
+            ChangeCards.cardsOpened = false;
+            ChangeCards.cardsFinished = true;
         }
-        ChangeRerollTMP(1);
-        ChangeCards.cardsOpened = false;
         
     }
     public void Reroll()
     {
         rerollButton.interactable = false;
+        UseReroll();
+        ChangeRerollTMP(0);
+    }
+    public void UseReroll()
+    {
         if (CardView.clicked)
         {
             CV.DeactiveAll();
             thisButton.interactable = false;
             CardView.clicked = false;
         }
-        ChangeRerollTMP(0);
         InvokeChangeCards();
     }
     void ChangeRerollTMP(int uses)
     {
         rerollTMP.text = $"Rerolear {uses}/1";
+    }
+    public void ChangeExtraUpgadeTMP()
+    {
+        extraUpgradesLeftTMP.text = $"Mejoras extra restantes: {Exp.Instance.GetExtraUpdrageFloat()}";
     }
     public Button GetButton()
     {
