@@ -35,6 +35,7 @@ public class PlayerHealth : HealthController
     {
         health += heal;
         SetHealthHUD();
+        DJVFX.Instance.PlayHeal();
         if (health > maxHealth) health = maxHealth;
     }
      public override void GetMaxLife(float extraHealth)
@@ -87,6 +88,7 @@ public class PlayerHealth : HealthController
                 case 1:
                     if(health <= 90 * maxHealth / 100)
                     {
+                        DJVFX.Instance.StopDmg();
                         UniqueUpgrades.ginBuff = false;
                         UniqueUpgrades.Instance.ChangeDamage();
                     }
@@ -94,6 +96,7 @@ public class PlayerHealth : HealthController
                 case 2:
                     if (health <= 70 * maxHealth / 100)
                     {
+                        DJVFX.Instance.StopDmg();
                         UniqueUpgrades.ginBuff = false;
                         UniqueUpgrades.Instance.ChangeDamage();
                     }
@@ -101,18 +104,23 @@ public class PlayerHealth : HealthController
                 case 3:
                     if (health <= 50 * maxHealth / 100)
                     {
+                        DJVFX.Instance.StopDmg();
                         UniqueUpgrades.ginBuff = false;
                         UniqueUpgrades.Instance.ChangeDamage();
                     }
                     break;
             }
         }
+        else
+        {
+            DJVFX.Instance.StopDmg();
+        }
         if (UniqueUpgrades.whiskeyBuff)
         {
             switch (UniqueUpgrades.whiskeyLevel)
             {
                 case 1:
-                    if(health <= 90 * maxHealth / 100)
+                    if (health <= 90 * maxHealth / 100)
                     {
                         UniqueUpgrades.whiskeyBuff = false;
                     }

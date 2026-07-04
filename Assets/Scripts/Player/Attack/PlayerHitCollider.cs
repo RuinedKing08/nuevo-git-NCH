@@ -63,6 +63,7 @@ public class PlayerHitCollider : MonoBehaviour
             Vector3 hitDir = (other.transform.position - transform.position).normalized;
             AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
             enemy.TakeDamage(_currentDamage, hitDir);
+            DJVFX.Instance.PlayHit1();
         }
     }
 }

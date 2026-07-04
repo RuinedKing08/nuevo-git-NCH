@@ -8,7 +8,9 @@ public class CameraShake : MonoBehaviour
 
     [SerializeField] private float defaultAmplitude = 2f;
     [SerializeField] private float defaultFrequency = 8f;
-    [SerializeField] private float defaultDuration = 0.15f;
+    [SerializeField] private float defaultDuration = 0.5f;
+
+    [SerializeField] private AnimationCurve shakeCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
 
     private CinemachineBasicMultiChannelPerlin noise;
     private Coroutine shakeRoutine;
@@ -24,8 +26,6 @@ public class CameraShake : MonoBehaviour
         }
     }
 
-    
-
     public void Shake()
     {
         Shake(defaultAmplitude, defaultFrequency, defaultDuration);
@@ -33,6 +33,8 @@ public class CameraShake : MonoBehaviour
 
     public void Shake(float amplitude, float frequency, float duration)
     {
+        if (noise == null)
+            return;
 
         if (shakeRoutine != null)
             StopCoroutine(shakeRoutine);
@@ -42,10 +44,20 @@ public class CameraShake : MonoBehaviour
 
     private IEnumerator ShakeRoutine(float amplitude, float frequency, float duration)
     {
-        noise.AmplitudeGain = amplitude;
-        noise.FrequencyGain = frequency;
+        float timer = 0f;
 
-        yield return new WaitForSeconds(duration);
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            float normalizedTime = Mathf.Clamp01(timer / duration);
+            float curveValue = shakeCurve.Evaluate(normalizedTime);
+
+            noise.AmplitudeGain = amplitude * curveValue;
+            noise.FrequencyGain = frequency * curveValue;
+
+            yield return null;
+        }
 
         noise.AmplitudeGain = 0f;
         noise.FrequencyGain = 0f;
