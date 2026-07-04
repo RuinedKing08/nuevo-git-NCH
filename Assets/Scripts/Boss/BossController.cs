@@ -17,6 +17,11 @@ public class BossController : MonoBehaviour
     [Header("Specialties")]
     private IEnemySpecialty _currentSpecialty;
     private bool _hasChangedSpecialty = false;
+    
+    [Header("Combat")]
+    private float _attackTimer = 0f;
+    private bool _isAttacking = false;
+    private float _attackCooldown = 2.4f;
 
     // Hashes para Animator
     public static readonly int Hash_Speed = Animator.StringToHash("Speed");
@@ -42,7 +47,16 @@ public class BossController : MonoBehaviour
         Stats = GetComponent<EnemyStats>();
         Detection = GetComponent<EnemyDetectionArea>();
 
-        if (Stats.NavAgent != null)
+        if (Stats == null)
+            Debug.LogError($"[BOSS] {name} no tiene componente EnemyStats. Asígnalo en el Inspector.");
+        
+        if (Detection == null)
+            Debug.LogError($"[BOSS] {name} no tiene componente EnemyDetectionArea. Asígnalo en el Inspector.");
+        
+        if (Animator == null)
+            Debug.LogWarning($"[BOSS] {name} no tiene Animator. Busca en los hijos.");
+
+        if (Stats != null && Stats.NavAgent != null)
         {
             Stats.NavAgent.updateRotation = false;
             Stats.NavAgent.autoBraking = false;
@@ -56,17 +70,109 @@ public class BossController : MonoBehaviour
         RegisterInGroup();
         
         // Asignar especialidad inicial (Arma Blanca)
-        if (Stats.Specialty == null)
+        if (Stats != null && Stats.Specialty == null)
         {
             Debug.Log($"[BOSS] {name} - Asignando BareKnuckleSpecialty inicial");
             Stats.SetSpecialty(new BareKnuckleSpecialty());
+            _currentSpecialty = Stats.Specialty;
         }
-        _currentSpecialty = Stats.Specialty;
+        
+        if (CombatGroup != null)
+        {
+            CombatGroup.OnChangeCurrentMembers += OnCombatGroupMembersChanged;
+        }
+    }
+    
+    private void OnCombatGroupMembersChanged()
+    {
+        if (CombatGroup != null && CombatGroup.GetCurrentAttackers().Count > 0 && !_isAttacking)
+        {
+            OnAlliesAttacking();
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        if (CombatGroup != null)
+        {
+            CombatGroup.OnChangeCurrentMembers -= OnCombatGroupMembersChanged;
+        }
     }
 
     public void Update()
     {
+        UpdateAttackTimer();
+        UpdateMovement();
+    }
+    
+    private void UpdateMovement()
+    {
+        // Boss se mueve en órbita alrededor del jugador como los enemigos
+        if (Detection == null || Stats == null || Stats.NavAgent == null || CombatGroup == null)
+            return;
         
+        Vector3 playerPos = Detection.LastKnownPlayerPosition;
+        
+        // Si está atacando, se acerca al jugador para golpear
+        if (_isAttacking)
+        {
+            float distanceToPlayer = Vector3.Distance(transform.position, playerPos);
+            float targetAttackDistance = 2.5f; // Distancia para atacar cuerpo a cuerpo
+            
+            if (distanceToPlayer > targetAttackDistance)
+            {
+                // Acercarse rápido al jugador
+                Stats.NavAgent.speed = 8f;
+                Stats.NavAgent.SetDestination(playerPos);
+            }
+            else
+            {
+                // Ya está lo suficientemente cerca - detenerse
+                Stats.NavAgent.velocity = Vector3.zero;
+                Stats.NavAgent.isStopped = true;
+            }
+        }
+        else
+        {
+            // No está atacando - volver a órbita
+            Stats.NavAgent.isStopped = false;
+            
+            // Calcular posición en órbita (boss siempre es "último" en la órbita)
+            int bossIndex = CombatGroup.GetCurrentMembers().Count - 1;
+            float baseAngle = bossIndex * (360f / Mathf.Max(1, CombatGroup.GetCurrentMembers().Count));
+            float rotationDir = (IndividualSeed > 500) ? 1 : -1;
+            float individualRotation = Time.time * (15f + (IndividualSeed % 10f)) * rotationDir;
+            float finalAngle = baseAngle + individualRotation;
+            
+            float radiusNoise = Mathf.PerlinNoise(Time.time * 0.2f, IndividualSeed + 100f);
+            float dynamicRadius = Mathf.Lerp(4.5f, 7.5f, radiusNoise);
+            
+            Vector3 offset = new Vector3(Mathf.Cos(finalAngle * Mathf.Deg2Rad), 0, Mathf.Sin(finalAngle * Mathf.Deg2Rad)) * dynamicRadius;
+            Vector3 orbitPos = playerPos + offset;
+            
+            // Mover hacia la posición de órbita
+            Stats.NavAgent.speed = 3.5f + (Mathf.PingPong(Time.time, 1f));
+            Stats.NavAgent.SetDestination(orbitPos);
+        }
+        
+        // Rotar hacia el jugador
+        Vector3 dir = (playerPos - transform.position).normalized;
+        dir.y = 0;
+        if (dir.sqrMagnitude > 0.01f)
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
+    }
+    
+    private void UpdateAttackTimer()
+    {
+        if (_isAttacking)
+        {
+            _attackTimer += Time.deltaTime;
+            if (_attackTimer >= _attackCooldown)
+            {
+                _isAttacking = false;
+                _attackTimer = 0f;
+            }
+        }
     }
 
    
@@ -77,7 +183,8 @@ public class BossController : MonoBehaviour
         
         Debug.Log($"[BOSS] {name} tomó {amount} daño. Salud: {CurrentHealth}/{MaxHealth}");
 
-        Animator.SetTrigger(Hash_IsHit);
+        if (Animator != null)
+            Animator.SetTrigger(Hash_IsHit);
 
         
         if (CurrentHealth <= _specialtyChangeThreshold && !_hasChangedSpecialty)
@@ -122,9 +229,40 @@ public class BossController : MonoBehaviour
     
     public void OnAlliesAttacking()
     {
-        Debug.Log($"[BOSS] {name} - Aliados atacando. Boss preparándose para contraataque.");
-       
+        if (!_isAttacking)
+        {
+            ExecuteAttack();
+        }
+    }
+    
+    private void ExecuteAttack()
+    {
+        if (Animator == null)
+        {
+            Debug.LogWarning($"[BOSS] {name} no tiene Animator asignado. Intenta buscar...");
+            Animator = GetComponentInChildren<Animator>();
+            if (Animator == null)
+            {
+                Debug.LogError($"[BOSS] {name} No se encontró Animator en el GameObject o sus hijos.");
+                return;
+            }
+        }
         
+        _isAttacking = true;
+        _attackTimer = 0f;
+        
+        Debug.Log($"[BOSS] {name} ejecutando ataque.");
+        
+        // Boss ataque como enemigo normal: ejecutar animación
+        int chosenAttack = Random.Range(0, 2);
+        Animator.SetInteger("AttackIndex", chosenAttack);
+        Animator.SetTrigger(Hash_Attack);
+        
+        // Activar colliders de ataque por 0.5 segundos (mientras hay animación o feedback)
+        SetAttackDamage(15);
+        BeginAttackColliderWindow(0.5f);
+        
+        Debug.Log($"[BOSS] {name} activó colliders de ataque. AttackIndex: {chosenAttack}");
     }
 
     
@@ -134,17 +272,23 @@ public class BossController : MonoBehaviour
             CombatGroup = FindFirstObjectByType<EnemyCombatGroup>();
         
         if (CombatGroup != null)
-            CombatGroup.AddEnemy(null); 
+        {
+            Debug.Log($"[BOSS] {name} registrado en el grupo de combate");
+            CombatGroup.SetBoss(this);
+        }
     }
    
     private void Die()
     {
         Debug.Log($"[BOSS] {name} derrotado. Fase/oleada terminada");
         
-        Animator.SetTrigger(Hash_IsDead);
-        Animator.SetBool(Hash_DeadBool, true);
+        if (Animator != null)
+        {
+            Animator.SetTrigger(Hash_IsDead);
+            Animator.SetBool(Hash_DeadBool, true);
+        }
         
-        if (Stats.NavAgent != null)
+        if (Stats != null && Stats.NavAgent != null)
             Stats.NavAgent.enabled = false;
 
         // Notificar que la fase terminó
@@ -159,10 +303,4 @@ public class BossController : MonoBehaviour
     public void CancelAttackColliderWindow() { StopAllCoroutines(); DisableAttackColliders(); }
     public void EnableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackStart(); }
     public void DisableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackEnd(); }
-
-    private void OnDestroy()
-    {
-        if (CombatGroup != null) 
-            CombatGroup.RemoveEnemy(null); 
-    }
 }

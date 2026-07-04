@@ -4,11 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 
+public interface ICombatMember
+{
+    float IndividualSeed { get; }
+}
+
 public class EnemyCombatGroup : MonoBehaviour
 {
     public static EnemyCombatGroup Instance { get; private set; }
     [SerializeField] private List<EnemyController> _members = new();
     [SerializeField] private List<EnemyController> _currentAttackers = new();
+    [SerializeField] private BossController _boss = null;
     private bool _roundInProgress = false;
     private int _finishedCount = 0;
     public event ChangeCurrentMembers OnChangeCurrentMembers;
@@ -26,6 +32,13 @@ public class EnemyCombatGroup : MonoBehaviour
             InvokeChangeCurrentMembers();
         }
     }
+    
+    public void SetBoss(BossController boss)
+    {
+        _boss = boss;
+        InvokeChangeCurrentMembers();
+    }
+    
     public void RemoveEnemy(EnemyController e) { _members.Remove(e); _currentAttackers.Remove(e); InvokeChangeCurrentMembers(); InvokeDecreaseCurrentMembers(); }
 
     public Vector3 GetOrbitPosition(EnemyController member, Vector3 playerPos)
@@ -71,6 +84,9 @@ public class EnemyCombatGroup : MonoBehaviour
             if (_currentAttackers.Contains(m)) m.CombatState.IdleSubState.AssignAttack();
             else /*m.CombatState.IdleSubState.AssignDefend()*/;
         }
+        
+        
+        InvokeChangeCurrentMembers();
 
         yield return new WaitForSeconds(4f); 
 

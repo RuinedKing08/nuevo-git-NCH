@@ -41,7 +41,11 @@ public class BareKnuckleSpecialty : IEnemySpecialty
     private bool _attackFired;
     private float _prepDuration = 0.5f;
 
-    public void OnAssigned(EnemyController e) { e.Stats.Damage = 10; }
+    public void OnAssigned(EnemyController e) 
+    { 
+        if (e != null && e.Stats != null)
+            e.Stats.Damage = 10; 
+    }
 
     public void UpdatePassiveBehavior(EnemyController e) { }
 
@@ -86,7 +90,14 @@ public class MeleeWeaponSpecialty : IEnemySpecialty
    EnemyMeleeWeapon _weapon;
     public MeleeWeaponSpecialty(EnemyMeleeWeapon weapon) => _weapon = weapon;
 
-    public void OnAssigned(EnemyController e) { e.Stats.EquipWeapon(_weapon); e.Stats.Damage = 20; }
+    public void OnAssigned(EnemyController e) 
+    { 
+        if (e != null && e.Stats != null)
+        {
+            e.Stats.EquipWeapon(_weapon); 
+            e.Stats.Damage = 20;
+        }
+    }
     public void UpdatePassiveBehavior(EnemyController e) { }
     public void BeginAttackPhase(EnemyController e) { }
     public void TickAttack(EnemyController e, float elapsed)
@@ -117,9 +128,12 @@ public class DirtyPlaySpecialty : IEnemySpecialty
 
     public void OnAssigned(EnemyController e)
     {
-        e.Stats.MaxHealth = 50;
-        e.Stats.Damage    = 25;
-        e.Stats.EquipThrowable(_heldObject);
+        if (e != null && e.Stats != null)
+        {
+            e.Stats.MaxHealth = 50;
+            e.Stats.Damage    = 25;
+            e.Stats.EquipThrowable(_heldObject);
+        }
     }
 
     public void UpdatePassiveBehavior(EnemyController e)
