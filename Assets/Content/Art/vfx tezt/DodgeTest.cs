@@ -8,6 +8,8 @@ public class DodgeTest : MonoBehaviour
     private SkinnedMeshRenderer[] skinnedMeshRenderers;
     public Transform pos1;
     public Material mat;
+
+
     private bool isTrailActive;
     public float delay = 0.5f;
     public string shaderRef;
@@ -21,7 +23,7 @@ public class DodgeTest : MonoBehaviour
     }
     void Activate()
     {
-        if (!isTrailActive && PlayerActions.isDodging)
+        if (!isTrailActive && !PlayerActions.isDodging)
         {
             isTrailActive = true;
             StartCoroutine(ActivateTrail(activeTime));
