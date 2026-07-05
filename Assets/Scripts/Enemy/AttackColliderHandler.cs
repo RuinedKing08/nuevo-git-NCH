@@ -72,7 +72,7 @@ public class AttackColliderHandler : MonoBehaviour
             }
             return;
         }
-        if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); return;}
+        if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); PlayerActions.dodgeInCooldown = false; return;}
 
         
         if (PlayerActions.blocking)
