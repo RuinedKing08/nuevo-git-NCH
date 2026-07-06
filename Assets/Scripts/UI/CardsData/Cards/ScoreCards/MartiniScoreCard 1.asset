@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _MartiniProtectionCard
   title: Martini
+  titleType: (Acumulable)
   description: Multiplicador de puntaje +1
   type: 3
   amount: 100

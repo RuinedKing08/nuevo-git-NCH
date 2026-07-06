@@ -5,6 +5,7 @@ public class CardData : ScriptableObject
 {
     public string id;
     public string title;
+    public string titleType;
     [TextArea(4, 6)] public string description;
     public CardType type;
     public float amount;

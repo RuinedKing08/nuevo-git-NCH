@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _RerollExtraCard
   title: Reroll
+  titleType: "(Uso \xDAnico)"
   description: "Al escoger esto se har\xE1 rerol a la actual lista sin gastar el
     intento de rerolear que se posea."
   type: 4

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _HealingCardWine
   title: Vino
+  titleType: (Acumulable)
   description: Regeneras 10% de vida.  Vida max +4
   type: 0
   amount: 10

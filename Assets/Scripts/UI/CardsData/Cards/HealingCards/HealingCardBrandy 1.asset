@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _HealingCardBrandy
   title: Brandy
+  titleType: (Reemplazable)
   description: "Cuando mueras recuperar\xE1s 35% de tu vida en vez de morir."
   type: 0
   amount: 35

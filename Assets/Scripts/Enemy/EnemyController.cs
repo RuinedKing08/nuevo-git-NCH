@@ -152,7 +152,7 @@ public class EnemyController : MonoBehaviour
     {
         if (UniqueUpgrades.whiskeyBuff)
         {
-            explotionParticles.SetActive(true);
+            Instantiate(explotionParticles, transform.position, transform.rotation);
         }
     }
     void Die()

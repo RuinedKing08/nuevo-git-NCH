@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _MargaritaAttackingCard
   title: Margarita
+  titleType: (Acumulable)
   description: "Obtienes 1 uso del s\xFAper empuje."
   type: 1
   amount: 1

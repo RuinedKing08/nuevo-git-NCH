@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4530526432600396125}
   - component: {fileID: 8026855060470546264}
   - component: {fileID: 8906276115616120015}
+  - component: {fileID: 8846635830490208186}
   m_Layer: 0
   m_Name: Collider
   m_TagString: Explosion
@@ -28,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8409, y: 0.8409, z: 0.8409}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6070074031153891131}
@@ -81,6 +82,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &8846635830490208186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917303500487583996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5f0da5098491174798e2a27403c9fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplotionCollider
 --- !u!1 &3671073318385280424
 GameObject:
   m_ObjectHideFlags: 0
@@ -108,16 +121,16 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3671073318385280424}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 7.03, y: -2.27, z: -1.77}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.70335233, y: 0.70335233, z: 0.70335233}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4929877437547745489}
   - {fileID: 1079422434669692336}
   - {fileID: 4530526432600396125}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!198 &6335225545031954905
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -372,8 +385,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 14
-      minScalar: 8
+      scalar: 8
+      minScalar: 4
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5052,7 +5065,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: -0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.17236824, y: 0.17236824, z: 0.17236824}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6070074031153891131}
@@ -10322,8 +10335,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 10
-      minScalar: 7
+      scalar: 5
+      minScalar: 2
       maxCurve:
         serializedVersion: 2
         m_Curve:

@@ -23,6 +23,10 @@ public class PlayerActions : MonoBehaviour
 
         UniqueUpgrades.margaritaBuff = true;
         UniqueUpgrades.margaritaAmount += 2;
+        dodgeInCooldown = false;
+        isDodging = false;
+
+        ultraPushActivated = false;
 
         //InputsParent.Instance.BlockInput().performed += ctx => StartBlock();
         //InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
@@ -88,6 +92,7 @@ public class PlayerActions : MonoBehaviour
         AudioManager.Instance.Play(_combatSystem.DodgeSound, transform.position);
         dodgeInCooldown = true;
     }
+    bool ultraPushActivated;
     void UltraPush()
     {
         if (!UniqueUpgrades.margaritaBuff) return;
@@ -98,16 +103,18 @@ public class PlayerActions : MonoBehaviour
             AttackColliderHandler enemy = hit.GetComponent<AttackColliderHandler>();
             if(enemy != null)
             {
+                ultraPushActivated = true;
                 DJVFX.Instance.PlayPush();
                 StartCoroutine(enemy.PushBackEnemy());
-                UniqueUpgrades.margaritaAmount--;
-                if (UniqueUpgrades.margaritaAmount <= 0)
-                {
-                    UniqueUpgrades.margaritaAmount = 0;
-                    UniqueUpgrades.margaritaBuff = false;
-                }
             }
         }
+        if(ultraPushActivated) UniqueUpgrades.margaritaAmount--;
+        if (UniqueUpgrades.margaritaAmount <= 0)
+        {
+            UniqueUpgrades.margaritaAmount = 0;
+            UniqueUpgrades.margaritaBuff = false;
+        }
+        ultraPushActivated = false; 
     }
     public void AE_StartDodge() => isDodging = true;
     public void AE_EndDodge() { isDodging = false; startTimer = true; }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _RonHealingCard
   title: Ron
+  titleType: (Acumulable)
   description: Regeneras +4% de vida por cada enemigo eliminado.
   type: 0
   amount: 4

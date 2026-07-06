@@ -5,6 +5,7 @@ public class Card
     public readonly CardData cardData;
 
     public string title;
+    public string titleType;
     public string description;
     public Sprite sprite;
     public CardType type;
@@ -19,6 +20,7 @@ public class Card
     {
         cardData = _cardData;
         title = cardData.title;
+        titleType = cardData.titleType;
         description = cardData.description;
         type = cardData.type;
         sprite = cardData.artwork;

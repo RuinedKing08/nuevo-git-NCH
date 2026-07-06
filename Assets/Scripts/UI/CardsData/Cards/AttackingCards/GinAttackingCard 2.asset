@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _GinAttackingCard
   title: Gin
+  titleType: (Reemplazable)
   description: "Da\xF1o +100%. Si tu vida cae por debajo del 70% al recibir un golpe,
     pierdes el efecto."
   type: 1
