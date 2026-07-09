@@ -114,7 +114,7 @@ public class CardConfirm : MonoBehaviour
     }
     public void ChangeExtraUpgadeTMP()
     {
-        extraUpgradesLeftTMP.text = $"Mejoras extra restantes: {Exp.Instance.GetExtraUpdrageFloat()}";
+        extraUpgradesLeftTMP.text = $": {Exp.Instance.GetExtraUpdrageFloat()}";
     }
     public Button GetButton()
     {
