@@ -36,7 +36,7 @@ public class DetectEnemyBehind : MonoBehaviour
         attackBehind = false;
         UpdateAlertColor();
     }
-    void ActivateAlertSymbol()
+    public void ActivateAlertSymbol()
     {
         Vector3 viewportPos = mainCam.WorldToViewportPoint(transform.position);
         if (!startBehind)
@@ -61,7 +61,7 @@ public class DetectEnemyBehind : MonoBehaviour
             }
         }
     }
-    void UpdateAlertColor()
+    public void UpdateAlertColor()
     {       
         bool enemyAttackingBehind = false;
         var allEnemies = EnemyCombatGroup.Instance.GetCurrentMembers();
@@ -90,14 +90,14 @@ public class DetectEnemyBehind : MonoBehaviour
         }
 
     }
-    void SetAlertColor(Color color)
+    public void SetAlertColor(Color color)
     {
         for (int i = 0; i < alertSymbols.Length; i++)
         {
             alertSymbols[i].color = color;
         }
     }
-    void ChangeAlertSymbol()
+    public void ChangeAlertSymbol()
     {
         if (EnemyBehindHUD.Instance.GetEnemiesBehindCount() >= 1)
         {
@@ -108,7 +108,7 @@ public class DetectEnemyBehind : MonoBehaviour
             alertSymbol.SetActive(false);
         }
     }
-    bool ExistCurrentAttackersBehind()
+    public bool ExistCurrentAttackersBehind()
     {
         var allEnemies = EnemyCombatGroup.Instance.GetCurrentMembers();
         var currentAttackers = EnemyCombatGroup.Instance.GetCurrentAttackers();
@@ -123,7 +123,7 @@ public class DetectEnemyBehind : MonoBehaviour
         }
         return false;
     }
-    void EvaluateOtherEnemies()
+    public void EvaluateOtherEnemies()
     {
         var allEnemies = EnemyCombatGroup.Instance.GetCurrentMembers();
         foreach (var enemy in allEnemies)

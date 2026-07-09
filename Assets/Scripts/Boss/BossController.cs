@@ -20,9 +20,10 @@ public class BossController : MonoBehaviour
     
     [Header("Combat")]
     private float _attackTimer = 0f;
-    private bool _isAttacking = false;
+    [SerializeField] private bool _isAttacking = false;
     private bool _attackExecuted = false; // Para no repetir el ataque múltiples veces
     private float _attackCooldown = 2.4f;
+    private float _postAttackCooldown = 0.6f; // Tiempo que se queda parado después de atacar
 
     // Hashes para Animator
     public static readonly int Hash_Speed = Animator.StringToHash("Speed");
@@ -48,15 +49,6 @@ public class BossController : MonoBehaviour
         Stats = GetComponent<EnemyStats>();
         Detection = GetComponent<EnemyDetectionArea>();
 
-        if (Stats == null)
-            Debug.LogError($"[BOSS] {name} no tiene componente EnemyStats. Asígnalo en el Inspector.");
-        
-        if (Detection == null)
-            Debug.LogError($"[BOSS] {name} no tiene componente EnemyDetectionArea. Asígnalo en el Inspector.");
-        
-        if (Animator == null)
-            Debug.LogWarning($"[BOSS] {name} no tiene Animator. Busca en los hijos.");
-
         if (Stats != null && Stats.NavAgent != null)
         {
             Stats.NavAgent.updateRotation = false;
@@ -73,7 +65,6 @@ public class BossController : MonoBehaviour
         // Asignar especialidad inicial (Arma Blanca)
         if (Stats != null && Stats.Specialty == null)
         {
-            Debug.Log($"[BOSS] {name} - Asignando BareKnuckleSpecialty inicial");
             Stats.SetSpecialty(new BareKnuckleSpecialty());
             _currentSpecialty = Stats.Specialty;
         }
@@ -86,7 +77,7 @@ public class BossController : MonoBehaviour
     
     private void OnCombatGroupMembersChanged()
     {
-        if (CombatGroup != null && CombatGroup.GetCurrentAttackers().Count > 0 && !_isAttacking)
+        if (CombatGroup != null && CombatGroup.GetCurrentAttackers().Count > 0 && !_isAttacking && CombatGroup.ShouldBossAttack())
         {
             OnAlliesAttacking();
         }
@@ -137,17 +128,20 @@ public class BossController : MonoBehaviour
         if (_isAttacking)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, playerPos);
-            float targetAttackDistance = 2.5f; // Distancia para atacar cuerpo a cuerpo
+            float targetAttackDistance = 2.7f; // Misma distancia que EnemyController
             
             if (distanceToPlayer > targetAttackDistance)
             {
-                // Acercarse rápido al jugador
+                // Acercarse rápido al jugador (igual que enemigo)
+                Stats.NavAgent.stoppingDistance = 0f;
                 Stats.NavAgent.speed = 8f;
+                Stats.NavAgent.acceleration = 20f;
                 Stats.NavAgent.SetDestination(playerPos);
+                Stats.NavAgent.isStopped = false;
             }
             else
             {
-                // Ya está lo suficientemente cerca - ejecutar el ataque
+                // Ya está lo suficientemente cerca - detener y atacar
                 Stats.NavAgent.velocity = Vector3.zero;
                 Stats.NavAgent.isStopped = true;
                 
@@ -156,49 +150,50 @@ public class BossController : MonoBehaviour
                 {
                     ExecuteAttack();
                     _attackExecuted = true;
+                    // Iniciar cooldown de post-ataque (se queda parado antes de retroceder)
+                    _attackTimer = _attackCooldown - _postAttackCooldown;
+                    // No cambiar _isAttacking aún, esperar el cooldown
                 }
             }
+            
+            // Rotación hacia el jugador mientras ataca (como en CombatState)
+            Vector3 dir = (playerPos - transform.position).normalized;
+            dir.y = 0;
+            if (dir.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
         }
         else
         {
-            // No está atacando - volver a órbita
-            Stats.NavAgent.isStopped = false;
+            // Cuando no está atacando, se mueve en órbita más rápido
+            Stats.NavAgent.speed = 6f;
+            Stats.NavAgent.SetDestination(CombatGroup.GetBossOrbitPosition(playerPos));
             
-            // Calcular posición en órbita (boss siempre es "último" en la órbita)
-            int bossIndex = CombatGroup.GetCurrentMembers().Count - 1;
-            float baseAngle = bossIndex * (360f / Mathf.Max(1, CombatGroup.GetCurrentMembers().Count));
-            float rotationDir = (IndividualSeed > 500) ? 1 : -1;
-            float individualRotation = Time.time * (15f + (IndividualSeed % 10f)) * rotationDir;
-            float finalAngle = baseAngle + individualRotation;
-            
-            float radiusNoise = Mathf.PerlinNoise(Time.time * 0.2f, IndividualSeed + 100f);
-            float dynamicRadius = Mathf.Lerp(4.5f, 7.5f, radiusNoise);
-            
-            Vector3 offset = new Vector3(Mathf.Cos(finalAngle * Mathf.Deg2Rad), 0, Mathf.Sin(finalAngle * Mathf.Deg2Rad)) * dynamicRadius;
-            Vector3 orbitPos = playerPos + offset;
-            
-            // Mover hacia la posición de órbita
-            Stats.NavAgent.speed = 3.5f + (Mathf.PingPong(Time.time, 1f));
-            Stats.NavAgent.SetDestination(orbitPos);
+            // También rotación hacia jugador en órbita
+            Vector3 dir = (playerPos - transform.position).normalized;
+            dir.y = 0;
+            if (dir.sqrMagnitude > 0.01f)
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
         }
-        
-        // Rotar hacia el jugador
-        Vector3 dir = (playerPos - transform.position).normalized;
-        dir.y = 0;
-        if (dir.sqrMagnitude > 0.01f)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10f);
     }
     
     private void UpdateAttackTimer()
     {
-        if (_isAttacking)
+        // El timer continúa incluso después de atacar para completar el cooldown
+        if (_isAttacking || _attackExecuted)
         {
             _attackTimer += Time.deltaTime;
             if (_attackTimer >= _attackCooldown)
             {
+                // Cooldown completado, resetear todo y volver a órbita
                 _isAttacking = false;
-                _attackExecuted = false; // Resetear para el próximo ciclo
+                _attackExecuted = false;
                 _attackTimer = 0f;
+                // Reiniciar el NavAgent para que vuelva a moverse en órbita
+                if (Stats != null && Stats.NavAgent != null)
+                {
+                    Stats.NavAgent.isStopped = false;
+                    Stats.NavAgent.stoppingDistance = 2.5f;
+                }
             }
         }
     }
@@ -208,13 +203,10 @@ public class BossController : MonoBehaviour
     {
         CurrentHealth -= amount;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
-        
-        Debug.Log($"[BOSS] {name} tomó {amount} daño. Salud: {CurrentHealth}/{MaxHealth}");
 
         if (Animator != null)
             Animator.SetTrigger(Hash_IsHit);
 
-        
         if (CurrentHealth <= _specialtyChangeThreshold && !_hasChangedSpecialty)
         {
             ChangeSpecialty();
@@ -230,12 +222,7 @@ public class BossController : MonoBehaviour
     private void ChangeSpecialty()
     {
         _hasChangedSpecialty = true;
-        Debug.Log($"[BOSS] {name} - Cambiando a especialidad de Juego Sucio");
-        
-        // Cambiar a Juego Sucio (si está disponible)       
-        
     }
-
     
     public void NotifyExchangeReady()
     {
@@ -263,7 +250,6 @@ public class BossController : MonoBehaviour
             _isAttacking = true;
             _attackExecuted = false;
             _attackTimer = 0f;
-            Debug.Log($"[BOSS] {name} iniciando secuencia de ataque. Se acercará al jugador.");
         }
     }
     
@@ -271,27 +257,19 @@ public class BossController : MonoBehaviour
     {
         if (Animator == null)
         {
-            Debug.LogWarning($"[BOSS] {name} no tiene Animator asignado. Intenta buscar...");
             Animator = GetComponentInChildren<Animator>();
             if (Animator == null)
-            {
-                Debug.LogError($"[BOSS] {name} No se encontró Animator en el GameObject o sus hijos.");
                 return;
-            }
         }
-        
-        Debug.Log($"[BOSS] {name} ejecutando ataque en rango del jugador.");
         
         // Boss ataca: ejecutar animación
         int chosenAttack = Random.Range(0, 2);
         Animator.SetInteger("AttackIndex", chosenAttack);
         Animator.SetTrigger(Hash_Attack);
         
-        // Activar colliders de ataque por 0.5 segundos (mientras hay animación o feedback)
+        // Activar colliders de ataque por 0.5 segundos
         SetAttackDamage(15);
-        BeginAttackColliderWindow(0.5f);
-        
-        Debug.Log($"[BOSS] {name} activó colliders de ataque. AttackIndex: {chosenAttack}");
+
     }
 
     
@@ -302,15 +280,12 @@ public class BossController : MonoBehaviour
         
         if (CombatGroup != null)
         {
-            Debug.Log($"[BOSS] {name} registrado en el grupo de combate");
             CombatGroup.SetBoss(this);
         }
     }
    
     private void Die()
     {
-        Debug.Log($"[BOSS] {name} derrotado. Fase/oleada terminada");
-        
         if (Animator != null)
         {
             Animator.SetTrigger(Hash_IsDead);
@@ -320,9 +295,6 @@ public class BossController : MonoBehaviour
         if (Stats != null && Stats.NavAgent != null)
             Stats.NavAgent.enabled = false;
 
-        // Notificar que la fase terminó
-        
-        
         Destroy(gameObject, 2.5f);
     }
 

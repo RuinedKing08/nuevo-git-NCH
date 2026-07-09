@@ -62,7 +62,7 @@ public class CombatIdleSubState : IEnemyState
     {
         if (_e.CombatGroup != null)   
         {        
-            _e.Stats.NavAgent.speed = 3.5f + (Mathf.PingPong(Time.time, 1f)); 
+            _e.Stats.NavAgent.speed = 6f; 
             _e.Stats.NavAgent.SetDestination(_e.CombatGroup.GetOrbitPosition(_e, _e.Detection.LastKnownPlayerPosition));
             _e.CombatGroup.NotifyExchangeReady(_e);
         }
@@ -118,19 +118,18 @@ public class AttackSubState : IEnemyState
                 _e.Stats.NavAgent.velocity = Vector3.zero;
                 _e.Stats.NavAgent.isStopped = true;
                 
-            
-                Vector3 lookDir = playerPos - _e.transform.position;
-                lookDir.y = 0;
-                if(lookDir.sqrMagnitude > 0.01f) 
-                    _e.transform.rotation = Quaternion.LookRotation(lookDir);
-
-                
                 if (_e.Stats.Specialty != null)
                 {
                     _e.Stats.Specialty.TickAttack(_e, _timer);
                     _hasAttacked = true;
                 }
             }
+            
+            // Mantener mirada hacia el player mientras ataca (con Slerp suave)
+            Vector3 lookDir = playerPos - _e.transform.position;
+            lookDir.y = 0;
+            if(lookDir.sqrMagnitude > 0.01f) 
+                _e.transform.rotation = Quaternion.Slerp(_e.transform.rotation, Quaternion.LookRotation(lookDir), Time.deltaTime * 10f);
         }
         
         

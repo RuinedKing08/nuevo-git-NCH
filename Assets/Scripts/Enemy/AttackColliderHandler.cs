@@ -107,10 +107,13 @@ public class AttackColliderHandler : MonoBehaviour
             {
                 _hitTargets.Add(other);
                 player.TakeDamage(_damageAmount);
+                if (_stats != null && _stats.DamageSound != null)
+                    AudioManager.Instance.Play(_stats.DamageSound, transform.position);
                 return;
             }            
         }
-        AudioManager.Instance.Play(_stats != null ? _stats.DamageSound : null, transform.position);
+        if (_stats != null && _stats.DamageSound != null)
+            AudioManager.Instance.Play(_stats.DamageSound, transform.position);
         _hitTargets.Add(other);
         player.TakeDamage(_damageAmount);
     }

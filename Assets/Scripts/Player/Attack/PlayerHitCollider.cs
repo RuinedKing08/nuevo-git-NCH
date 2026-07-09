@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 public class PlayerHitCollider : MonoBehaviour
 {
-     [SerializeField] private Collider _attackCollider;
+    [SerializeField] private Collider _attackColliderRight;
+    [SerializeField] private Collider _attackColliderLeft;
     private HashSet<Collider> _hitTargets = new HashSet<Collider>();
     private bool _isAttackActive = false;
     private int _currentDamage;
@@ -14,26 +15,37 @@ public class PlayerHitCollider : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        if (_attackCollider == null) _attackCollider = GetComponent<Collider>();
-        if (_attackCollider != null)
+        
+        // Si no está asignado, intentar obtener de este GameObject
+        if (_attackColliderRight == null) _attackColliderRight = GetComponent<Collider>();
+        
+        // Configurar ambos colliders
+        if (_attackColliderRight != null)
         {
-            _attackCollider.isTrigger = true;
-            _attackCollider.enabled = false;
-        }        
+            _attackColliderRight.isTrigger = true;
+            _attackColliderRight.enabled = false;
+        }
+        if (_attackColliderLeft != null)
+        {
+            _attackColliderLeft.isTrigger = true;
+            _attackColliderLeft.enabled = false;
+        }
     }
 
     public void OnAttackStart(int type = 0)
     {
         _isAttackActive = true;
         _hitTargets.Clear();
-        if (_attackCollider != null) _attackCollider.enabled = true;
+        if (_attackColliderRight != null) _attackColliderRight.enabled = true;
+        if (_attackColliderLeft != null) _attackColliderLeft.enabled = true;
         AudioManager.Instance.Play(_combatsys.AirSound, transform.position);
     }
 
     public void OnAttackEnd()
     {
         _isAttackActive = false;
-        if (_attackCollider != null) _attackCollider.enabled = false;
+        if (_attackColliderRight != null) _attackColliderRight.enabled = false;
+        if (_attackColliderLeft != null) _attackColliderLeft.enabled = false;
     }
 
     public void SetDamage(int damage) => _currentDamage = damage;

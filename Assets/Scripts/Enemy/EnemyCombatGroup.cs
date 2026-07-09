@@ -17,6 +17,7 @@ public class EnemyCombatGroup : MonoBehaviour
     [SerializeField] private BossController _boss = null;
     private bool _roundInProgress = false;
     private int _finishedCount = 0;
+    private int _attackRoundCount = 0; // Contador de rondas de ataque para el boss
     public event ChangeCurrentMembers OnChangeCurrentMembers;
     public delegate void ChangeCurrentMembers();
     public event DecreaseCurrentMembers OnDecreaseCurrentMembers;
@@ -60,6 +61,22 @@ public class EnemyCombatGroup : MonoBehaviour
         Vector3 offset = new Vector3(Mathf.Cos(finalAngle * Mathf.Deg2Rad), 0, Mathf.Sin(finalAngle * Mathf.Deg2Rad)) * dynamicRadius;
         return playerPos + offset;
     }
+    
+    public Vector3 GetBossOrbitPosition(Vector3 playerPos)
+    {
+        // El boss orbita al final, con su propia seed
+        float baseAngle = _members.Count * (360f / Mathf.Max(1, _members.Count + 1));
+        float rotationDir = (_boss.IndividualSeed > 500) ? 1 : -1;
+        float individualRotation = Time.time * (15f + (_boss.IndividualSeed % 10f)) * rotationDir;
+        
+        float finalAngle = baseAngle + individualRotation;
+
+        float radiusNoise = Mathf.PerlinNoise(Time.time * 0.2f, _boss.IndividualSeed + 100f);
+        float dynamicRadius = Mathf.Lerp(4.5f, 7.5f, radiusNoise);
+
+        Vector3 offset = new Vector3(Mathf.Cos(finalAngle * Mathf.Deg2Rad), 0, Mathf.Sin(finalAngle * Mathf.Deg2Rad)) * dynamicRadius;
+        return playerPos + offset;
+    }
 
     public void NotifyExchangeReady(EnemyController e)
     {
@@ -85,7 +102,8 @@ public class EnemyCombatGroup : MonoBehaviour
             else /*m.CombatState.IdleSubState.AssignDefend()*/;
         }
         
-        
+        // Incrementar contador de rondas de ataque para el boss
+        _attackRoundCount++;
         InvokeChangeCurrentMembers();
 
         yield return new WaitForSeconds(4f); 
@@ -98,6 +116,12 @@ public class EnemyCombatGroup : MonoBehaviour
     }
     public List<EnemyController> GetCurrentMembers() { return _members; }
     public List<EnemyController> GetCurrentAttackers() { return _currentAttackers; }
+    
+    public bool ShouldBossAttack()
+    {
+        // El boss ataca cada 2do ataque de los enemigos (cuando _attackRoundCount es impar)
+        return _attackRoundCount % 2 == 1;
+    }
     public void InvokeChangeCurrentMembers() { OnChangeCurrentMembers?.Invoke(); }
     public void InvokeDecreaseCurrentMembers() { OnDecreaseCurrentMembers?.Invoke(); }
 }

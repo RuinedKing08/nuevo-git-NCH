@@ -25,7 +25,12 @@ public class EnemyAnimationRelay : MonoBehaviour
         if (_enemyController != null) 
             _enemyController.EnableAttackColliders();
         else if (_bossController != null)
-            _bossController.EnableAttackColliders();
+        {
+            // Activar colliders del boss manualmente
+            var colliders = _bossController.GetComponentsInChildren<AttackColliderHandler>();
+            foreach (var collider in colliders)
+                collider.OnAttackStart();
+        }
     }
 
     public void AE_EnemyAttackEnd()
@@ -33,7 +38,12 @@ public class EnemyAnimationRelay : MonoBehaviour
         if (_enemyController != null) 
             _enemyController.DisableAttackColliders();
         else if (_bossController != null)
-            _bossController.DisableAttackColliders();
+        {
+            // Desactivar colliders del boss manualmente
+            var colliders = _bossController.GetComponentsInChildren<AttackColliderHandler>();
+            foreach (var collider in colliders)
+                collider.OnAttackEnd();
+        }
     }
 
     
