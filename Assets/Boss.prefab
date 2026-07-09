@@ -565,6 +565,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 08ecf4ab1e971e348bb9e9b37b796124, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1b8f48e585ea196498f9b5ac754d8193, type: 2}
     - target: {fileID: 919132149155446097, guid: 08ecf4ab1e971e348bb9e9b37b796124, type: 3}
       propertyPath: m_Name
       value: knife
@@ -635,6 +639,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: bigbad
       objectReference: {fileID: 0}
+    - target: {fileID: 4393092118544384248, guid: ae751b3975a14804c8084352d36ac59e, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1421aa1fd50695f4bbf25c11c0088b9e, type: 2}
+    - target: {fileID: 4393092118544384248, guid: ae751b3975a14804c8084352d36ac59e, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 1421aa1fd50695f4bbf25c11c0088b9e, type: 2}
     - target: {fileID: 5866666021909216657, guid: ae751b3975a14804c8084352d36ac59e, type: 3}
       propertyPath: m_Controller
       value: 
