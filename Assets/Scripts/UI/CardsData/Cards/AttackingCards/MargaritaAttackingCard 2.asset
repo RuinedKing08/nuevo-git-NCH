@@ -15,7 +15,7 @@ MonoBehaviour:
   id: _MargaritaAttackingCard
   title: Bourbon
   titleType: (Acumulable)
-  description: "Obtienes 2 usos del s\xFAper empuje."
+  description: Obtienes 2 usos del ultra empuje.
   type: 1
   amount: 2
   extraMaxLife: 0
