@@ -9,13 +9,24 @@ public class AttackColliderHandler : MonoBehaviour
     //[SerializeField] GameObject attackShadow;
 
     [SerializeField]private EnemyController _enemyController;
+    [SerializeField]private BossController _bossController;
+    private EnemyStats _stats; // Stats del atacante (puede ser enemigo o boss)
     private HashSet<Collider> _hitTargets = new HashSet<Collider>();
     private bool _isAttackActive = false;
     private bool pushBackActivated;
 
     private void Awake()
     {
+        // Buscar EnemyController o BossController
         _enemyController = GetComponentInParent<EnemyController>();
+        _bossController = GetComponentInParent<BossController>();
+        
+        // Obtener Stats del que encuentre
+        if (_enemyController != null)
+            _stats = _enemyController.Stats;
+        else if (_bossController != null)
+            _stats = _bossController.Stats;
+        
         if (_attackCollider == null) _attackCollider = GetComponent<Collider>();
         if (_attackCollider != null) { _attackCollider.isTrigger = true; _attackCollider.enabled = false; }
     }
@@ -99,7 +110,7 @@ public class AttackColliderHandler : MonoBehaviour
                 return;
             }            
         }
-        AudioManager.Instance.Play(_enemyController.Stats.DamageSound, transform.position);
+        AudioManager.Instance.Play(_stats != null ? _stats.DamageSound : null, transform.position);
         _hitTargets.Add(other);
         player.TakeDamage(_damageAmount);
     }
@@ -109,8 +120,12 @@ public class AttackColliderHandler : MonoBehaviour
     }
     public IEnumerator PushBackEnemy()
     {
+        // El pushback solo funciona con enemigos, no con boss
+        if (_stats == null || _stats.NavAgent == null)
+            yield break;
+        
         pushBackActivated = true;
-        NavMeshAgent agent = _enemyController.Stats.NavAgent;
+        NavMeshAgent agent = _stats.NavAgent;
         agent.isStopped = true;
         agent.ResetPath();
         agent.updatePosition = false;

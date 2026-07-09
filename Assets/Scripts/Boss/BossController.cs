@@ -21,6 +21,7 @@ public class BossController : MonoBehaviour
     [Header("Combat")]
     private float _attackTimer = 0f;
     private bool _isAttacking = false;
+    private bool _attackExecuted = false; // Para no repetir el ataque múltiples veces
     private float _attackCooldown = 2.4f;
 
     // Hashes para Animator
@@ -103,6 +104,25 @@ public class BossController : MonoBehaviour
     {
         UpdateAttackTimer();
         UpdateMovement();
+        UpdateAnimationParameters();
+    }
+    
+    private void UpdateAnimationParameters()
+    {
+        if (Animator == null || Stats == null || Stats.NavAgent == null)
+            return;
+        
+        // Calcular velocidad local (relativa al modelo)
+        Vector3 localVelocity = transform.InverseTransformDirection(Stats.NavAgent.velocity);
+        float maxSpeed = Stats.NavAgent.speed > 0 ? Stats.NavAgent.speed : 1f;
+
+        float targetX = localVelocity.x / maxSpeed;
+        float targetY = localVelocity.z / maxSpeed;
+
+        // Enviar parámetros de movimiento al Animator (suavizado)
+        Animator.SetFloat("MoveX", targetX, 0.2f, Time.deltaTime);
+        Animator.SetFloat("MoveY", targetY, 0.2f, Time.deltaTime);
+        Animator.SetFloat("Speed", Stats.NavAgent.velocity.magnitude, 0.1f, Time.deltaTime);
     }
     
     private void UpdateMovement()
@@ -127,9 +147,16 @@ public class BossController : MonoBehaviour
             }
             else
             {
-                // Ya está lo suficientemente cerca - detenerse
+                // Ya está lo suficientemente cerca - ejecutar el ataque
                 Stats.NavAgent.velocity = Vector3.zero;
                 Stats.NavAgent.isStopped = true;
+                
+                // Ejecutar ataque solo una vez durante este ciclo
+                if (!_attackExecuted)
+                {
+                    ExecuteAttack();
+                    _attackExecuted = true;
+                }
             }
         }
         else
@@ -170,6 +197,7 @@ public class BossController : MonoBehaviour
             if (_attackTimer >= _attackCooldown)
             {
                 _isAttacking = false;
+                _attackExecuted = false; // Resetear para el próximo ciclo
                 _attackTimer = 0f;
             }
         }
@@ -229,9 +257,13 @@ public class BossController : MonoBehaviour
     
     public void OnAlliesAttacking()
     {
+        // Solo marcar que debe atacar - el ataque se ejecutará cuando esté en rango
         if (!_isAttacking)
         {
-            ExecuteAttack();
+            _isAttacking = true;
+            _attackExecuted = false;
+            _attackTimer = 0f;
+            Debug.Log($"[BOSS] {name} iniciando secuencia de ataque. Se acercará al jugador.");
         }
     }
     
@@ -248,12 +280,9 @@ public class BossController : MonoBehaviour
             }
         }
         
-        _isAttacking = true;
-        _attackTimer = 0f;
+        Debug.Log($"[BOSS] {name} ejecutando ataque en rango del jugador.");
         
-        Debug.Log($"[BOSS] {name} ejecutando ataque.");
-        
-        // Boss ataque como enemigo normal: ejecutar animación
+        // Boss ataca: ejecutar animación
         int chosenAttack = Random.Range(0, 2);
         Animator.SetInteger("AttackIndex", chosenAttack);
         Animator.SetTrigger(Hash_Attack);

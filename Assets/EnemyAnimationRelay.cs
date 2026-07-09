@@ -2,51 +2,65 @@ using UnityEngine;
 
 public class EnemyAnimationRelay : MonoBehaviour
 {
-    private EnemyController _controller;
+    private EnemyController _enemyController;
+    private BossController _bossController;
     [SerializeField] ParticleSystem leftHandAnticipacion;
 
     void Start()
     {
         
-        _controller = GetComponentInParent<EnemyController>();
+        _enemyController = GetComponentInParent<EnemyController>();
+        _bossController = GetComponentInParent<BossController>();
         
-        if (_controller == null)
+        if (_enemyController == null && _bossController == null)
         {
-            Debug.LogError($"No se encontró EnemyController en los padres de {gameObject.name}");
+            Debug.LogError($"No se encontró EnemyController ni BossController en los padres de {gameObject.name}");
         }
     }
 
-    // --- EVENTOS PARA LOS ATAQUES DEL ENEMIGO ---
+    // --- EVENTOS PARA LOS ATAQUES DEL ENEMIGO/BOSS ---
 
     public void AE_EnemyAttackStart()
     {
-        if (_controller != null) _controller.EnableAttackColliders();
+        if (_enemyController != null) 
+            _enemyController.EnableAttackColliders();
+        else if (_bossController != null)
+            _bossController.EnableAttackColliders();
     }
 
     public void AE_EnemyAttackEnd()
     {
-        if (_controller != null) _controller.DisableAttackColliders();
+        if (_enemyController != null) 
+            _enemyController.DisableAttackColliders();
+        else if (_bossController != null)
+            _bossController.DisableAttackColliders();
     }
 
     
     public void AE_EnemyActionFinished()
     {
-        if (_controller != null && _controller.CombatGroup != null)
+        if (_enemyController != null && _enemyController.CombatGroup != null)
         {
-            _controller.CombatGroup.ReportAttackFinished(_controller);
+            _enemyController.CombatGroup.ReportAttackFinished(_enemyController);
         }
+        
     }
 
     public void StartAnticipationParticle()
     {
-        leftHandAnticipacion.Play();
+        if (leftHandAnticipacion != null)
+            leftHandAnticipacion.Play();
     }
 
     public void AE_EnemyHitSound()
     {
-        if (_controller != null)
+        if (_enemyController != null && _enemyController.Stats != null)
         {
-            AudioManager.Instance.Play(_controller.Stats.HitSound);
+            AudioManager.Instance.Play(_enemyController.Stats.HitSound);
+        }
+        else if (_bossController != null && _bossController.Stats != null)
+        {
+            AudioManager.Instance.Play(_bossController.Stats.HitSound);
         }
     }
 }
