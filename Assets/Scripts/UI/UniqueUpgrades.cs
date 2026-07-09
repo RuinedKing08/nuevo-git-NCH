@@ -27,6 +27,11 @@ public class UniqueUpgrades : MonoBehaviour
         Instance = this;
     }
 
+    private void Start()
+    {
+       /* whiskeyBuff = true;
+        whiskeyLevel = 3;*/
+    }
     public void UUpgrades(Card CD)
     {
         switch (CD.title)

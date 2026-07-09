@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: ManhattanProtectionCard 2
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _ManhattanProtectionCard
-  title: Manhattan
+  title: Absenta
+  titleType: (Acumulable)
   description: "Anulas el da\xF1o recibido de 3 golpes m\xE1s."
   type: 2
   amount: 3
   extraMaxLife: 0
   level: 2
-  canAcumulate: 0
+  canAcumulate: 1
   canChangeMaxLife: 0
   backgroundColor: {r: 0, g: 0.70175374, b: 0.9607843, a: 0.5529412}
-  artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
+  artwork: {fileID: -1819117001, guid: 94f243d9486b06e469baf9798b7f0b18, type: 3}
   textColor: {fileID: 11400000, guid: 37e23f855c86f794186e4b1273f9b8eb, type: 2}

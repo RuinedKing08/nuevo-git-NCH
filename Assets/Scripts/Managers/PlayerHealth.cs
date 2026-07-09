@@ -36,6 +36,7 @@ public class PlayerHealth : HealthController
         health += heal;
         SetHealthHUD();
         DJVFX.Instance.PlayHeal();
+        ScorePopUp.Instance.CreateHealLifePopUp(heal);
         if (health > maxHealth) health = maxHealth;
     }
      public override void GetMaxLife(float extraHealth)

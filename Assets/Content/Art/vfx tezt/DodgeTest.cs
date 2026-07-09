@@ -9,21 +9,25 @@ public class DodgeTest : MonoBehaviour
     public Transform pos1;
     public Material mat;
 
+    public static DodgeTest Instance;
 
     private bool isTrailActive;
     public float delay = 0.5f;
     public string shaderRef;
     public float shaderRate = 0.1f;
     public float shaderRefresh = 0.05f;
-
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         pos1 = GetComponent<Transform>();
-        InputsParent.Instance.SideStepInput().performed += ctx => Activate();
+        //InputsParent.Instance.SideStepInput().performed += ctx => Activate();
     }
-    void Activate()
+    public void Activate()
     {
-        if (!isTrailActive && !PlayerActions.isDodging)
+        if (!isTrailActive && !PlayerActions.isDodging && !PlayerActions.dodgeInCooldown)
         {
             isTrailActive = true;
             StartCoroutine(ActivateTrail(activeTime));

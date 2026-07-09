@@ -11,6 +11,7 @@ public class Waves : MonoBehaviour
     [SerializeField] private List<GameObject> enemiesGroup3;
     [SerializeField] private List<GameObject> enemiesGroup4;
     [SerializeField] private List<GameObject> enemiesGroup5;
+    [SerializeField] private List<GameObject> prefabsBoss;
     [SerializeField] private int wave;
     [SerializeField] private int wavesInWave;
     [SerializeField] private int wavesWaiting;
@@ -36,6 +37,11 @@ public class Waves : MonoBehaviour
     public static Waves Instance;
     public event ChangeWaves OnChangeWave;
     public delegate void ChangeWaves();
+    public static bool bossSpawned;
+    bool spawnBoss;
+    int indexBosses;
+    [SerializeField] GameObject bossAlert;
+    [SerializeField] float timeToSpawnBoss;
     private void Awake()
     {
         Instance = this;
@@ -209,7 +215,6 @@ public class Waves : MonoBehaviour
         if (indexTotal > 0 && wavesInWave > 0)
         {
             ChoseGruopToSpawn();
-            StarSpawnTrue();
         }
         if (wavesInWave <= 0)
         {
@@ -228,7 +233,27 @@ public class Waves : MonoBehaviour
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
         ChoseGruopToSpawn();
-        StarSpawnTrue();
+        if(wave % 5 == 0 && wave != 0)
+        {
+            ActivateBoss();
+        }
+    }
+    void ActivateBoss()
+    {
+        indexTotal += 1;
+        enemiesLeftCount--;
+        bossSpawned = true;
+        spawnBoss = true;
+        StartCoroutine(SpawnBoss());
+    }
+    IEnumerator SpawnBoss()
+    {
+        bossAlert.SetActive(true);
+        yield return new WaitForSeconds(timeToSpawnBoss);
+        ChooseEnemiesToSpawn(prefabsBoss);
+        SpawnB(prefabsBoss);
+        bossAlert.SetActive(false);
+        yield return null;
     }
     void ChangeBoolNewWave(bool newWave)
     {
@@ -280,6 +305,7 @@ public class Waves : MonoBehaviour
         }
         indexTotal = index1 + index2 + index3 + index4 + index5;
     }
+    int extraAmount;
     int AmountToSpawnInGroup()
     {
         int amount;
@@ -287,7 +313,14 @@ public class Waves : MonoBehaviour
         else if (timerLevel < 30) amount = Random.Range(1, 3);
         else if (timerLevel < 60) amount = Random.Range(2, 4);
         else if (timerLevel < 90) amount = Random.Range(3, 5);
-        else amount = Random.Range(4, 6);
+        else
+        {
+            if(wave % 5 == 0 && wave != 0 && extraAmount < 3)
+            {
+                extraAmount++;
+            }
+            amount = Random.Range(4, 6 + extraAmount);
+        }
         return amount;
     }
     
@@ -336,6 +369,18 @@ public class Waves : MonoBehaviour
                 enemiesToSpawn = new List<GameObject>(enemiesGroup5);
                 timeBetweenSpawn = 0.19f;
                 break;
+            case 6:
+                enemiesToSpawn = new List<GameObject>(enemiesGroup5);
+                timeBetweenSpawn = 0.16f;
+                break;
+            case 7:
+                enemiesToSpawn = new List<GameObject>(enemiesGroup5);
+                timeBetweenSpawn = 0.14f;
+                break;
+            case 8:
+                enemiesToSpawn = new List<GameObject>(enemiesGroup5);
+                timeBetweenSpawn = 0.12f;
+                break;
             default:
                 enemiesToSpawn = new List<GameObject>(enemiesGroup1);
                 timeBetweenSpawn = 0.9f;
@@ -344,6 +389,8 @@ public class Waves : MonoBehaviour
 
         amountToSpawn = enemiesToSpawn.Count;
         indexSpawn = Random.Range(0, spawnPoints.Length);
+
+        StarSpawnTrue();
     }
     void CloseSpawn()
     {
@@ -390,8 +437,13 @@ public class Waves : MonoBehaviour
     }
     void ChooseEnemiesToSpawn(List<GameObject> enemiesToSpawn)
     {
-        indexEnemies = indexSpawn;// Random.Range(0, enemiesToSpawn.Count);
+        indexEnemies = Random.Range(0, enemiesToSpawn.Count);
         indexEnemies = Mathf.Clamp(indexEnemies, 0, enemiesToSpawn.Count - 1);
+        if (spawnBoss)
+        {
+            indexBosses = Random.Range(0, enemiesToSpawn.Count);
+            indexBosses = Mathf.Clamp(indexEnemies, 0, enemiesToSpawn.Count - 1);
+        }
     }
     void Spawn(List<GameObject> enemiesToSpawn)
     {
@@ -405,5 +457,26 @@ public class Waves : MonoBehaviour
             GameObject obj = Instantiate(enemiesToSpawn[indexEnemies], spawnPoints[indexSpawn].transform);
             indexSpawn = Random.Range(0, spawnPoints.Length);
         }
+    }
+    void SpawnB(List<GameObject> enemiesToSpawn)
+    {
+        if (spawnBoss)
+        {
+            spawnBoss = false;
+            indexSpawn = Random.Range(0, spawnPoints.Length);
+            GameObject obj = Instantiate(enemiesToSpawn[indexBosses], spawnPoints[indexSpawn].transform);
+            StartCoroutine(MonitorBossDeath(obj));
+        }
+    }
+    private IEnumerator MonitorBossDeath(GameObject enemy)
+    {
+        while (enemy != null)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        // Enemy was destroyed
+        //indexTotal -= 1;
+        bossSpawned = false;
     }
 }

@@ -120,7 +120,7 @@ public class ChangeCards : MonoBehaviour
         //Debug.Log("Bro");
         cardSelection.SetActive(true);
         Time.timeScale = 0f;
-        extraUpgradesLeftTMP.text = $"Mejoras extra restantes: {Exp.Instance.GetExtraUpdrageFloat()}";
+        extraUpgradesLeftTMP.text = $": {Exp.Instance.GetExtraUpdrageFloat()}";
     }
     CardList RandomCard()
     {

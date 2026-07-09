@@ -42,6 +42,7 @@ public class CardConfirm : MonoBehaviour
             {
                 UniqueUpgrades.Instance.UUpgrades(CV.GetCard());
                 CV.CloseAll();
+                AudioManager.Instance.Play(drinkAudio);
                 thisButton.interactable = false;
                 Debug.Log("UsingUU");
                 Time.timeScale = 1;

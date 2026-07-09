@@ -16,10 +16,10 @@ MonoBehaviour:
   - title: Base Loop
     position:
       serializedVersion: 2
-      x: 851
-      y: -1433
-      width: 475
-      height: 2277
+      x: 852
+      y: -1432
+      width: 474
+      height: 2328
     contents:
     - model: {fileID: 8926484042661614608}
       id: 0
@@ -61,9 +61,9 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: 852
-    y: -1433
+    y: -1432
     width: 1065
-    height: 2329
+    height: 2328
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614610}
-  m_UIPosition: {x: 877, y: -1374}
+  m_UIPosition: {x: 877, y: -1373}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots: []

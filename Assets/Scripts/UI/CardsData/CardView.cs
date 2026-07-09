@@ -14,6 +14,8 @@ public class CardView : MonoBehaviour
     [SerializeField] private Image frame;
     [SerializeField] private Image highlight;
     [SerializeField] private TMP_Text title;
+    [SerializeField] private TMP_Text titleLevel;
+    [SerializeField] private TMP_Text titleType;
     [SerializeField] private TMP_Text description;
     [SerializeField] float timer, maxTimer;
     Color initialHighlightColor;
@@ -27,6 +29,8 @@ public class CardView : MonoBehaviour
         //frame = GetComponentInParent<Image>();
         sr = transform.Find("Artwork").GetComponent<Image>();
         title = transform.Find("Title").GetComponent<TMP_Text>();
+        titleLevel = transform.Find("TitleLevel").GetComponent<TMP_Text>();
+        titleType = transform.Find("TitleType").GetComponent<TMP_Text>();
         description = transform.Find("Description").GetComponent<TMP_Text>();
         highlight = transform.Find("Highlight").GetComponent<Image>();
         cardSelection = GameObject.Find("Canvas").transform.Find("CardsSelection").gameObject;
@@ -51,15 +55,19 @@ public class CardView : MonoBehaviour
         //if (CD != null) Debug.Log("yo card" + CD);
         frame.color = card.backgroundColor;
         sr.sprite = card.sprite;
-        title.text = card.title + $" Nivel {card.level}";
+        title.text = card.title;
+        titleLevel.text = $" Nivel {card.level}";
+        titleType.text = card.titleType;
         title.colorGradientPreset = card.textColor;
+        titleLevel.colorGradientPreset = card.textColor;
+        titleType.colorGradientPreset = card.textColor;
         description.colorGradientPreset = card.textColor;
         switch (card.title)
         {
             case "Gin":
                 description.text = card.description;
                 break;
-            case "Manhattan":
+            case "Absenta":
                 description.text = card.description + $" ({UniqueUpgrades.manhattanAmount})";
                 break;
             case "Ron":
@@ -68,7 +76,7 @@ public class CardView : MonoBehaviour
             case "Brandy":
                 description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
                 break;
-            case "Margarita":
+            case "Bourbon":
                 description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
                 break;
             case "Cerveza":
@@ -80,7 +88,7 @@ public class CardView : MonoBehaviour
             case "Tequila":
                 description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
                 break;
-            case "Martini":
+            case "Hidromiel":
                 description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
                 break;
             case "Whiskey":

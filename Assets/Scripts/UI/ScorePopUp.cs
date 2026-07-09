@@ -2,10 +2,11 @@ using UnityEngine;
 using TMPro;
 public class ScorePopUp : MonoBehaviour
 {
-    [SerializeField] GameObject prefabScorePopUp, prefabLifeLostPopUp, prefabExpPopUp;
-    [SerializeField] GameObject scorePopUpArea, lifeLostPopUpArea, expPopUpArea;
+    [SerializeField] GameObject prefabScorePopUp, prefabLifeLostPopUp, prefabExpPopUp, prefabHealLifePopUp;
+    [SerializeField] GameObject scorePopUpArea, lifeLostPopUpArea, expPopUpArea, healPopUpArea;
     TMP_Text popUpTMP;
     RectTransform lifeLostSpawnZone;
+    RectTransform healLifeSpawnZone;
     RectTransform expSpawnZone;
     public static ScorePopUp Instance;
     Collider scoreSpawnZone;
@@ -14,6 +15,7 @@ public class ScorePopUp : MonoBehaviour
         Instance = this;
         scoreSpawnZone = scorePopUpArea.GetComponent<Collider>();
         lifeLostSpawnZone = lifeLostPopUpArea.GetComponent<RectTransform>();
+        healLifeSpawnZone = healPopUpArea.GetComponent<RectTransform>();
         expSpawnZone = expPopUpArea.GetComponent<RectTransform>();
     }
     public void CreateScorePopUp(float score)
@@ -28,6 +30,12 @@ public class ScorePopUp : MonoBehaviour
         Vector3 randomPoint = GetRandomPointInUI(lifeLostSpawnZone);
         popUpTMP = Instantiate(prefabLifeLostPopUp, randomPoint, lifeLostPopUpArea.transform.rotation, lifeLostPopUpArea.transform).transform.Find("PopUpTMP").GetComponent<TMP_Text>();
         popUpTMP.text = $"-{lifeLost}";
+    }
+    public void CreateHealLifePopUp(float healLife)
+    {
+        Vector3 randomPoint = GetRandomPointInUI(healLifeSpawnZone);
+        popUpTMP = Instantiate(prefabHealLifePopUp, randomPoint, healPopUpArea.transform.rotation, healPopUpArea.transform).transform.Find("PopUpTMP").GetComponent<TMP_Text>();
+        popUpTMP.text = $"+{healLife}";
     }
     public void CreateExpPopUp(float exp)
     {

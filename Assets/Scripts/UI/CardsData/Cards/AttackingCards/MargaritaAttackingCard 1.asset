@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: MargaritaAttackingCard 1
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _MargaritaAttackingCard
-  title: Margarita
+  title: Bourbon
+  titleType: (Acumulable)
   description: "Obtienes 1 uso del s\xFAper empuje."
   type: 1
   amount: 1
@@ -22,5 +23,5 @@ MonoBehaviour:
   canAcumulate: 1
   canChangeMaxLife: 0
   backgroundColor: {r: 0.9607843, g: 0.07216436, b: 0, a: 0.5529412}
-  artwork: {fileID: 21300000, guid: 14d6b1de63179db42abef362c15da675, type: 3}
+  artwork: {fileID: 1013639966, guid: 94f243d9486b06e469baf9798b7f0b18, type: 3}
   textColor: {fileID: 11400000, guid: 96da2d46731f23f428cdb76d7e4efb02, type: 2}

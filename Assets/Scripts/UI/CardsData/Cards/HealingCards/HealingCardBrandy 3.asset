@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _HealingCardBrandy
   title: Brandy
+  titleType: (Reemplazable)
   description: "Cuando mueras recuperar\xE1s 55% de tu vida en vez de morir."
   type: 0
   amount: 55
@@ -22,5 +23,5 @@ MonoBehaviour:
   canAcumulate: 0
   canChangeMaxLife: 0
   backgroundColor: {r: 0.34509805, g: 0.9607844, b: 0, a: 0.5529412}
-  artwork: {fileID: 21300000, guid: b845fc7a8df2e6543a2ad3298505b464, type: 3}
+  artwork: {fileID: 1859302645, guid: 371c3b783d4b3084ba4be8cf2e33c44a, type: 3}
   textColor: {fileID: 11400000, guid: 5cf8ae092ca54931b443bec5148f3c59, type: 2}
