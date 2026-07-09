@@ -5,6 +5,7 @@ public class ExplotionDuration : MonoBehaviour
     [SerializeField] private bool timeOfExplosion;
     [SerializeField] private float timer, maxTimer, timerExplotion;
     [SerializeField] private GameObject colli;
+    [SerializeField] private GameObject blood;
     [SerializeField] private SphereCollider colliderExplotion;
 
     void Start()
@@ -13,6 +14,7 @@ public class ExplotionDuration : MonoBehaviour
         timeOfExplosion = true;
         timer = 0;
         colli.SetActive(false);
+        blood.SetActive(false);
     }
 
     void Update()
@@ -34,6 +36,7 @@ public class ExplotionDuration : MonoBehaviour
         if(timer >= timerExplotion)
         {
             colli.SetActive(true);
+            blood.SetActive(true);
         }
         if(timer >= timerExplotion + 0.5f && timer < timerExplotion + 1.3f)
         {

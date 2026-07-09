@@ -67,7 +67,7 @@ public class CardView : MonoBehaviour
             case "Gin":
                 description.text = card.description;
                 break;
-            case "Manhattan":
+            case "Absenta":
                 description.text = card.description + $" ({UniqueUpgrades.manhattanAmount})";
                 break;
             case "Ron":
@@ -76,7 +76,7 @@ public class CardView : MonoBehaviour
             case "Brandy":
                 description.text = card.description + $" ({UniqueUpgrades.brandyAmount}%)";
                 break;
-            case "Margarita":
+            case "Bourbon":
                 description.text = card.description + $" ({UniqueUpgrades.margaritaAmount})";
                 break;
             case "Cerveza":
@@ -88,7 +88,7 @@ public class CardView : MonoBehaviour
             case "Tequila":
                 description.text = card.description + $" ({player.GetDamageResistance() * 100}% / 50%)";
                 break;
-            case "Martini":
+            case "Hidromiel":
                 description.text = card.description + $" ({Currency.Instance.GetScoreMultiplier()})";
                 break;
             case "Whiskey":

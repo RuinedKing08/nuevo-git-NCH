@@ -41,6 +41,8 @@ public class EnemyController : MonoBehaviour
     private Rigidbody[] ragdollRigidbodies;
     private Collider[] ragdollColliders;
     [SerializeField] private GameObject explotionParticles;
+    [SerializeField] private GameObject bloodPrefab;
+    [SerializeField] private GameObject blood;
     
     
     private AudioSource movementSoundSource;
@@ -78,6 +80,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
+        blood.SetActive(false);
         RegisterInGroup();
         StateMachine.Initialize(PatrolState);
         if (Stats.Specialty == null)
@@ -152,7 +155,7 @@ public class EnemyController : MonoBehaviour
     {
         if (UniqueUpgrades.whiskeyBuff)
         {
-            Instantiate(explotionParticles, transform.position, transform.rotation);
+            Instantiate(explotionParticles, new Vector3(transform.position.x, transform.position.y + 2, transform.position.z), transform.rotation);
         }
     }
     void Die()
@@ -168,9 +171,14 @@ public class EnemyController : MonoBehaviour
         Waves.Instance.ChangeWave();
         Destroy(gameObject, 3f);
     }
-    
+    void Blood()
+    {
+        GameObject a = Instantiate(bloodPrefab, new Vector3(blood.transform.position.x, blood.transform.position.y, blood.transform.position.z), blood.transform.rotation);
+        Destroy(a, 2.5f);
+    }
     public void SetRagdoll(bool active)
     {
+        if(active)Blood();
         Animator.enabled = !active;
         ragdoll = active;
         if (mainCollider != null)

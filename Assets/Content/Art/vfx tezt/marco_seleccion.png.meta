@@ -105,7 +105,7 @@ TextureImporter:
         width: 720
         height: 1258
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -122,12 +122,12 @@ TextureImporter:
       name: marco_seleccion_1
       rect:
         serializedVersion: 2
-        x: 1396
-        y: 580
-        width: 713
-        height: 1254
+        x: 1477
+        y: 625
+        width: 556
+        height: 1161
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []

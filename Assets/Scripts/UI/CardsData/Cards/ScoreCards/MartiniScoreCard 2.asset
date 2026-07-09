@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MartiniScoreCard 2
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: _MartiniProtectionCard
-  title: Martini
+  title: Hidromiel
   titleType: (Acumulable)
   description: Multiplicador de puntaje +2
   type: 3
@@ -23,5 +23,5 @@ MonoBehaviour:
   canAcumulate: 1
   canChangeMaxLife: 0
   backgroundColor: {r: 0.9607843, g: 0.8254145, b: 0, a: 0.5529412}
-  artwork: {fileID: 21300000, guid: 11daa6931d2d2da468129de00fce3722, type: 3}
+  artwork: {fileID: -816188917, guid: 94f243d9486b06e469baf9798b7f0b18, type: 3}
   textColor: {fileID: 11400000, guid: 69a525efa7e6472eab268f6ea605f06e, type: 2}
