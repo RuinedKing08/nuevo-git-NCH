@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 38f2ed64a34eb4e48821e05f321f2400
+guid: 371c3b783d4b3084ba4be8cf2e33c44a
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bebidas_transparente_0
+      name: xe5ucryubhijk_0
       rect:
         serializedVersion: 2
         x: 390
@@ -112,19 +112,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 472f947268f41b04f870f1b8c80e3314
-      internalID: -1444953091
+      spriteID: 9e89552c8f8a9e7488b4137822bb5242
+      internalID: 1641207407
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_1
+      name: xe5ucryubhijk_1
       rect:
         serializedVersion: 2
         x: 864
         y: 1256
-        width: 157
+        width: 159
         height: 860
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -134,14 +134,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1684b5bf724c8784490e18bf80ceb631
-      internalID: 177050966
+      spriteID: 0cdf38631cb371c498d7a6fabb81f903
+      internalID: -52920945
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_2
+      name: xe5ucryubhijk_2
       rect:
         serializedVersion: 2
         x: 1167
@@ -156,20 +156,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 576fcc5dcd93d7f47a935911cbfea726
-      internalID: -1587948630
+      spriteID: 55bad0c498602a2418bbedfcb9412d7a
+      internalID: -791135810
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_3
+      name: xe5ucryubhijk_3
       rect:
         serializedVersion: 2
         x: 1542
         y: 1270
         width: 242
-        height: 862
+        height: 863
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,20 +178,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9affaf5b5a7e34640a0fe2b709f290d1
-      internalID: 1314588032
+      spriteID: c7ac7ff4041a608439e4faf0b1705273
+      internalID: -102546088
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_4
+      name: xe5ucryubhijk_4
       rect:
         serializedVersion: 2
         x: 1871
-        y: 1263
+        y: 1261
         width: 281
-        height: 824
+        height: 826
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -200,20 +200,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a5b1bf5b8ca6c8b4f94406ab7cbe64bd
-      internalID: -280429330
+      spriteID: 927a42bcf565fde4b8cba9852c4d080e
+      internalID: -929957769
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_5
+      name: xe5ucryubhijk_5
       rect:
         serializedVersion: 2
         x: 541
-        y: 186
+        y: 185
         width: 366
-        height: 981
+        height: 982
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -222,19 +222,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 37df68475f803d44289f80a6b2d45d72
-      internalID: 1037988211
+      spriteID: 40887119528bcfd42af0fed478f55cca
+      internalID: -1151972876
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_6
+      name: xe5ucryubhijk_6
       rect:
         serializedVersion: 2
         x: 1090
         y: 249
-        width: 242
+        width: 243
         height: 355
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -244,20 +244,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 32f3948587545d54f9030ddab48484b6
-      internalID: -1052228233
+      spriteID: 4a7a6ff8fdc196b45947bd977a0fbd1b
+      internalID: 1859302645
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_7
+      name: xe5ucryubhijk_7
       rect:
         serializedVersion: 2
         x: 1481
         y: 212
         width: 401
-        height: 495
+        height: 496
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -266,14 +266,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 191df94dc4dfeb54894e4b988b0b3dc0
-      internalID: 799027129
+      spriteID: 6688550a32c04274b924a690d5321b7e
+      internalID: 524188503
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: bebidas_transparente_8
+      name: xe5ucryubhijk_8
       rect:
         serializedVersion: 2
         x: 1998
@@ -288,8 +288,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba3629e93bc145a4b989779c707af295
-      internalID: -1353748852
+      spriteID: 06c9de2a86a2b854d8567a5c9e509c08
+      internalID: 795147336
       vertices: []
       indices: 
       edges: []
@@ -298,7 +298,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 8823528137e0f68458df2fe36c2affdf
+    spriteID: d3933b070ec3f6341a8c263dc56bb215
     internalID: 0
     vertices: []
     indices: 
@@ -310,15 +310,15 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      bebidas_transparente_0: -1444953091
-      bebidas_transparente_1: 177050966
-      bebidas_transparente_2: -1587948630
-      bebidas_transparente_3: 1314588032
-      bebidas_transparente_4: -280429330
-      bebidas_transparente_5: 1037988211
-      bebidas_transparente_6: -1052228233
-      bebidas_transparente_7: 799027129
-      bebidas_transparente_8: -1353748852
+      xe5ucryubhijk_0: 1641207407
+      xe5ucryubhijk_1: -52920945
+      xe5ucryubhijk_2: -791135810
+      xe5ucryubhijk_3: -102546088
+      xe5ucryubhijk_4: -929957769
+      xe5ucryubhijk_5: -1151972876
+      xe5ucryubhijk_6: 1859302645
+      xe5ucryubhijk_7: 524188503
+      xe5ucryubhijk_8: 795147336
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
