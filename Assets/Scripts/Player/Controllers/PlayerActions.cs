@@ -32,6 +32,7 @@ public class PlayerActions : MonoBehaviour
         //InputsParent.Instance.BlockInput().canceled += ctx => EndBlock();
         InputsParent.Instance.SideStepInput().performed += ctx => Dodge();
         InputsParent.Instance.LockOnInput().performed += ctx => UltraPush();
+        
     }
 
     void Update()
@@ -92,10 +93,13 @@ public class PlayerActions : MonoBehaviour
         AudioManager.Instance.Play(_combatSystem.DodgeSound, transform.position);
         dodgeInCooldown = true;
     }
+
+    
     bool ultraPushActivated;
     void UltraPush()
     {
         if (!UniqueUpgrades.margaritaBuff) return;
+          
         
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
         foreach(Collider hit in hitColliders)
@@ -105,10 +109,15 @@ public class PlayerActions : MonoBehaviour
             {
                 ultraPushActivated = true;
                 DJVFX.Instance.PlayPush();
+                
                 StartCoroutine(enemy.PushBackEnemy());
             }
         }
-        if(ultraPushActivated) UniqueUpgrades.margaritaAmount--;
+        if(ultraPushActivated) 
+        {
+            UniqueUpgrades.margaritaAmount--;
+            _combatSystem.PlayPush(); 
+        }
         if (UniqueUpgrades.margaritaAmount <= 0)
         {
             UniqueUpgrades.margaritaAmount = 0;

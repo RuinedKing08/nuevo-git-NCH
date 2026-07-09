@@ -46,5 +46,6 @@ public class PlayerCombatSystem : MonoBehaviour
     public void PlayBlockHit() => _animator.SetTrigger("BlockHit");
     public void PlayTakeHit() => _animator.SetTrigger("Hit");
     public void PlayDodge() => _animator.SetTrigger("Dodge");
+    public void PlayPush() => _animator.SetTrigger("Push");
     
 }

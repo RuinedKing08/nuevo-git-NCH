@@ -203,6 +203,7 @@ public class BossController : MonoBehaviour
     {
         CurrentHealth -= amount;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
+        Debug.Log($"Boss took {amount} damage. Current health: {CurrentHealth}/{MaxHealth}");
 
         if (Animator != null)
             Animator.SetTrigger(Hash_IsHit);
