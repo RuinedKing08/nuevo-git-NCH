@@ -10,14 +10,14 @@ public class DetectEnemyBehind : MonoBehaviour
     Transform player;
     bool startBehind, finishBehind;
     Image[] alertSymbols;
-    EnemyController thisEnemy;
+    EnemyDetectionArea thisEnemy;
      bool attackBehind;
     void Start()
     {
         alertSymbol = GameObject.Find("Canvas").transform.Find("AlertSymbol").gameObject;
         alertSymbols = alertSymbol.GetComponentsInChildren<Image>();
         player = GameObject.Find("PlayerGo").transform;
-        thisEnemy = GetComponentInParent<EnemyController>();
+        thisEnemy = GetComponentInParent<EnemyDetectionArea>();
         mainCam = Camera.main;
         EnemyBehindHUD.Instance.OnChangeEnemyBehindCount += ChangeAlertSymbol;
     }
@@ -29,35 +29,39 @@ public class DetectEnemyBehind : MonoBehaviour
     public void ToEventStartAttack()
     {
         attackBehind = true;
-        UpdateAlertColor();
+        finishBehind = false;
+        startBehind = false;
     }
     public void ToEventFinishtAttack()
     {
+        if (startBehind && !finishBehind){ EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(-1); startBehind = false; finishBehind = true; }
         attackBehind = false;
-        UpdateAlertColor();
     }
     public void ActivateAlertSymbol()
     {
         Vector3 viewportPos = mainCam.WorldToViewportPoint(transform.position);
+        /*if(viewportPos.z <= 0)
+        {
+            Debug.Log($"Enemigo en la espalda. Distancia exacta a la cámara (Z): {Mathf.Abs(viewportPos.z)}");
+        }*/
         if (!startBehind)
         {
             if (Vector3.Distance(thisEnemy.transform.position, player.position) <= radius && viewportPos.z <= distanceToCamera)
             {
-                EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(1);
-                startBehind = true;
-                finishBehind = false;
-                UpdateAlertColor();
+                if (attackBehind)
+                {
+                    EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(1);
+                    startBehind = true;
+                    finishBehind = false;
+                }
             }
         }
         else if (!finishBehind)
         {
-            if(viewportPos.z > 0.75f)
+            if(viewportPos.z > distanceToCamera)
             {
                 EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(-1);
-                startBehind = false;
-                finishBehind = true;
-                attackBehind = false;
-                EvaluateOtherEnemies();
+                CleanBehind();
             }
         }
     }
@@ -87,8 +91,26 @@ public class DetectEnemyBehind : MonoBehaviour
                     SetAlertColor(Color.yellow);
                 }
             }
+            else
+            {
+
+            }
         }
 
+    }
+    void CleanBehind()
+    {
+        if (startBehind && !finishBehind)
+        {
+            startBehind = false;
+            finishBehind = true;
+            attackBehind = false;
+        }
+    }
+    private void OnDestroy()
+    {
+        if(startBehind && !finishBehind) EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(-1);
+        CleanBehind();
     }
     public void SetAlertColor(Color color)
     {
@@ -107,6 +129,12 @@ public class DetectEnemyBehind : MonoBehaviour
         {
             alertSymbol.SetActive(false);
         }
+    }
+    void SetSymbolActive(bool active)
+    {
+        if (alertSymbol == null) return;
+
+        alertSymbol.SetActive(active);
     }
     public bool ExistCurrentAttackersBehind()
     {

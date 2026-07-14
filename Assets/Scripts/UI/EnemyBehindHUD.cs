@@ -15,6 +15,7 @@ public class EnemyBehindHUD : MonoBehaviour
     {
         enemiesBehindCount += sum;
         OnChangeEnemyBehindCount?.Invoke();
+        Debug.Log(enemiesBehindCount);
     }
     public int GetEnemiesBehindCount()
     {

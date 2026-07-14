@@ -72,7 +72,7 @@ public class EnemyController : MonoBehaviour
         mainCollider = GetComponent<Collider>();
         mainRigidbody = GetComponent<Rigidbody>();
         ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
-        ragdollColliders = GetComponentsInChildren<Collider>();
+        ragdollColliders = transform.Find("Cyanide").GetComponentsInChildren<Collider>();
         SetRagdoll(false);
 
         IndividualSeed = UnityEngine.Random.Range(0f, 1000f);

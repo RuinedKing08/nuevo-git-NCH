@@ -13,7 +13,9 @@ public class BossController : MonoBehaviour
     public EnemyStats Stats;
     public EnemyDetectionArea Detection;
     public EnemyCombatGroup CombatGroup;
-    
+    public event Dead OnDead;
+    public delegate void Dead();
+
     [Header("Specialties")]
     private IEnemySpecialty _currentSpecialty;
     private bool _hasChangedSpecialty = false;
@@ -39,6 +41,7 @@ public class BossController : MonoBehaviour
     public static readonly int Hash_DeadBool = Animator.StringToHash("Dead");
 
     public float IndividualSeed { get; private set; }
+    [SerializeField] float score;
 
     private void Awake()
     {
@@ -73,8 +76,10 @@ public class BossController : MonoBehaviour
         {
             CombatGroup.OnChangeCurrentMembers += OnCombatGroupMembersChanged;
         }
+        OnDead += Die;
     }
-    
+    public void InvokeOnDead() { OnDead?.Invoke(); }
+
     private void OnCombatGroupMembersChanged()
     {
         if (CombatGroup != null && CombatGroup.GetCurrentAttackers().Count > 0 && !_isAttacking && CombatGroup.ShouldBossAttack())
@@ -215,7 +220,7 @@ public class BossController : MonoBehaviour
 
         if (CurrentHealth <= 0)
         {
-            Die();
+            InvokeOnDead();
         }
     }
 
@@ -295,10 +300,40 @@ public class BossController : MonoBehaviour
         
         if (Stats != null && Stats.NavAgent != null)
             Stats.NavAgent.enabled = false;
-
+        Currency.Instance.ChangeMoney(0.15f, score);
+        Debug.Log("EnemyDie");
+        Combo();
+        ChangeExp(20);
+        KillToHeal();
         Destroy(gameObject, 2.5f);
     }
 
+    public void Combo()
+    {
+        ChangeCombo.Instance.Combo(false);
+    }
+    public void ChangeExp(float exp)
+    {
+        Exp.Instance.ChangeExp(exp);
+    }
+    public void KillToHeal()
+    {
+        if (UniqueUpgrades.ronBuff)
+        {
+            switch (UniqueUpgrades.ronLevel)
+            {
+                case 1:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+                case 2:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+                case 3:
+                    PlayerHealth.Instance.GetLife(UniqueUpgrades.ronAmount * PlayerHealth.Instance.MaxHealth / 100);
+                    break;
+            }
+        }
+    }
     public void SetAttackDamage(int dmg) { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.SetDamage(dmg); }
     public void BeginAttackColliderWindow(float duration = 0.5f) { StartCoroutine(AttackHitWindow(duration)); }
     private System.Collections.IEnumerator AttackHitWindow(float d) { EnableAttackColliders(); yield return new WaitForSeconds(d); DisableAttackColliders(); }

@@ -7199,7 +7199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DetectEnemyBehind
   radius: 6.5
-  distanceToCamera: 0.9
+  distanceToCamera: 3
 --- !u!114 &6938772977796055841
 MonoBehaviour:
   m_ObjectHideFlags: 0
