@@ -11117,7 +11117,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Pause
+  m_text: Pausa
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1b06f92028491f54a8192e4463e901d0, type: 2}
   m_sharedMaterial: {fileID: 5382927948198730084, guid: 1b06f92028491f54a8192e4463e901d0, type: 2}
@@ -19526,7 +19526,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Espacio = Ultra Push
+  m_text: 'Espacio = Ultra Empuje
 
     (Usos Iniciales = 2)'
   m_isRightToLeft: 0

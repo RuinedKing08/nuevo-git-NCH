@@ -4918,7 +4918,6 @@ GameObject:
   - component: {fileID: 1930461967032029870}
   - component: {fileID: 7292702389075804080}
   - component: {fileID: 8108068666376557602}
-  - component: {fileID: 2539510862011478148}
   - component: {fileID: 7112889234657804899}
   m_Layer: 7
   m_Name: Enemy
@@ -5086,18 +5085,6 @@ CapsuleCollider:
   m_Height: 2.6132622
   m_Direction: 1
   m_Center: {x: 0, y: 0.8066311, z: 0}
---- !u!114 &2539510862011478148
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2077412923276562435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d6773ba62628d44dbcf18c4caf17cf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemiesLife
 --- !u!114 &7112889234657804899
 MonoBehaviour:
   m_ObjectHideFlags: 0

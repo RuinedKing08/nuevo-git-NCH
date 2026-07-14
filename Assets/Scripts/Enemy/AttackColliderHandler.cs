@@ -50,72 +50,74 @@ public class AttackColliderHandler : MonoBehaviour
         if (!_isAttackActive) return;
         TryApplyHit(other);        
     }
-    float a, b, c;
+    float a, b;
     private void TryApplyHit(Collider other)
     {
-        
+        if (!_isAttackActive || _hitTargets.Contains(other)) return;
         if (other == null || _hitTargets.Contains(other)) return;
-
-        var player = other.GetComponentInParent<PlayerHealth>();
-        if (player == null) return;
-        a++;
-        b++;
-        c++;
-        Debug.Log(a);
-        if(a >= 2)
+        if (other.gameObject.CompareTag("Player"))
         {
-            a = 0;
-            return;
-        }
-        if(b >= 3)
-        {
-            a = 0;
-            b = 0;
-            return;
-        }
-        if (UniqueUpgrades.manhattanBuff)
-        {
-            UniqueUpgrades.manhattanAmount--;
-            if(UniqueUpgrades.manhattanAmount <= 0)
+            var player = other.GetComponent<PlayerHealth>();
+            if (player == null) return;
+            /*a++;
+            b++;
+            Debug.Log(a);
+            if (a >= 2)
             {
-                UniqueUpgrades.manhattanAmount = 0;
-                UniqueUpgrades.manhattanBuff = false;
+                a = 0;
+                return;
             }
-            return;
-        }
-        if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); PlayerActions.dodgeInCooldown = false; return;}
+            if (b >= 3)
+            {
+                a = 0;
+                b = 0;
+                return;
+            }*/
+            if (UniqueUpgrades.manhattanBuff)
+            {
+                UniqueUpgrades.manhattanAmount--;
+                if (UniqueUpgrades.manhattanAmount <= 0)
+                {
+                    UniqueUpgrades.manhattanAmount = 0;
+                    UniqueUpgrades.manhattanBuff = false;
+                }
+                return;
+            }
+            if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); PlayerActions.dodgeInCooldown = false; return; }
 
+
+            if (PlayerActions.blocking)
+            {
+                Vector3 dirToEnemy = (transform.position - other.transform.position).normalized;
+                dirToEnemy.y = 0;
+                Vector3 otherForward = other.transform.forward;
+                otherForward.y = 0;
+                float dot = Vector3.Dot(otherForward, dirToEnemy.normalized);
+
+                if (dot > 0.5f)
+                {
+                    //_hitTargets.Add(other);
+                    float score = 25;
+                    Currency.Instance.ChangeMoney(0.05f, score);
+                    Score(score);
+                    if (!pushBackActivated) StartCoroutine(PushBackEnemy());
+                    return;
+                }
+                else
+                {
+                    _hitTargets.Add(other);
+                    player.TakeDamage(_damageAmount);
+                    if (_stats != null && _stats.DamageSound != null)
+                        AudioManager.Instance.Play(_stats.DamageSound, transform.position);
+                    return;
+                }
+            }
+            if (_stats != null && _stats.DamageSound != null)
+                AudioManager.Instance.Play(_stats.DamageSound, transform.position);
+            _hitTargets.Add(other);
+            player.TakeDamage(_damageAmount);
+        }
         
-        if (PlayerActions.blocking)
-        {
-            Vector3 dirToEnemy = (transform.position - other.transform.position).normalized;
-            dirToEnemy.y = 0;
-            Vector3 otherForward = other.transform.forward;
-            otherForward.y = 0;
-            float dot = Vector3.Dot(otherForward, dirToEnemy.normalized);
-            
-            if (dot > 0.5f) 
-            {
-                //_hitTargets.Add(other);
-                float score = 25;
-                Currency.Instance.ChangeMoney(0.05f, score);
-                Score(score);
-                if (!pushBackActivated) StartCoroutine(PushBackEnemy());
-                return;
-            }
-            else
-            {
-                _hitTargets.Add(other);
-                player.TakeDamage(_damageAmount);
-                if (_stats != null && _stats.DamageSound != null)
-                    AudioManager.Instance.Play(_stats.DamageSound, transform.position);
-                return;
-            }            
-        }
-        if (_stats != null && _stats.DamageSound != null)
-            AudioManager.Instance.Play(_stats.DamageSound, transform.position);
-        _hitTargets.Add(other);
-        player.TakeDamage(_damageAmount);
     }
     void Score(float score)
     {

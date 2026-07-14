@@ -70,43 +70,45 @@ public class PlayerHitCollider : MonoBehaviour
         if (!_isAttackActive || _hitTargets.Contains(other)) return;
             
         
-        if (other == null || _hitTargets.Contains(other)) return;     
-        
-        a++;
-        b++;
-        c++;
-        Debug.Log(a);
-        if(a >= 2)
+        if (other == null || _hitTargets.Contains(other)) return;
+        if (other.gameObject.CompareTag("EnemyDetect"))
         {
-            a = 0;
-            return;
-        }
-        if(b >= 3)
-        {
-            a = 0;
-            b = 0;
-            return;
-        }
+            /*a++;
+            b++;
+            Debug.Log(a);
+            if (a >= 2)
+            {
+                a = 0;
+                return;
+            }
+            if (b >= 3)
+            {
+                a = 0;
+                b = 0;
+                return;
+            }*/
 
-        var enemy = other.GetComponentInParent<EnemyController>();
-        var boss = other.GetComponentInParent<BossController>();
-        if (enemy != null)
-        {
-            Debug.Log($"Hit enemy: {enemy.name} with damage: {_currentDamage}");
-            _hitTargets.Add(other);
-            Vector3 hitDir = (other.transform.position - transform.position).normalized;
-            AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
-            enemy.TakeDamage(_currentDamage, hitDir);
-            DJVFX.Instance.PlayHit1();
+            var enemy = other.GetComponentInParent<EnemyController>();
+            var boss = other.GetComponentInParent<BossController>();
+            if (enemy != null)
+            {
+                Debug.Log($"Hit enemy: {enemy.name} with damage: {_currentDamage}");
+                _hitTargets.Add(other);
+                Vector3 hitDir = (other.transform.position - transform.position).normalized;
+                AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
+                enemy.TakeDamage(_currentDamage, hitDir);
+                DJVFX.Instance.PlayHit1();
+            }
+            else if (boss != null)
+            {
+                _hitTargets.Add(other);
+                Vector3 hitDir = (other.transform.position - transform.position).normalized;
+                AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
+                boss.TakeDamage(_currentDamage);
+                DJVFX.Instance.PlayHit1();
+            }
         }
-        else if (boss != null)
-        {            
-            _hitTargets.Add(other);
-            Vector3 hitDir = (other.transform.position - transform.position).normalized;
-            AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
-            boss.TakeDamage(_currentDamage);
-            DJVFX.Instance.PlayHit1();
-        }
+        
     }
     
 }
