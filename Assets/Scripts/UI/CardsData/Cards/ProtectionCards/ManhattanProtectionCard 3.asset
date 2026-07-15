@@ -15,9 +15,9 @@ MonoBehaviour:
   id: _ManhattanProtectionCard
   title: Absenta
   titleType: (Acumulable)
-  description: "Anulas el da\xF1o recibido de 4 golpes m\xE1s."
+  description: "Anulas el da\xF1o recibido de 3 golpes m\xE1s."
   type: 2
-  amount: 4
+  amount: 3
   extraMaxLife: 0
   level: 3
   canAcumulate: 1
