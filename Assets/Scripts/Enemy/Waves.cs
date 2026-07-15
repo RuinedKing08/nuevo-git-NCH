@@ -43,16 +43,25 @@ public class Waves : MonoBehaviour
     int indexBosses;
     [SerializeField] GameObject bossAlert;
     [SerializeField] float timeToSpawnBoss;
+    [HideInInspector] public GameObject player;
+    [HideInInspector] public GameObject startPointLevel2;
+    GameObject changeUbicationPanel;
+    [HideInInspector] public Animator changeUbicationAnim;
     private void Awake()
     {
         Instance = this;
     }
     void Start()
     {
-        spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
+        spawnPoints = transform.Find("SpawnPoints (1)").GetComponentsInChildren<SpawnPointsForEnemies>();
         waveTMP = GameObject.Find("Canvas").transform.Find("WaveTMP").GetComponent<TMP_Text>();
         enemiesLeftTMP = GameObject.Find("Canvas").transform.Find("EnemiesLeftTMP").GetComponent<TMP_Text>();
         waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
+        player = GameObject.Find("PlayerGo");
+        startPointLevel2 = GameObject.Find("StartPointLevel2");
+        changeUbicationPanel = GameObject.Find("ChangeUbicationPanel");
+        changeUbicationAnim = changeUbicationPanel.GetComponent<Animator>();
+        changeUbicationPanel.SetActive(false);
         wave = 0;
         startSpawn = false;
         extraAmountEnemies = false;
@@ -224,18 +233,47 @@ public class Waves : MonoBehaviour
             InvokeChangeWave();
         }
     }
+    bool waitingForChangeUbication, waveTitleAnimated;
+    public void WaitingForChangeUbication(bool active)
+    {
+        waitingForChangeUbication = active;
+        if (!active)
+        { 
+            Time.timeScale = 1;
+            ContinueNewWave();
+        }
+        changeUbicationPanel.SetActive(active);
+    }
     void NewWave()
     {
         //Time.timeScale = 1;
         wave++;
-        waveTMP.text = ($"Oleada {wave}");
-        waveAnim.Play("WaveTitle");
+        if (wave == 11)
+        {
+            WaitingForChangeUbication(true);
+            Time.timeScale = 0;
+            waveTMP.text = ($"Oleada {wave}");
+            waveAnim.Play("WaveTitle");
+            waveTitleAnimated = true;
+            spawnPoints = transform.Find("SpawnPoints (2)").GetComponentsInChildren<SpawnPointsForEnemies>();
+            changeUbicationAnim.SetTrigger("StartChange");
+        }
+        //while(waitingForChangeUbication){ }
+        if (!waitingForChangeUbication) { waveTitleAnimated = false; ContinueNewWave(); }
+    }
+    void ContinueNewWave()
+    {
+        if (!waveTitleAnimated)
+        {
+            waveTMP.text = ($"Oleada {wave}");
+            waveAnim.Play("WaveTitle");
+        }
         wavesInWave = Random.Range(1, 4);
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
         ChoseGruopToSpawn();
-        if(wave % 5 == 0 && wave != 0)
+        if (wave % 5 == 0 && wave != 0)
         {
             extraAmountEnemies = true;
             ActivateBoss();
