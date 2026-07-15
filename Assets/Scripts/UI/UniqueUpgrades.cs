@@ -46,7 +46,7 @@ public class UniqueUpgrades : MonoBehaviour
                 ronLevel = CD.level;
                 ronAmount += CD.amount;
                 break;
-            case "Margarita":
+            case "Bourbon":
                 margaritaBuff = true;
                 margaritaLevel = CD.level;
                 margaritaAmount += CD.amount;
@@ -62,10 +62,11 @@ public class UniqueUpgrades : MonoBehaviour
                 whiskeyLevel = CD.level;
                 whiskeyAmount = CD.amount;
                 break;
-            case "Manhattan":
+            case "Absenta":
                 manhattanBuff = true;
                 manhattanLevel = CD.level;
                 manhattanAmount += CD.amount;
+                manhattanAmount = Mathf.Clamp(manhattanAmount, 0, 3);
                 break;
             default:
                 Debug.Log("ErrorEnUU");

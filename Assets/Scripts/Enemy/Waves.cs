@@ -39,6 +39,7 @@ public class Waves : MonoBehaviour
     public delegate void ChangeWaves();
     public static bool bossSpawned;
     bool spawnBoss;
+    bool extraAmountEnemies;
     int indexBosses;
     [SerializeField] GameObject bossAlert;
     [SerializeField] float timeToSpawnBoss;
@@ -54,6 +55,7 @@ public class Waves : MonoBehaviour
         waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
         wave = 0;
         startSpawn = false;
+        extraAmountEnemies = false;
         Coroutine();
         ChangeWave();
         NewWave();
@@ -235,6 +237,7 @@ public class Waves : MonoBehaviour
         ChoseGruopToSpawn();
         if(wave % 5 == 0 && wave != 0)
         {
+            extraAmountEnemies = true;
             ActivateBoss();
         }
     }
@@ -315,9 +318,10 @@ public class Waves : MonoBehaviour
         else if (timerLevel < 90) amount = Random.Range(3, 5);
         else
         {
-            if(wave % 5 == 0 && wave != 0 && extraAmount < 3)
+            if(wave % 5 == 0 && wave != 0 && extraAmount < 3 && extraAmountEnemies)
             {
                 extraAmount++;
+                extraAmountEnemies = false;
             }
             amount = Random.Range(4, 6 + extraAmount);
         }

@@ -107,7 +107,7 @@ public class DetectEnemyBehind : MonoBehaviour
             attackBehind = false;
         }
     }
-    private void OnDestroy()
+    public void OnDestroy()
     {
         if(startBehind && !finishBehind) EnemyBehindHUD.Instance.ChangeEnemiesBehindCount(-1);
         CleanBehind();

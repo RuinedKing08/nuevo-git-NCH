@@ -13,6 +13,7 @@ public class BossController : MonoBehaviour
     public EnemyStats Stats;
     public EnemyDetectionArea Detection;
     public EnemyCombatGroup CombatGroup;
+    public Collider mainCollider;
     public event Dead OnDead;
     public delegate void Dead();
 
@@ -48,6 +49,7 @@ public class BossController : MonoBehaviour
         CurrentHealth = MaxHealth;
         IndividualSeed = Random.Range(0f, 1000f);
 
+        mainCollider = GetComponent<Collider>();
         Animator = GetComponentInChildren<Animator>();
         Stats = GetComponent<EnemyStats>();
         Detection = GetComponent<EnemyDetectionArea>();
@@ -220,6 +222,8 @@ public class BossController : MonoBehaviour
 
         if (CurrentHealth <= 0)
         {
+            if (mainCollider != null)
+                mainCollider.enabled = false;
             InvokeOnDead();
         }
     }
@@ -305,6 +309,7 @@ public class BossController : MonoBehaviour
         Combo();
         ChangeExp(20);
         KillToHeal();
+        Waves.Instance.ChangeWave();
         Destroy(gameObject, 2.5f);
     }
 
