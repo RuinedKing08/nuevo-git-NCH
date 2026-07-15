@@ -51,6 +51,7 @@ public class AttackColliderHandler : MonoBehaviour
         TryApplyHit(other);        
     }
     float a, b;
+
     private void TryApplyHit(Collider other)
     {
         if (!_isAttackActive || _hitTargets.Contains(other)) return;
@@ -73,9 +74,11 @@ public class AttackColliderHandler : MonoBehaviour
                 b = 0;
                 return;
             }*/
+            if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); PlayerActions.dodgeInCooldown = false; return; }
             if (UniqueUpgrades.manhattanBuff)
             {
                 UniqueUpgrades.manhattanAmount--;
+                ShieldActivations.Instance.ShieldDamage();
                 if (UniqueUpgrades.manhattanAmount <= 0)
                 {
                     UniqueUpgrades.manhattanAmount = 0;
@@ -83,7 +86,7 @@ public class AttackColliderHandler : MonoBehaviour
                 }
                 return;
             }
-            if (PlayerActions.isDodging) { float score = 50; Currency.Instance.ChangeMoney(0.10f, score); Score(score); PlayerActions.dodgeInCooldown = false; return; }
+            
 
 
             if (PlayerActions.blocking)

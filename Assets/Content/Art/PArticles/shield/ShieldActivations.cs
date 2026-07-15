@@ -15,10 +15,11 @@ public class ShieldActivations : MonoBehaviour
     [SerializeField] private float damageTime = 0.2f;
     [SerializeField] private float delayBetweenRings = 0.08f;
 
-    private int strength;
-
+    private float strength;
+    public static ShieldActivations Instance;
     private void Awake()
     {
+        Instance = this;
         shieldVFX.SetFloat("visib", 0f);
         shieldVFX.SetFloat("Scaleee", 0f);
         shieldVFX.SetFloat("ShieldLevels", 0f);
@@ -32,28 +33,8 @@ public class ShieldActivations : MonoBehaviour
         shieldVFX.SetFloat("DmgFlash", 0f);
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ShowShield(1);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ShowShield(2);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ShowShield(3);
-        }
-        else if (Input.GetKeyDown(KeyCode.L))
-        {
-            ShieldDamage();
-        }
 
-    }
-
-    public void ShowShield(int level)
+    public void ShowShield(float level)
     {
         StopAllCoroutines();
 
@@ -84,7 +65,7 @@ public class ShieldActivations : MonoBehaviour
         if (strength <= 0)
             return;
 
-        int ringToRemove = strength;
+        float ringToRemove = strength;
 
         strength--;
 
@@ -130,7 +111,7 @@ public class ShieldActivations : MonoBehaviour
         yield return StartCoroutine(AnimateFloat("DmgFlash", 0f, 0.2f));
     }
 
-    private IEnumerator AnimateRing(int ring, float targetVisibility, float targetScale, float duration)
+    private IEnumerator AnimateRing(float ring, float targetVisibility, float targetScale, float duration)
     {
         string visibilityName = $"Ring{ring}visib";
         string scaleName = $"Ring{ring}Scale";

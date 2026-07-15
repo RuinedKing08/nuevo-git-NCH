@@ -67,6 +67,7 @@ public class UniqueUpgrades : MonoBehaviour
                 manhattanLevel = CD.level;
                 manhattanAmount += CD.amount;
                 manhattanAmount = Mathf.Clamp(manhattanAmount, 0, 3);
+                Shield();
                 break;
             default:
                 Debug.Log("ErrorEnUU");
@@ -84,6 +85,13 @@ public class UniqueUpgrades : MonoBehaviour
         {
             DJVFX.Instance.StopDmg();
             PlayerHitCollider.Instance.ModifyDamage(-Mathf.RoundToInt(ginAmount));
+        }
+    }
+    public void Shield()
+    {
+        if (manhattanBuff)
+        {
+            ShieldActivations.Instance.ShowShield(manhattanAmount);
         }
     }
     public string[] GetTitles()
