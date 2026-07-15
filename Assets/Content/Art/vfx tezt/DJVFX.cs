@@ -5,8 +5,9 @@ public class DJVFX : MonoBehaviour
 {
     public static DJVFX Instance;
 
-    public VisualEffect hit1;
-    public VisualEffect hit2;
+    public VisualEffect hit1Right;
+    public VisualEffect hit1Left;
+    public ParticleSystem hit2;
     public ParticleSystem heal;
     public VisualEffect dmgBoost;
     public ParticleSystem forcePush;
@@ -14,17 +15,24 @@ public class DJVFX : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        hit1.SendEvent("OnStop");
+        hit1Right.SendEvent("OnPlay");
+        hit1Right.SendEvent("OnStop");
+        hit1Left.SendEvent("OnPlay");
+        hit1Left.SendEvent("OnStop");
         dmgBoost.SendEvent("OnStop");
     }
 
-    public void PlayHit1()
+    public void PlayHit1Right()
     {
-        hit1.SendEvent("OnPlay");
+        hit1Right.SendEvent("OnPlay");
+    }
+    public void PlayHit1Left()
+    {
+        hit1Left.SendEvent("OnPlay");
     }
     public void PlayHit2()
     {
-        hit2.SendEvent("OnPlay");
+        hit2.Play();
     }
     public void PlayHeal()
     {

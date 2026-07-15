@@ -11,11 +11,15 @@ public class PlayerCombatSystem : MonoBehaviour
     public AudioData DodgeSound;
     public AudioData DamageSound;
     
-    private int _comboIndex = 0;
+    public int _comboIndex = 0;
     private bool _isAttacking = false;
     private float _lastAttackTime;
     private float _resetTime = 1.2f;
-
+    public static PlayerCombatSystem Instance;
+    private void Awake()
+    {
+        Instance = this;
+    }
     public void PerformLightAttack()
     {
         if (_isAttacking || PlayerActions.blocking) return;
