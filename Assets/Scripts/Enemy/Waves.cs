@@ -47,6 +47,8 @@ public class Waves : MonoBehaviour
     [HideInInspector] public GameObject startPointLevel2;
     GameObject changeUbicationPanel;
     [HideInInspector] public Animator changeUbicationAnim;
+
+    [SerializeField] bool tutorial;
     private void Awake()
     {
         Instance = this;
@@ -261,6 +263,7 @@ public class Waves : MonoBehaviour
         //while(waitingForChangeUbication){ }
         if (!waitingForChangeUbication) { waveTitleAnimated = false; ContinueNewWave(); }
     }
+    [SerializeField] int waveInWaveEditableMin, waveInWaveEditableMax;
     void ContinueNewWave()
     {
         if (!waveTitleAnimated)
@@ -268,7 +271,12 @@ public class Waves : MonoBehaviour
             waveTMP.text = ($"Oleada {wave}");
             waveAnim.Play("WaveTitle");
         }
-        wavesInWave = Random.Range(1, 4);
+        if (tutorial)
+        {
+            wavesInWave = Random.Range(waveInWaveEditableMin, waveInWaveEditableMax);
+        }
+        else wavesInWave = Random.Range(1, 4);
+
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
@@ -347,9 +355,15 @@ public class Waves : MonoBehaviour
         indexTotal = index1 + index2 + index3 + index4 + index5;
     }
     int extraAmount;
+    int editableEnemiesMin, editableEnemiesMax;
     int AmountToSpawnInGroup()
     {
         int amount;
+        if (tutorial)
+        {
+            amount = Random.Range(editableEnemiesMin, editableEnemiesMax);
+            return amount;
+        }
         if (timerLevel < 15) amount = Random.Range(1, 2);
         else if (timerLevel < 30) amount = Random.Range(1, 3);
         else if (timerLevel < 60) amount = Random.Range(2, 4);
