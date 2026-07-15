@@ -355,7 +355,7 @@ public class Waves : MonoBehaviour
         indexTotal = index1 + index2 + index3 + index4 + index5;
     }
     int extraAmount;
-    int editableEnemiesMin, editableEnemiesMax;
+    [SerializeField] int editableEnemiesMin, editableEnemiesMax;
     int AmountToSpawnInGroup()
     {
         int amount;
