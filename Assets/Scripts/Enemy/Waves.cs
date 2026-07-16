@@ -257,9 +257,7 @@ public class Waves : MonoBehaviour
         {
             if (wave == 2)
             {
-                changeUbicationPanel.SetActive(true);
-                Time.timeScale = 0;
-                changeUbicationAnim.SetTrigger("StartChange");
+                ActivateChangeUbucation();
                 return;
             }
         }
@@ -275,6 +273,13 @@ public class Waves : MonoBehaviour
         }
         //while(waitingForChangeUbication){ }
         if (!waitingForChangeUbication) { waveTitleAnimated = false; ContinueNewWave(); }
+    }
+    public void ActivateChangeUbucation()
+    {
+        changeUbicationPanel.SetActive(true);
+        Time.timeScale = 0;
+        changeUbicationAnim.SetTrigger("StartChange");
+
     }
     [SerializeField] int waveInWaveEditableMin, waveInWaveEditableMax;
     void ContinueNewWave()

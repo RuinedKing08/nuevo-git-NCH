@@ -4,6 +4,7 @@ public class StartMenuManager : MonoBehaviour
 {
     [SerializeField] GameObject startMenuPanel;
     [SerializeField] GameObject optionsPanel;
+    [SerializeField] GameObject creditsPanel;
     [SerializeField] string sceneToLoad;
     [SerializeField] AudioData MenuMusic;
      private void Awake()
@@ -13,8 +14,9 @@ public class StartMenuManager : MonoBehaviour
     private void Start()
     {
 
-        startMenuPanel = transform.Find("StartMenuPanel").gameObject;
+        startMenuPanel = transform.Find("StartMenuPanel").Find("MenuPanel").gameObject;
         optionsPanel = transform.Find("OptionsPanel").gameObject;
+        creditsPanel = transform.Find("CreditsPanel").gameObject;
         startMenuPanel.SetActive(true);
         optionsPanel.SetActive(false);
         sceneToLoad = SceneToLoad.sceneSaved;
@@ -37,6 +39,11 @@ public class StartMenuManager : MonoBehaviour
     {
         startMenuPanel.SetActive(true);
         optionsPanel.SetActive(false);
+    }
+    public void CreditsButton()
+    {
+        startMenuPanel.SetActive(false);
+        creditsPanel.SetActive(true);
     }
    
     public void ExitButton()

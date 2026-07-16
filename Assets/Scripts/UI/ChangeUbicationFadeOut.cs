@@ -16,6 +16,7 @@ public class ChangeUbicationFadeOut : MonoBehaviour
         {
             sceneIndex++;
             SceneManager.LoadScene(sceneIndex);
+            TutorialBool.changeLevel = false;
             return;
         }
         Waves.Instance.player.transform.position = Waves.Instance.startPointLevel2.transform.position;
