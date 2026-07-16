@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 013e7c02446d2284d8c773aca1cb0b53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
-  MaxHealth: 10
+  MaxHealth: 60
   CurrentHealth: 0
   Animator: {fileID: 2463573904142211030}
   Stats: {fileID: 0}

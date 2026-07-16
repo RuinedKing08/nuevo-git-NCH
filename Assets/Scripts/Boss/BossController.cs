@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class BossController : MonoBehaviour
 {
     [Header("Stats")]
-    public int MaxHealth = 10;
+    public int MaxHealth = 60;
     public int CurrentHealth;
     private int _specialtyChangeThreshold = 4;
 
@@ -332,6 +332,9 @@ public class BossController : MonoBehaviour
         
         if (Stats != null && Stats.NavAgent != null)
             Stats.NavAgent.enabled = false;
+
+        TMP_Text scoreView = transform.Find("bigbad").Find("CanvasEnemy").Find("ScorePopUpTMP").GetComponent<TMP_Text>();
+        scoreView.text = $"{score * Currency.Instance.GetScoreMultiplier()}";
         Currency.Instance.ChangeMoney(0.15f, score);
         Debug.Log("EnemyDie");
         Combo();
