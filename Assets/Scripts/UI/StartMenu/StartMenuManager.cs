@@ -21,8 +21,9 @@ public class StartMenuManager : MonoBehaviour
     }
     public void PlayButton()
     {
+        UniqueUpgrades.Instance.DisabelAll();
         SceneManager.LoadScene(sceneToLoad);
-        AudioManager.Instance.StopLoopedSound();      
+        AudioManager.Instance.StopLoopedSound();
     }
 
     

@@ -67,9 +67,13 @@ public class PlayerHitCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if(PlayerCombatSystem.Instance._comboIndex == 0 || PlayerCombatSystem.Instance._comboIndex == 2) TriggerAttack(other);
+    }
+    public void TriggerAttack(Collider other)
+    {
         if (!_isAttackActive || _hitTargets.Contains(other)) return;
-            
-        
+
+
         if (other == null || _hitTargets.Contains(other)) return;
         if (other.gameObject.CompareTag("EnemyDetect"))
         {
@@ -97,7 +101,9 @@ public class PlayerHitCollider : MonoBehaviour
                 Vector3 hitDir = (other.transform.position - transform.position).normalized;
                 AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
                 enemy.TakeDamage(_currentDamage, hitDir);
-                DJVFX.Instance.PlayHit1();
+                if(PlayerCombatSystem.Instance._comboIndex == 0) DJVFX.Instance.PlayHit1Right();
+                if(PlayerCombatSystem.Instance._comboIndex == 1) DJVFX.Instance.PlayHit1Left();
+                if(PlayerCombatSystem.Instance._comboIndex == 2) DJVFX.Instance.PlayHit2();
             }
             else if (boss != null)
             {
@@ -105,10 +111,10 @@ public class PlayerHitCollider : MonoBehaviour
                 Vector3 hitDir = (other.transform.position - transform.position).normalized;
                 AudioManager.Instance.Play(_combatsys.HitSound, transform.position);
                 boss.TakeDamage(_currentDamage);
-                DJVFX.Instance.PlayHit1();
+                if (PlayerCombatSystem.Instance._comboIndex == 0) DJVFX.Instance.PlayHit1Right();
+                if (PlayerCombatSystem.Instance._comboIndex == 1) DJVFX.Instance.PlayHit1Left();
+                if (PlayerCombatSystem.Instance._comboIndex == 2) DJVFX.Instance.PlayHit2();
             }
         }
-        
     }
-    
 }

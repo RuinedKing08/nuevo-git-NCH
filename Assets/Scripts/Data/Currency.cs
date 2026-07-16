@@ -3,7 +3,7 @@ using TMPro;
 public class Currency : MonoBehaviour
 {
     private static float money;
-    private static float finalScore;
+    public static float finalScore;
     private static float scoreMultiplier = 1;
     private float totalScore;
     public static Currency Instance { get; private set; }

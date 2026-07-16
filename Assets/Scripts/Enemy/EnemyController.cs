@@ -178,7 +178,12 @@ public class EnemyController : MonoBehaviour
     }
     public void SetRagdoll(bool active)
     {
-        if(active)Blood();
+        if (active)
+        { 
+            Blood();
+            DetectEnemyBehind d = GetComponentInChildren<DetectEnemyBehind>();
+            d.OnDestroy();
+        }
         Animator.enabled = !active;
         ragdoll = active;
         if (mainCollider != null)

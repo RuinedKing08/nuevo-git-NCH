@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 public class Waves : MonoBehaviour
 {
     [SerializeField] private SpawnPointsForEnemies[] spawnPoints;
@@ -39,21 +40,35 @@ public class Waves : MonoBehaviour
     public delegate void ChangeWaves();
     public static bool bossSpawned;
     bool spawnBoss;
+    bool extraAmountEnemies;
     int indexBosses;
     [SerializeField] GameObject bossAlert;
     [SerializeField] float timeToSpawnBoss;
+    [HideInInspector] public GameObject player;
+    [HideInInspector] public GameObject startPointLevel2;
+    GameObject changeUbicationPanel;
+    [HideInInspector] public Animator changeUbicationAnim;
+
+    [SerializeField] bool tutorial;
     private void Awake()
     {
         Instance = this;
     }
     void Start()
     {
-        spawnPoints = transform.GetComponentsInChildren<SpawnPointsForEnemies>();
+        spawnPoints = transform.Find("SpawnPoints (1)").GetComponentsInChildren<SpawnPointsForEnemies>();
         waveTMP = GameObject.Find("Canvas").transform.Find("WaveTMP").GetComponent<TMP_Text>();
         enemiesLeftTMP = GameObject.Find("Canvas").transform.Find("EnemiesLeftTMP").GetComponent<TMP_Text>();
         waveAnim = GameObject.Find("Canvas").GetComponent<Animator>();
+        player = GameObject.Find("PlayerGo");
+        startPointLevel2 = GameObject.Find("StartPointLevel2");
+        changeUbicationPanel = GameObject.Find("ChangeUbicationPanel");
+        changeUbicationAnim = changeUbicationPanel.GetComponent<Animator>();
+        changeUbicationPanel.SetActive(true);
+        changeUbicationAnim.SetTrigger("UbicationChanged");
         wave = 0;
         startSpawn = false;
+        extraAmountEnemies = false;
         Coroutine();
         ChangeWave();
         NewWave();
@@ -63,6 +78,7 @@ public class Waves : MonoBehaviour
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
         //EnemyController.OnDead += ChangeWave;
         ChangeCards.Instance.OnChangeWave += NewWave;
+        Time.timeScale = 0;
     }
 
     void FixedUpdate()
@@ -222,19 +238,73 @@ public class Waves : MonoBehaviour
             InvokeChangeWave();
         }
     }
+    bool waitingForChangeUbication, waveTitleAnimated;
+    public void WaitingForChangeUbication(bool active)
+    {
+        waitingForChangeUbication = active;
+        if (!active)
+        { 
+            Time.timeScale = 1;
+            ContinueNewWave();
+        }
+        changeUbicationPanel.SetActive(active);
+    }
     void NewWave()
     {
         //Time.timeScale = 1;
         wave++;
-        waveTMP.text = ($"Oleada {wave}");
-        waveAnim.Play("WaveTitle");
-        wavesInWave = Random.Range(1, 4);
+        if (TutorialBool.finishTutorial)
+        {
+            if (wave == 2)
+            {
+                changeUbicationPanel.SetActive(true);
+                Time.timeScale = 0;
+                changeUbicationAnim.SetTrigger("StartChange");
+                return;
+            }
+        }
+        if (wave == 11)
+        {
+            WaitingForChangeUbication(true);
+            Time.timeScale = 0;
+            waveTMP.text = ($"Oleada {wave}");
+            waveAnim.Play("WaveTitle");
+            waveTitleAnimated = true;
+            spawnPoints = transform.Find("SpawnPoints (2)").GetComponentsInChildren<SpawnPointsForEnemies>();
+            changeUbicationAnim.SetTrigger("StartChange");
+        }
+        //while(waitingForChangeUbication){ }
+        if (!waitingForChangeUbication) { waveTitleAnimated = false; ContinueNewWave(); }
+    }
+    [SerializeField] int waveInWaveEditableMin, waveInWaveEditableMax;
+    void ContinueNewWave()
+    {
+        if (!waveTitleAnimated)
+        {
+            if (TutorialBool.tutorial)
+            {
+                waveTMP.text = ($"Tutorial");
+                waveAnim.Play("WaveTitle");
+            }
+            else
+            {
+                waveTMP.text = ($"Oleada {wave}");
+                waveAnim.Play("WaveTitle");
+            }
+        }
+        if (tutorial)
+        {
+            wavesInWave = Random.Range(waveInWaveEditableMin, waveInWaveEditableMax);
+        }
+        else wavesInWave = Random.Range(1, 4);
+
         AmountOfGroupsToSpawn(wavesInWave);
         enemiesLeftTMP.text = ($"Enemigos Restantes: {indexTotal}");
         ChangeBoolNewWave(false);
         ChoseGruopToSpawn();
-        if(wave % 5 == 0 && wave != 0)
+        if (wave % 5 == 0 && wave != 0)
         {
+            extraAmountEnemies = true;
             ActivateBoss();
         }
     }
@@ -306,18 +376,25 @@ public class Waves : MonoBehaviour
         indexTotal = index1 + index2 + index3 + index4 + index5;
     }
     int extraAmount;
+    [SerializeField] int editableEnemiesMin, editableEnemiesMax;
     int AmountToSpawnInGroup()
     {
         int amount;
+        if (tutorial)
+        {
+            amount = Random.Range(editableEnemiesMin, editableEnemiesMax);
+            return amount;
+        }
         if (timerLevel < 15) amount = Random.Range(1, 2);
         else if (timerLevel < 30) amount = Random.Range(1, 3);
         else if (timerLevel < 60) amount = Random.Range(2, 4);
         else if (timerLevel < 90) amount = Random.Range(3, 5);
         else
         {
-            if(wave % 5 == 0 && wave != 0 && extraAmount < 3)
+            if(wave % 5 == 0 && wave != 0 && extraAmount < 3 && extraAmountEnemies)
             {
                 extraAmount++;
+                extraAmountEnemies = false;
             }
             amount = Random.Range(4, 6 + extraAmount);
         }

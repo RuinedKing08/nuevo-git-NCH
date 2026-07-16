@@ -86,6 +86,12 @@ public class PlayerActions : MonoBehaviour
 
     void Dodge()
     {
+        if (TutorialBool.tutorial)
+        {
+            TutorialDodge();
+            return;
+        }
+        if (Time.timeScale == 0f) return;
         if (isDodging) return;
         if (dodgeInCooldown) return;
         _combatSystem.PlayDodge();
@@ -98,6 +104,13 @@ public class PlayerActions : MonoBehaviour
     bool ultraPushActivated;
     void UltraPush()
     {
+        if (TutorialBool.tutorial)
+        {
+            TutorialPush();
+            return;
+        }
+        if (Time.timeScale == 0f) return;
+
         if (!UniqueUpgrades.margaritaBuff) return;
           
         
@@ -123,7 +136,38 @@ public class PlayerActions : MonoBehaviour
             UniqueUpgrades.margaritaAmount = 0;
             UniqueUpgrades.margaritaBuff = false;
         }
-        ultraPushActivated = false; 
+        ultraPushActivated = false;
+    }
+    void TutorialDodge()
+    {
+        if (DialoguesTutorial.Instance.dialogueText.text == DialoguesTutorial.Instance.actualLines[1])
+        {
+            Debug.Log("TutoDodge");
+            _combatSystem.PlayDodge();
+            DialoguesTutorial.Instance.NextDialogueLine();
+            Time.timeScale = 1f;
+        }
+    }
+    void TutorialPush()
+    {
+        if (DialoguesTutorial.Instance.dialogueText.text == DialoguesTutorial.Instance.actualLines[2])
+        {
+            Debug.Log("TutoPush");
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius);
+            foreach (Collider hit in hitColliders)
+            {
+                AttackColliderHandler enemy = hit.GetComponent<AttackColliderHandler>();
+                if (enemy != null)
+                {
+                    ultraPushActivated = true;
+                    DJVFX.Instance.PlayPush();
+
+                    StartCoroutine(enemy.PushBackEnemy());
+                }
+            }
+            DialoguesTutorial.Instance.NextDialogueLine();
+            Time.timeScale = 1f;
+        }
     }
     public void AE_StartDodge() => isDodging = true;
     public void AE_EndDodge() { isDodging = false; startTimer = true; }

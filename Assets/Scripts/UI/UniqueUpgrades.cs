@@ -29,8 +29,27 @@ public class UniqueUpgrades : MonoBehaviour
 
     private void Start()
     {
+        //DisabelAll();
        /* whiskeyBuff = true;
         whiskeyLevel = 3;*/
+    }
+    public void DisabelAll()
+    {
+        brandyBuff = false;
+        ronBuff = false;
+        margaritaBuff = false;
+        ginBuff = false;
+        whiskeyBuff = false;
+        manhattanBuff = false;
+
+        brandyAmount = 0;
+        ronAmount = 0;
+        margaritaAmount = 0;
+        ginAmount = 0;
+        whiskeyAmount = 0;
+        manhattanAmount = 0;
+
+        Currency.finalScore = 0;
     }
     public void UUpgrades(Card CD)
     {
@@ -46,7 +65,7 @@ public class UniqueUpgrades : MonoBehaviour
                 ronLevel = CD.level;
                 ronAmount += CD.amount;
                 break;
-            case "Margarita":
+            case "Bourbon":
                 margaritaBuff = true;
                 margaritaLevel = CD.level;
                 margaritaAmount += CD.amount;
@@ -62,10 +81,12 @@ public class UniqueUpgrades : MonoBehaviour
                 whiskeyLevel = CD.level;
                 whiskeyAmount = CD.amount;
                 break;
-            case "Manhattan":
+            case "Absenta":
                 manhattanBuff = true;
                 manhattanLevel = CD.level;
                 manhattanAmount += CD.amount;
+                manhattanAmount = Mathf.Clamp(manhattanAmount, 0, 3);
+                Shield();
                 break;
             default:
                 Debug.Log("ErrorEnUU");
@@ -83,6 +104,13 @@ public class UniqueUpgrades : MonoBehaviour
         {
             DJVFX.Instance.StopDmg();
             PlayerHitCollider.Instance.ModifyDamage(-Mathf.RoundToInt(ginAmount));
+        }
+    }
+    public void Shield()
+    {
+        if (manhattanBuff)
+        {
+            ShieldActivations.Instance.ShowShield(manhattanAmount);
         }
     }
     public string[] GetTitles()

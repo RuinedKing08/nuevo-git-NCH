@@ -14,22 +14,24 @@ public class PauseMenu : MonoBehaviour
 
     private void Awake()
     {
-        Time.timeScale = 0;
+        Time.timeScale = 1;
        // AudioManager.Instance.PlayLooped(GameMusic);
     }
     void Start()
     {
-        Time.timeScale = 0; 
+        Time.timeScale = 1;
         controlsPanel.SetActive(true);
         optionsPanel.SetActive(false);
         optionsTMP.text = "Opciones";
         options = false;
-        pause = true;
+        pause = false;
+        pauseMenu.SetActive(false);
         InputsParent.Instance.PauseInput().performed += Pause;
     }
 
     void Pause(InputAction.CallbackContext context)
     {
+        if (TutorialBool.tutorial) return;
         if (pause) return;
         Time.timeScale = 0;
         pauseMenu.SetActive(true);
