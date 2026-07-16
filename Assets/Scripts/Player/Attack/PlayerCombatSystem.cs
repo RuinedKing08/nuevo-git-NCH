@@ -12,6 +12,7 @@ public class PlayerCombatSystem : MonoBehaviour
     public AudioData DamageSound;
     
     public int _comboIndex = 0;
+    private int _dodgeIndex = 0;
     private bool _isAttacking = false;
     private float _lastAttackTime;
     private float _resetTime = 1.2f;
@@ -49,7 +50,12 @@ public class PlayerCombatSystem : MonoBehaviour
     public void SetBlockingState(bool state) => _animator.SetBool("Blocking", state);
     public void PlayBlockHit() => _animator.SetTrigger("BlockHit");
     public void PlayTakeHit() => _animator.SetTrigger("Hit");
-    public void PlayDodge() => _animator.SetTrigger("Dodge");
+    public void PlayDodge()
+    {
+        _dodgeIndex = Random.Range(0, 2);
+        _animator.SetInteger("DodgeIndex", _dodgeIndex);
+        _animator.SetTrigger("Dodge");
+    }
     public void PlayPush() => _animator.SetTrigger("Push");
     
 }
