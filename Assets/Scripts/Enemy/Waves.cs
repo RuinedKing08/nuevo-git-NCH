@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 public class Waves : MonoBehaviour
 {
     [SerializeField] private SpawnPointsForEnemies[] spawnPoints;
@@ -63,7 +64,8 @@ public class Waves : MonoBehaviour
         startPointLevel2 = GameObject.Find("StartPointLevel2");
         changeUbicationPanel = GameObject.Find("ChangeUbicationPanel");
         changeUbicationAnim = changeUbicationPanel.GetComponent<Animator>();
-        changeUbicationPanel.SetActive(false);
+        changeUbicationPanel.SetActive(true);
+        changeUbicationAnim.SetTrigger("UbicationChanged");
         wave = 0;
         startSpawn = false;
         extraAmountEnemies = false;
@@ -76,6 +78,7 @@ public class Waves : MonoBehaviour
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
         //EnemyController.OnDead += ChangeWave;
         ChangeCards.Instance.OnChangeWave += NewWave;
+        Time.timeScale = 0;
     }
 
     void FixedUpdate()
@@ -250,6 +253,16 @@ public class Waves : MonoBehaviour
     {
         //Time.timeScale = 1;
         wave++;
+        if (TutorialBool.finishTutorial)
+        {
+            if (wave == 2)
+            {
+                changeUbicationPanel.SetActive(true);
+                Time.timeScale = 0;
+                changeUbicationAnim.SetTrigger("StartChange");
+                return;
+            }
+        }
         if (wave == 11)
         {
             WaitingForChangeUbication(true);
@@ -268,8 +281,16 @@ public class Waves : MonoBehaviour
     {
         if (!waveTitleAnimated)
         {
-            waveTMP.text = ($"Oleada {wave}");
-            waveAnim.Play("WaveTitle");
+            if (TutorialBool.tutorial)
+            {
+                waveTMP.text = ($"Tutorial");
+                waveAnim.Play("WaveTitle");
+            }
+            else
+            {
+                waveTMP.text = ($"Oleada {wave}");
+                waveAnim.Play("WaveTitle");
+            }
         }
         if (tutorial)
         {

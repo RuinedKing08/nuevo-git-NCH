@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2735287815572512940}
   - component: {fileID: 6996715773288256225}
   - component: {fileID: 7402681195170072861}
+  - component: {fileID: 8183088683068312503}
   m_Layer: 0
   m_Name: GameObject
   m_TagString: Untagged
@@ -48,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCombatGroup
   _members: []
   _currentAttackers: []
+  _boss: {fileID: 0}
 --- !u!114 &6996715773288256225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -82,3 +84,16 @@ MonoBehaviour:
     Weight: 0
     Radius: 0
   m_LegacyTargets: []
+--- !u!114 &8183088683068312503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 783676000795154395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: daaaa7118aa51d246bb35b2103d9f407, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialBool
+  thisIsALevel: 1

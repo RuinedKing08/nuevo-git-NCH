@@ -28,9 +28,17 @@ public class DetectEnemyBehind : MonoBehaviour
     }
     public void ToEventStartAttack()
     {
+        if (TutorialBool.tutorial) Tutorial();
         attackBehind = true;
         finishBehind = false;
         startBehind = false;
+    }
+    void Tutorial()
+    {
+        Time.timeScale = 0f;
+        DialoguesTutorial.Instance.ActivePanel();
+        DialoguesTutorial.Instance.StartDialogue();
+
     }
     public void ToEventFinishtAttack()
     {

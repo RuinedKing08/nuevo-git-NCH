@@ -29,11 +29,13 @@ public class DialoguesTutorial : MonoBehaviour
     }
     private void Start()
     {
-        index = 0;
+        //index = 0;
         panelDialogues.SetActive(false);
         ChangeName();
+        DeActivePanel();
+        DesPauseLines();
     }
-    public void FixedUpdate()
+    public void Update()
     {
         if (Time.timeScale == 0f || Time.timeScale == 1f)
         {
@@ -45,10 +47,10 @@ public class DialoguesTutorial : MonoBehaviour
             {
                 NextDialogueLine();
             }*/
-            if ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) && canChangeLines)
+            /*if ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) && dialogueText.text == actualLines[index] && canChangeLines)
             {
                 NextDialogueLine();
-            }
+            }*/
             if (dialogueText.text == actualLines[index])
             {
 
@@ -68,6 +70,7 @@ public class DialoguesTutorial : MonoBehaviour
         didDialogueStart = true;
         if (Time.timeScale == 0f || Time.timeScale == 1f)
         {
+            Debug.Log("StartDialogue");
             StartCoroutine(WriteLine());
         }
     }
@@ -81,32 +84,40 @@ public class DialoguesTutorial : MonoBehaviour
             case 1:
                 nameText.text = nameLines[1];
                 break;
+            case 2:
+                nameText.text = nameLines[2];
+                break;
         }        
 
     }
-    public void PauseTimeLine()
+    public void DesPauseLines()
     {
         canChangeLines = true;
     }
     public void NextDialogueLine()
     {
+        Debug.Log("NextDialogue");
         canChangeLines = false;
         index++;
         ChangeName();
-        if (index < actualLines.Length)
+        DeActivePanel();
+        /*if (index < actualLines.Length)
         {
             StartCoroutine(WriteLine());
-        }
+        }*/
 
-        if (index >= actualLines.Length)
+        if (index >= actualLines.Length && index == 3)
         {
             Finish();
         }
     }
     public void Finish()
     {
+        Debug.Log("FinishTuto");
         index = 0;
         StopAllCoroutines();
+        Time.timeScale = 1f;
+        TutorialBool.tutorial = false;
         DeActivePanel();
     }
 

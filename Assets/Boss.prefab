@@ -58,6 +58,7 @@ MonoBehaviour:
   Stats: {fileID: 0}
   Detection: {fileID: 0}
   CombatGroup: {fileID: 0}
+  mainCollider: {fileID: 0}
   _isAttacking: 0
   score: 0
 --- !u!114 &7956562166806685255
@@ -714,7 +715,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DetectEnemyBehind
   radius: 6.5
-  distanceToCamera: 3
+  distanceToCamera: 3.5
 --- !u!4 &5539197123097208138 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ae751b3975a14804c8084352d36ac59e, type: 3}
