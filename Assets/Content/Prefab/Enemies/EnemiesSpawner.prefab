@@ -338,6 +338,14 @@ MonoBehaviour:
   indexSpawn: 0
   bossAlert: {fileID: 0}
   timeToSpawnBoss: 3
+  player: {fileID: 0}
+  startPointLevel2: {fileID: 0}
+  changeUbicationAnim: {fileID: 0}
+  tutorial: 0
+  waveInWaveEditableMin: 0
+  waveInWaveEditableMax: 0
+  editableEnemiesMin: 0
+  editableEnemiesMax: 0
 --- !u!1 &5429579320382952412
 GameObject:
   m_ObjectHideFlags: 0
