@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class ChangeUbicationFadeOut : MonoBehaviour
 {
-    int sceneIndex = 2;
+    public static int sceneIndex = 2;
     public void FadeIn()
     {
         if (TutorialBool.finishTutorial)
@@ -15,7 +15,8 @@ public class ChangeUbicationFadeOut : MonoBehaviour
         if (TutorialBool.changeLevel)
         {
             sceneIndex++;
-            SceneManager.LoadScene(sceneIndex);
+            if(sceneIndex < 4) SceneManager.LoadScene(sceneIndex);
+            else SceneManager.LoadScene(0);
             TutorialBool.changeLevel = false;
             return;
         }

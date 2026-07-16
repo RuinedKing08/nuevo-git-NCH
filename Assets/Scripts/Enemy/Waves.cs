@@ -64,21 +64,21 @@ public class Waves : MonoBehaviour
         startPointLevel2 = GameObject.Find("StartPointLevel2");
         changeUbicationPanel = GameObject.Find("ChangeUbicationPanel");
         changeUbicationAnim = changeUbicationPanel.GetComponent<Animator>();
-        changeUbicationPanel.SetActive(true);
-        changeUbicationAnim.SetTrigger("UbicationChanged");
         wave = 0;
         startSpawn = false;
         extraAmountEnemies = false;
         Coroutine();
         ChangeWave();
-        NewWave();
+        wave++;
+        Time.timeScale = 0;
+        changeUbicationPanel.SetActive(true);
+        changeUbicationAnim.SetTrigger("UbicationChanged");
         indexSpawn = Random.Range(0, spawnPoints.Length);
         inWave = false;
         firstWaveWaiting = true;
         EnemyCombatGroup.Instance.OnChangeCurrentMembers += ChangeInWave;
         //EnemyController.OnDead += ChangeWave;
         ChangeCards.Instance.OnChangeWave += NewWave;
-        Time.timeScale = 0;
     }
 
     void FixedUpdate()
@@ -288,6 +288,7 @@ public class Waves : MonoBehaviour
         {
             if (TutorialBool.tutorial)
             {
+                Debug.Log("Solo1");
                 waveTMP.text = ($"Tutorial");
                 waveAnim.Play("WaveTitle");
             }

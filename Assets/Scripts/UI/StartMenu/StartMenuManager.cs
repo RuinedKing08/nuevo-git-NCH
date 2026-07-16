@@ -45,7 +45,12 @@ public class StartMenuManager : MonoBehaviour
         startMenuPanel.SetActive(false);
         creditsPanel.SetActive(true);
     }
-   
+    public void ReturnOptionsCreditsButton()
+    {
+        startMenuPanel.SetActive(true);
+        creditsPanel.SetActive(false);
+    }
+
     public void ExitButton()
     {
         Application.Quit();

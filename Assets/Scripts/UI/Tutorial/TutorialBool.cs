@@ -15,6 +15,7 @@ public class TutorialBool : MonoBehaviour
         }
         else
         {
+            ChangeUbicationFadeOut.sceneIndex = 2;
             tutorial = true;
             finishTutorial = true;
         }
