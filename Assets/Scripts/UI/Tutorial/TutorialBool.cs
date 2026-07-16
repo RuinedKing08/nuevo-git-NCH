@@ -6,7 +6,7 @@ public class TutorialBool : MonoBehaviour
     public static bool tutorial;
     public static bool finishTutorial;
     public static bool changeLevel;
-    void Start()
+    void Awake()
     {
         if (thisIsALevel)
         {
