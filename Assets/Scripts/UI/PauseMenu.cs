@@ -15,7 +15,7 @@ public class PauseMenu : MonoBehaviour
     private void Awake()
     {
         Time.timeScale = 1;
-       // AudioManager.Instance.PlayLooped(GameMusic);
+        AudioManager.Instance.PlayLooped(GameMusic);
     }
     void Start()
     {
