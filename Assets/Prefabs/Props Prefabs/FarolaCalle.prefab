@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 8644534183549690775}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.0389, z: 0}
+  m_LocalPosition: {x: 0, y: 0.0486, z: 0.0012}
   m_LocalScale: {x: 0.016570142, y: 0.018925736, z: 0.016413737}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41,14 +41,14 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8644534183549690775}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 12
   m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 10
-  m_Range: 75
+  m_Intensity: 25
+  m_Range: 12.16
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
-  m_CookieSize: 10
+  m_CookieSize2D: {x: 10, y: 10}
   m_Shadows:
     m_Type: 2
     m_Resolution: -1
@@ -110,17 +110,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Version: 3
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 1
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
   m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+  m_RenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_ShadowRenderingLayersMask:
+    serializedVersion: 0
+    m_Bits: 1
+  m_Version: 4
+  m_LightLayerMask: 1
+  m_ShadowLayerMask: 1
+  m_RenderingLayers: 1
+  m_ShadowRenderingLayers: 1
 --- !u!1001 &7795584256349594865
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -130,16 +136,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 40.96309
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 40.96309
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 40.96309
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -26.46
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.09
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 28.43
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
       propertyPath: m_LocalRotation.w
@@ -169,9 +187,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: dac9743eac1884c46bd667bb1b58badd, type: 2}
     - target: {fileID: 919132149155446097, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
       propertyPath: m_Name
       value: FarolaCalle
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5e1ce0a535afe404fafa03c529b7c410, type: 3}
+      propertyPath: m_Layer
+      value: 14
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
