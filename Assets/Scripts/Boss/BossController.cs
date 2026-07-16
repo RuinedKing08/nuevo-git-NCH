@@ -13,7 +13,7 @@ public class BossController : MonoBehaviour
     public EnemyStats Stats;
     public EnemyDetectionArea Detection;
     public EnemyCombatGroup CombatGroup;
-    public Collider mainCollider;
+   
     public event Dead OnDead;
     public delegate void Dead();
 
