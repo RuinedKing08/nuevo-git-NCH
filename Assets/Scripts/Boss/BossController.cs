@@ -23,11 +23,22 @@ public class BossController : MonoBehaviour
     [Header("Combat")]
     private float _attackTimer = 0f;
     [SerializeField] private bool _isAttacking = false;
-    private bool _attackExecuted = false; // Para no repetir el ataque múltiples veces
+    private bool _attackExecuted = false;
     private float _attackCooldown = 2.4f;
-    private float _postAttackCooldown = 0.6f; // Tiempo que se queda parado después de atacar
+    private float _postAttackCooldown = 0.6f;
+    
+    [Header("Auto Attack")]
+    [SerializeField] private float _autoAttackInterval = 5f;
+    private float _autoAttackTimer = 0f;
 
-    // Hashes para Animator
+    [Header("Ragdoll")]
+    private bool _ragdollActive = false;
+    [SerializeField] private Collider mainCollider;
+    [SerializeField] private Rigidbody mainRigidbody;
+    [SerializeField] private float ragdollPushForce = 30f;
+    private Rigidbody[] ragdollRigidbodies;
+    private Collider[] ragdollColliders;
+
     public static readonly int Hash_Speed = Animator.StringToHash("Speed");
     public static readonly int Hash_IsAlert = Animator.StringToHash("IsAlert");
     public static readonly int Hash_InCombat = Animator.StringToHash("InCombat");
@@ -59,13 +70,24 @@ public class BossController : MonoBehaviour
             Stats.NavAgent.obstacleAvoidanceType = ObstacleAvoidanceType.MedQualityObstacleAvoidance;
             Stats.NavAgent.radius = 0.35f;
         }
+
+        // Initialize ragdoll
+        mainCollider = GetComponent<Collider>();
+        mainRigidbody = GetComponent<Rigidbody>();
+        ragdollRigidbodies = GetComponentsInChildren<Rigidbody>();
+        
+        Transform modelRoot = transform.Find("bigbad");
+        if (modelRoot != null)
+            ragdollColliders = modelRoot.GetComponentsInChildren<Collider>();
+        else
+            ragdollColliders = GetComponentsInChildren<Collider>();
+        SetRagdoll(false);
     }
 
     private void Start()
     {
         RegisterInGroup();
         
-        // Asignar especialidad inicial (Arma Blanca)
         if (Stats != null && Stats.Specialty == null)
         {
             Stats.SetSpecialty(new BareKnuckleSpecialty());
@@ -99,6 +121,7 @@ public class BossController : MonoBehaviour
     public void Update()
     {
         UpdateAttackTimer();
+        UpdateAutoAttackTimer();
         UpdateMovement();
         UpdateAnimationParameters();
     }
@@ -108,14 +131,12 @@ public class BossController : MonoBehaviour
         if (Animator == null || Stats == null || Stats.NavAgent == null)
             return;
         
-        // Calcular velocidad local (relativa al modelo)
         Vector3 localVelocity = transform.InverseTransformDirection(Stats.NavAgent.velocity);
         float maxSpeed = Stats.NavAgent.speed > 0 ? Stats.NavAgent.speed : 1f;
 
         float targetX = localVelocity.x / maxSpeed;
         float targetY = localVelocity.z / maxSpeed;
 
-        // Enviar parámetros de movimiento al Animator (suavizado)
         Animator.SetFloat("MoveX", targetX, 0.2f, Time.deltaTime);
         Animator.SetFloat("MoveY", targetY, 0.2f, Time.deltaTime);
         Animator.SetFloat("Speed", Stats.NavAgent.velocity.magnitude, 0.1f, Time.deltaTime);
@@ -123,21 +144,18 @@ public class BossController : MonoBehaviour
     
     private void UpdateMovement()
     {
-        // Boss se mueve en órbita alrededor del jugador como los enemigos
         if (Detection == null || Stats == null || Stats.NavAgent == null || CombatGroup == null)
             return;
         
         Vector3 playerPos = Detection.LastKnownPlayerPosition;
         
-        // Si está atacando, se acerca al jugador para golpear
         if (_isAttacking)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, playerPos);
-            float targetAttackDistance = 2.7f; // Misma distancia que EnemyController
+            float targetAttackDistance = 2.7f;
             
             if (distanceToPlayer > targetAttackDistance)
             {
-                // Acercarse rápido al jugador (igual que enemigo)
                 Stats.NavAgent.stoppingDistance = 0f;
                 Stats.NavAgent.speed = 8f;
                 Stats.NavAgent.acceleration = 20f;
@@ -146,22 +164,17 @@ public class BossController : MonoBehaviour
             }
             else
             {
-                // Ya está lo suficientemente cerca - detener y atacar
                 Stats.NavAgent.velocity = Vector3.zero;
                 Stats.NavAgent.isStopped = true;
                 
-                // Ejecutar ataque solo una vez durante este ciclo
                 if (!_attackExecuted)
                 {
                     ExecuteAttack();
                     _attackExecuted = true;
-                    // Iniciar cooldown de post-ataque (se queda parado antes de retroceder)
                     _attackTimer = _attackCooldown - _postAttackCooldown;
-                    // No cambiar _isAttacking aún, esperar el cooldown
                 }
             }
             
-            // Rotación hacia el jugador mientras ataca (como en CombatState)
             Vector3 dir = (playerPos - transform.position).normalized;
             dir.y = 0;
             if (dir.sqrMagnitude > 0.01f)
@@ -169,11 +182,9 @@ public class BossController : MonoBehaviour
         }
         else
         {
-            // Cuando no está atacando, se mueve en órbita más rápido
             Stats.NavAgent.speed = 6f;
             Stats.NavAgent.SetDestination(CombatGroup.GetBossOrbitPosition(playerPos));
             
-            // También rotación hacia jugador en órbita
             Vector3 dir = (playerPos - transform.position).normalized;
             dir.y = 0;
             if (dir.sqrMagnitude > 0.01f)
@@ -183,17 +194,14 @@ public class BossController : MonoBehaviour
     
     private void UpdateAttackTimer()
     {
-        // El timer continúa incluso después de atacar para completar el cooldown
         if (_isAttacking || _attackExecuted)
         {
             _attackTimer += Time.deltaTime;
             if (_attackTimer >= _attackCooldown)
             {
-                // Cooldown completado, resetear todo y volver a órbita
                 _isAttacking = false;
                 _attackExecuted = false;
                 _attackTimer = 0f;
-                // Reiniciar el NavAgent para que vuelva a moverse en órbita
                 if (Stats != null && Stats.NavAgent != null)
                 {
                     Stats.NavAgent.isStopped = false;
@@ -203,9 +211,28 @@ public class BossController : MonoBehaviour
         }
     }
 
+    private void UpdateAutoAttackTimer()
+    {
+        if (CombatGroup != null && CombatGroup.GetCurrentAttackers().Count == 0 && !_isAttacking)
+        {
+            _autoAttackTimer += Time.deltaTime;
+            if (_autoAttackTimer >= _autoAttackInterval)
+            {
+                _autoAttackTimer = 0f;
+                OnAlliesAttacking();
+            }
+        }
+        else
+        {
+            _autoAttackTimer = 0f;
+        }
+    }
+
    
     public void TakeDamage(int amount)
     {
+        if (_ragdollActive) return;
+        
         CurrentHealth -= amount;
         CurrentHealth = Mathf.Max(CurrentHealth, 0);
         Debug.Log($"Boss took {amount} damage. Current health: {CurrentHealth}/{MaxHealth}");
@@ -250,7 +277,6 @@ public class BossController : MonoBehaviour
     
     public void OnAlliesAttacking()
     {
-        // Solo marcar que debe atacar - el ataque se ejecutará cuando esté en rango
         if (!_isAttacking)
         {
             _isAttacking = true;
@@ -268,12 +294,10 @@ public class BossController : MonoBehaviour
                 return;
         }
         
-        // Boss ataca: ejecutar animación
         int chosenAttack = Random.Range(0, 2);
         Animator.SetInteger("AttackIndex", chosenAttack);
         Animator.SetTrigger(Hash_Attack);
         
-        // Activar colliders de ataque por 0.5 segundos
         SetAttackDamage(15);
 
     }
@@ -292,6 +316,10 @@ public class BossController : MonoBehaviour
    
     private void Die()
     {
+        // Activate ragdoll
+        SetRagdoll(true);
+        PushRagdoll(Vector3.zero, ragdollPushForce);
+        
         if (Animator != null)
         {
             Animator.SetTrigger(Hash_IsDead);
@@ -340,4 +368,43 @@ public class BossController : MonoBehaviour
     public void CancelAttackColliderWindow() { StopAllCoroutines(); DisableAttackColliders(); }
     public void EnableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackStart(); }
     public void DisableAttackColliders() { foreach (var h in GetComponentsInChildren<AttackColliderHandler>()) h.OnAttackEnd(); }
+
+    
+    public void SetRagdoll(bool active)
+    {
+        _ragdollActive = active;
+        
+        if (Animator != null)
+            Animator.enabled = !active;
+
+        if (mainCollider != null)
+            mainCollider.enabled = !active;
+
+        if (mainRigidbody != null)
+            mainRigidbody.isKinematic = !active;
+
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            if (rb == mainRigidbody) continue;
+            rb.isKinematic = !active;
+        }
+
+        foreach (Collider col in ragdollColliders)
+        {
+            if (col == mainCollider) continue;
+            col.enabled = active;
+        }
+    }
+
+    
+    public void PushRagdoll(Vector3 direction, float force)
+    {
+        direction.Normalize();
+        
+        foreach (Rigidbody rb in ragdollRigidbodies)
+        {
+            if (rb == mainRigidbody) continue;
+            rb.linearVelocity = direction * force;
+        }
+    }
 }
