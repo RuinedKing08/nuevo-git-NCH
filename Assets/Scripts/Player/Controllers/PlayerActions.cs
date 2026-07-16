@@ -138,18 +138,23 @@ public class PlayerActions : MonoBehaviour
         }
         ultraPushActivated = false;
     }
+    bool tutorialDodge;
     void TutorialDodge()
     {
+        if (tutorialDodge) return;
         if (DialoguesTutorial.Instance.dialogueText.text == DialoguesTutorial.Instance.actualLines[1])
         {
             Debug.Log("TutoDodge");
             _combatSystem.PlayDodge();
             DialoguesTutorial.Instance.NextDialogueLine();
             Time.timeScale = 1f;
+            tutorialDodge = true;
         }
     }
+    bool tutorialPush;
     void TutorialPush()
     {
+        if (tutorialPush) return;
         if (DialoguesTutorial.Instance.dialogueText.text == DialoguesTutorial.Instance.actualLines[2])
         {
             Debug.Log("TutoPush");
@@ -167,6 +172,7 @@ public class PlayerActions : MonoBehaviour
             }
             DialoguesTutorial.Instance.NextDialogueLine();
             Time.timeScale = 1f;
+            tutorialPush = true;
         }
     }
     public void AE_StartDodge() => isDodging = true;

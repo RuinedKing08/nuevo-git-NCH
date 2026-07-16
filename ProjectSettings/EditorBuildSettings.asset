@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Content/Scenes/BlockoutNivelBar.unity
     guid: 27d8d76a0d41fa74f82faf18a57111f6
+  - enabled: 1
+    path: Assets/Content/Scenes/ScenesMOVIDO/SceneFinals/Cinematic3.unity
+    guid: 5eabd4419684d674f9a6c37ac37b2ce1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

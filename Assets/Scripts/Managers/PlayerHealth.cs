@@ -180,7 +180,9 @@ public class PlayerHealth : HealthController
         if (RevivalBuff()) return;
         ChangeCards.cardsOpened = false;
         Exp.Instance.ChangeExp(-100);
-        SceneManager.LoadScene(thisScene);
+        TutorialBool.changeLevel = true;
+        Waves.Instance.ActivateChangeUbucation();
+        //SceneManager.LoadScene(thisScene);
         gameObject.SendMessage("OnPlayerDeath", SendMessageOptions.DontRequireReceiver);
     }
 
