@@ -29,11 +29,11 @@ public class UniqueUpgrades : MonoBehaviour
 
     private void Start()
     {
-        DisabelAll();
+        //DisabelAll();
        /* whiskeyBuff = true;
         whiskeyLevel = 3;*/
     }
-    void DisabelAll()
+    public void DisabelAll()
     {
         brandyBuff = false;
         ronBuff = false;
@@ -48,6 +48,8 @@ public class UniqueUpgrades : MonoBehaviour
         ginAmount = 0;
         whiskeyAmount = 0;
         manhattanAmount = 0;
+
+        Currency.finalScore = 0;
     }
     public void UUpgrades(Card CD)
     {
